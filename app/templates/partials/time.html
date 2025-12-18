@@ -1,0 +1,47 @@
+﻿<div class="card">
+    <h2>時間帯別投稿数</h2>
+    {% if hourly %}
+    <table class="table">
+        <thead><tr><th>時</th><th>投稿数</th></tr></thead>
+        <tbody>
+            {% for row in hourly %}
+            <tr><td>{{ row.hour }}</td><td>{{ row.posts }}</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>データがありません。</p>
+    {% endif %}
+</div>
+
+<div class="card">
+    <h2>曜日別投稿数</h2>
+    {% if weekday %}
+    <table class="table">
+        <thead><tr><th>曜日(0=月)</th><th>投稿数</th></tr></thead>
+        <tbody>
+            {% for row in weekday %}
+            <tr><td>{{ row.weekday }}</td><td>{{ row.posts }}</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>データがありません。</p>
+    {% endif %}
+</div>
+
+<div class="card">
+    <h2>日別投稿数</h2>
+    {% if daily %}
+    <table class="table">
+        <thead><tr><th>日付</th><th>投稿数</th></tr></thead>
+        <tbody>
+            {% for row in daily %}
+            <tr><td>{{ row.date }}</td><td>{{ row.posts }}</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>データがありません。</p>
+    {% endif %}
+</div>

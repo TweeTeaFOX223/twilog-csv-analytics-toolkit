@@ -1,0 +1,40 @@
+[project]
+name = "twilog-analytics"
+version = "0.1.0"
+description = "Twilog CSV analytics toolkit (FastAPI + HTMX + Polars + SudachiPy)"
+authors = [{ name = "Twilog Analytics" }]
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+  "fastapi",
+  "uvicorn[standard]",
+  "jinja2",
+  "python-multipart",
+  "orjson",
+  "polars",
+  "sudachipy",
+  "sudachidict-full",
+  "matplotlib",
+  "plotly",
+  "wordcloud",
+  "pillow"
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest",
+  "httpx",
+  "pytest-asyncio"
+]
+
+[tool.uv]
+default-groups = []
+
+[tool.pytest.ini_options]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]

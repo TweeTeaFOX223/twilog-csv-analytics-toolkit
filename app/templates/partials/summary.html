@@ -1,0 +1,45 @@
+﻿<div class="card">
+    <h2>概要</h2>
+    <div class="summary-grid">
+        <div class="stat-box">
+            <div class="stat-label">総投稿数</div>
+            <div class="stat-value">{{ counts.total }}</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-label">1日平均</div>
+            <div class="stat-value">{{ counts.avg_per_day }}</div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <h3>年別投稿数</h3>
+    {% if yearly %}
+    <table class="table">
+        <thead><tr><th>年</th><th>投稿数</th></tr></thead>
+        <tbody>
+            {% for row in yearly %}
+            <tr><td>{{ row.year }}</td><td>{{ row.posts }}</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>データがありません。</p>
+    {% endif %}
+</div>
+
+<div class="card">
+    <h3>月別投稿数</h3>
+    {% if monthly %}
+    <table class="table">
+        <thead><tr><th>年</th><th>月</th><th>投稿数</th></tr></thead>
+        <tbody>
+            {% for row in monthly %}
+            <tr><td>{{ row.year }}</td><td>{{ row.month }}</td><td>{{ row.posts }}</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>データがありません。</p>
+    {% endif %}
+</div>

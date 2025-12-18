@@ -1,0 +1,53 @@
+﻿<div class="card">
+    <h2>設定</h2>
+    <form class="form" hx-post="/options" hx-target="#options-status" hx-swap="innerHTML">
+        <input type="hidden" name="file_id" value="{{ file_id }}">
+
+        <label class="form-label">対象年</label>
+        <div class="radio-row">
+            <label><input type="radio" name="years_mode" value="all" {% if options.years_mode == 'all' %}checked{% endif %}> すべて</label>
+            <label><input type="radio" name="years_mode" value="selected" {% if options.years_mode == 'selected' %}checked{% endif %}> 年を指定</label>
+        </div>
+        <div class="year-checkboxes">
+            {% for y in available_years %}
+            <label><input type="checkbox" class="year-check" name="years" value="{{ y }}" {% if options.years_mode == 'selected' and y in options.years %}checked{% endif %}> {{ y }}</label>
+            {% endfor %}
+        </div>
+
+        <label class="form-label">Sudachiモード</label>
+        <select name="sudachi_mode">
+            <option value="A" {% if options.sudachi_mode == 'A' %}selected{% endif %}>A（最短）</option>
+            <option value="B" {% if options.sudachi_mode == 'B' %}selected{% endif %}>B</option>
+            <option value="C" {% if options.sudachi_mode == 'C' %}selected{% endif %}>C（長め）</option>
+        </select>
+
+        <label class="form-label">品詞フィルタ（例: 名詞,動詞）</label>
+        <input type="text" name="pos_filter" value="{{ options.pos_filter or '' }}" placeholder="空なら制限なし">
+
+        <label class="form-label">ストップワード（改行区切り）</label>
+        <textarea name="stopwords" rows="4" placeholder="the
+and
+これ">{{ options.stopwords or '' }}</textarea>
+
+        <button type="submit" class="btn-primary">設定を適用</button>
+    </form>
+    <div id="options-status" class="muted"></div>
+</div>
+<script>
+function toggleYearChecks(mode) {
+  const disabled = mode === 'all';
+  document.querySelectorAll('.year-check').forEach(cb => cb.disabled = disabled);
+}
+function initYearToggle() {
+  const checked = document.querySelector('input[name="years_mode"]:checked');
+  if (checked) toggleYearChecks(checked.value);
+  document.querySelectorAll('input[name="years_mode"]').forEach(r => {
+    r.addEventListener('change', (e) => toggleYearChecks(e.target.value));
+  });
+}
+if (document.readyState !== 'loading') {
+  initYearToggle();
+} else {
+  document.addEventListener('DOMContentLoaded', initYearToggle);
+}
+</script>

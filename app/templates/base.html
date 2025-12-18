@@ -1,0 +1,40 @@
+﻿<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Twilog Analytics</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <script src="https://unpkg.com/htmx.org@1.9.12"></script>
+    <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
+    {% block head_extras %}{% endblock %}
+</head>
+<body>
+    <header class="app-header">
+        <div class="brand">Twilog Analytics</div>
+        <div class="subtitle">CSVをアップロードして投稿を可視化</div>
+    </header>
+    <main class="app-main">
+        {% block content %}{% endblock %}
+    </main>
+    <script>
+    function renderPlotly(root=document) {
+      const targets = root.querySelectorAll('[data-plot-json]');
+      targets.forEach((el) => {
+        const specText = el.getAttribute('data-plot-json');
+        if (!specText) return;
+        try {
+          const spec = JSON.parse(specText);
+          Plotly.newPlot(el, spec.data || [], spec.layout || {});
+        } catch (e) {
+          console.error('plot render error', e);
+        }
+      });
+    }
+    document.addEventListener('DOMContentLoaded', () => renderPlotly(document));
+    document.body.addEventListener('htmx:afterSwap', (e) => {
+      if (e.target) renderPlotly(e.target);
+    });
+    </script>
+</body>
+</html>

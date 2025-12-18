@@ -1,0 +1,19 @@
+﻿{% extends "base.html" %}
+
+{% block content %}
+<section class="card dashboard">
+    <aside class="side-nav">
+        {% include "partials/settings_panel.html" %}
+    </aside>
+    <section class="panel">
+        <div class="panel-nav">
+            <button class="nav-btn" hx-get="/partials/summary?file_id={{ file_id }}" hx-target="#panel-content" hx-swap="innerHTML">概要</button>
+            <button class="nav-btn" hx-get="/partials/time?file_id={{ file_id }}" hx-target="#panel-content" hx-swap="innerHTML">時間帯/曜日</button>
+            <button class="nav-btn" hx-get="/partials/domains?file_id={{ file_id }}" hx-target="#panel-content" hx-swap="innerHTML">ドメイン</button>
+        </div>
+        <div id="panel-content" hx-get="/partials/summary?file_id={{ file_id }}" hx-trigger="load" hx-swap="innerHTML">
+            <div class="loading">読込中...</div>
+        </div>
+    </section>
+</section>
+{% endblock %}
