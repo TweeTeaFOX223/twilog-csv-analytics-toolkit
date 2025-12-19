@@ -3,6 +3,19 @@
         <h2>メンションランキング</h2>
         <a class="btn-secondary" href="/download/mentions?file_id={{ file_id }}">CSVダウンロード</a>
     </div>
+    <form
+        class="form"
+        hx-get="/partials/mentions"
+        hx-target="#panel-content"
+        hx-swap="innerHTML"
+    >
+        <input type="hidden" name="file_id" value="{{ file_id }}">
+        <label>
+            <input type="checkbox" name="exclude_retweets" value="true" {% if exclude_retweets %}checked{% endif %}>
+            リツイートを除外
+        </label>
+        <button type="submit" class="btn-primary">更新</button>
+    </form>
     {% if rows %}
     <div id="mentions-chart-{{ file_id }}" class="plot" data-plot-json='{{ plot_json | e }}'></div>
     <details>

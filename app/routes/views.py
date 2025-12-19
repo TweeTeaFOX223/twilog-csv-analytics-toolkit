@@ -140,6 +140,18 @@ def _clamp_max_minutes(value: int, min_value: int = 30, max_value: int = 1440) -
     return value
 
 
+def _exclude_retweets(frame: pl.DataFrame, exclude_retweets: bool) -> pl.DataFrame:
+    """RT投稿を除外したDataFrameを返す。"""
+
+    if not exclude_retweets:
+        return frame
+    if "text" not in frame.columns:
+        return frame
+    return frame.filter(
+        ~pl.col("text").cast(pl.Utf8).fill_null("").str.contains(r"^RT\s*@?")
+    )
+
+
 @router.get("/", response_class=HTMLResponse)
 async def index(request: Request) -> HTMLResponse:
     """アップロードフォームを表示するトップページ。"""
@@ -853,7 +865,9 @@ async def domain_month_partial(
 
 
 @router.get("/partials/mentions", response_class=HTMLResponse)
-async def mentions_partial(request: Request, file_id: str) -> HTMLResponse:
+async def mentions_partial(
+    request: Request, file_id: str, exclude_retweets: bool = False
+) -> HTMLResponse:
     """メンションランキングを返す。"""
 
     try:
@@ -861,7 +875,7 @@ async def mentions_partial(request: Request, file_id: str) -> HTMLResponse:
     except HTTPException:
         return _render_error(request, "セッションが見つかりません", 404)
 
-    frame = _filtered_frame(session)
+    frame = _exclude_retweets(_filtered_frame(session), exclude_retweets)
     mentions = text_analysis.mention_ranking(frame, top_n=30)
     rows = mentions.to_dicts() if not mentions.is_empty() else []
     plot_frame = (
@@ -892,6 +906,7 @@ async def mentions_partial(request: Request, file_id: str) -> HTMLResponse:
             "file_id": file_id,
             "rows": rows,
             "plot_json": json.dumps(plot_spec, default=str),
+            "exclude_retweets": exclude_retweets,
         },
     )
 
