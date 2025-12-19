@@ -7,7 +7,7 @@ from typing import Dict, Iterable, List, Optional
 import polars as pl
 from sudachipy import Dictionary, Tokenizer
 
-__all__ = ["TextAnalyzer"]
+__all__ = ["TextAnalyzer", "hashtag_ranking"]
 
 JP_NOUN = "\u540d\u8a5e"
 JP_VERB = "\u52d5\u8a5e"
@@ -90,18 +90,18 @@ class TextAnalyzer:
         return word_freq
 
     @staticmethod
-    def get_top_words(word_freq: Dict[str, int], top_n: int = 50) -> pl.DataFrame:
+    def get_top_words(word_freq: Dict[str, int], top_n: int | None = 50) -> pl.DataFrame:
         sorted_words: List[Tuple[str, int]] = sorted(
             word_freq.items(), key=lambda x: x[1], reverse=True
         )
-        top_words = sorted_words[:top_n]
+        top_words = sorted_words if top_n is None else sorted_words[:top_n]
         if not top_words:
             return pl.DataFrame({"word": [], "count": []})
         words, counts = zip(*top_words)
         return pl.DataFrame({"word": list(words), "count": list(counts)})
 
     def get_tfidf_ranking(
-        self, df: pl.DataFrame, text_column: str = "text", top_n: int = 50
+        self, df: pl.DataFrame, text_column: str = "text", top_n: int | None = 50
     ) -> pl.DataFrame:
         if text_column not in df.columns:
             return pl.DataFrame({"word": [], "tf": [], "df": [], "score": []})
@@ -131,4 +131,28 @@ class TextAnalyzer:
             rows.append({"word": term, "tf": tf_count, "df": df_count, "score": score})
 
         rows.sort(key=lambda r: r["score"], reverse=True)
-        return pl.DataFrame(rows[:top_n])
+        if top_n is not None:
+            rows = rows[:top_n]
+        return pl.DataFrame(rows)
+
+
+def hashtag_ranking(frame: pl.DataFrame, top_n: int | None = 20) -> pl.DataFrame:
+    """ハッシュタグ出現数ランキングを返す。"""
+
+    if "hashtag_list" not in frame.columns:
+        return pl.DataFrame()
+    exploded = frame.explode("hashtag_list").drop_nulls("hashtag_list")
+    if exploded.is_empty():
+        return pl.DataFrame()
+    cleaned = exploded.with_columns(
+        pl.col("hashtag_list").cast(pl.Utf8).str.strip_chars().alias("hashtag")
+    ).filter(pl.col("hashtag") != "")
+    if cleaned.is_empty():
+        return pl.DataFrame()
+    result = (
+        cleaned.group_by("hashtag")
+        .count()
+        .rename({"count": "occurrences"})
+        .sort("occurrences", descending=True)
+    )
+    return result if top_n is None else result.head(top_n)

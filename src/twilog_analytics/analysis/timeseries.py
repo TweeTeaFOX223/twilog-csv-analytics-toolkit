@@ -2,7 +2,14 @@ from __future__ import annotations
 
 import polars as pl
 
-__all__ = ["daily_counts", "weekday_hour_counts", "weekday_hour_matrix"]
+__all__ = [
+    "daily_counts",
+    "daily_counts_full",
+    "weekly_counts",
+    "weekday_hour_counts",
+    "weekday_hour_matrix",
+    "daily_calendar_matrix",
+]
 
 
 def daily_counts(frame: pl.DataFrame) -> pl.DataFrame:
@@ -11,6 +18,35 @@ def daily_counts(frame: pl.DataFrame) -> pl.DataFrame:
     if "date" not in frame.columns:
         return pl.DataFrame()
     return frame.group_by("date").count().rename({"count": "posts"}).sort("date")
+
+
+def daily_counts_full(frame: pl.DataFrame) -> pl.DataFrame:
+    """日次の投稿数を欠損日=0で補完して返す。"""
+
+    if "date" not in frame.columns:
+        return pl.DataFrame()
+    min_date = frame.select(pl.col("date").min()).item()
+    max_date = frame.select(pl.col("date").max()).item()
+    if min_date is None or max_date is None:
+        return pl.DataFrame()
+    date_range = pl.date_range(min_date, max_date, "1d", eager=True)
+    base = pl.DataFrame({"date": date_range})
+    counts = frame.group_by("date").count().rename({"count": "posts"})
+    return base.join(counts, on="date", how="left").fill_null(0).sort("date")
+
+
+def weekly_counts(frame: pl.DataFrame) -> pl.DataFrame:
+    """ISO週単位の投稿数を返す。"""
+
+    if "date" not in frame.columns:
+        return pl.DataFrame()
+    return (
+        frame.with_columns(pl.col("date").dt.strftime("%G-W%V").alias("iso_week"))
+        .group_by("iso_week")
+        .count()
+        .rename({"count": "posts"})
+        .sort("iso_week")
+    )
 
 
 def weekday_hour_counts(frame: pl.DataFrame) -> pl.DataFrame:
@@ -64,3 +100,35 @@ def weekday_hour_matrix(frame: pl.DataFrame) -> tuple[list[str], list[str], list
             z_matrix.append([int(row.select(str(h)).item() if str(h) in row.columns else 0) for h in hours])
 
     return hours_labels, [weekday_labels[wd] for wd in weekdays], z_matrix
+
+
+def daily_calendar_matrix(frame: pl.DataFrame) -> tuple[list[str], list[str], list[list[int]]]:
+    """日別投稿数を週×曜日の行列で返す。"""
+
+    daily = daily_counts_full(frame)
+    if daily.is_empty():
+        return [], [], []
+    weekday_expr = pl.col("date").dt.strftime("%u").cast(pl.Int8) - 1
+    daily = daily.with_columns(
+        weekday_expr.alias("weekday"),
+        pl.col("date").dt.strftime("%G-W%V").alias("iso_week"),
+    ).with_columns(
+        (pl.col("date") - (pl.col("weekday") * pl.duration(days=1))).alias("week_start"),
+    )
+    week_order = (
+        daily.group_by("iso_week")
+        .agg(pl.col("week_start").min().alias("week_start"))
+        .sort("week_start")
+        .select("iso_week")
+        .to_series()
+        .to_list()
+    )
+    values = {
+        (row["iso_week"], row["weekday"]): row["posts"]
+        for row in daily.select(["iso_week", "weekday", "posts"]).to_dicts()
+    }
+    weekday_labels = ["\u6708", "\u706b", "\u6c34", "\u6728", "\u91d1", "\u571f", "\u65e5"]
+    z_matrix: list[list[int]] = []
+    for iso_week in week_order:
+        z_matrix.append([int(values.get((iso_week, wd), 0)) for wd in range(7)])
+    return weekday_labels, [str(w) for w in week_order], z_matrix

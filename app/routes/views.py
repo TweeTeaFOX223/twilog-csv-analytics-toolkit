@@ -124,6 +124,16 @@ def _clamp_max_words(value: int, min_value: int = 10, max_value: int = 400) -> i
     return value
 
 
+def _clamp_max_minutes(value: int, min_value: int = 30, max_value: int = 1440) -> int:
+    """投稿間隔の最大分数を安全な範囲に丸める。"""
+
+    if value < min_value:
+        return min_value
+    if value > max_value:
+        return max_value
+    return value
+
+
 @router.get("/", response_class=HTMLResponse)
 async def index(request: Request) -> HTMLResponse:
     """アップロードフォームを表示するトップページ。"""
@@ -338,6 +348,55 @@ async def time_partial(request: Request, file_id: str) -> HTMLResponse:
     )
 
 
+@router.get("/partials/weekly", response_class=HTMLResponse)
+async def weekly_partial(request: Request, file_id: str) -> HTMLResponse:
+    """週別投稿数と日別カレンダーを返す。"""
+
+    try:
+        session = _get_session(file_id)
+    except HTTPException:
+        return _render_error(request, "セッションが見つかりません", 404)
+
+    frame = _filtered_frame(session)
+    weekly = timeseries.weekly_counts(frame)
+    daily_full = timeseries.daily_counts_full(frame).with_columns(pl.col("date").cast(pl.Utf8))
+    week_labels, weekday_labels, calendar_matrix = timeseries.daily_calendar_matrix(frame)
+
+    weekly_plot = plotly_charts.plotly_bar(
+        weekly,
+        x="iso_week",
+        y="posts",
+        title="週別投稿数（ISO週）",
+        x_title="週",
+        y_title="投稿数",
+        margin_bottom=90,
+        xaxis_title_standoff=30,
+    )
+    calendar_plot = plotly_charts.plotly_heatmap(
+        weekday_labels,
+        week_labels,
+        calendar_matrix,
+        title="日別投稿数カレンダー",
+        x_title="曜日",
+        y_title="週",
+    )
+
+    weekly_rows = weekly.to_dicts() if not weekly.is_empty() else []
+    daily_rows = daily_full.to_dicts() if not daily_full.is_empty() else []
+
+    return TEMPLATES.TemplateResponse(
+        "partials/weekly.html",
+        {
+            "request": request,
+            "file_id": file_id,
+            "weekly": weekly_rows,
+            "daily": daily_rows,
+            "weekly_plot": json.dumps(weekly_plot, default=str),
+            "calendar_plot": json.dumps(calendar_plot, default=str),
+        },
+    )
+
+
 @router.get("/partials/domains", response_class=HTMLResponse)
 async def domains_partial(request: Request, file_id: str) -> HTMLResponse:
     """URLドメインのランキングと棒グラフを返す。"""
@@ -379,6 +438,46 @@ async def domains_partial(request: Request, file_id: str) -> HTMLResponse:
     )
 
 
+@router.get("/partials/tlds", response_class=HTMLResponse)
+async def tlds_partial(request: Request, file_id: str) -> HTMLResponse:
+    """TLD別の分布を返す。"""
+
+    try:
+        session = _get_session(file_id)
+    except HTTPException:
+        return _render_error(request, "セッションが見つかりません", 404)
+
+    frame = _filtered_frame(session)
+    tlds = link_analysis.tld_distribution(frame, top_n=20)
+    tld_rows = tlds.to_dicts() if not tlds.is_empty() else []
+    chart_height = max(400, 24 * len(tld_rows) + 120) if tld_rows else 400
+    plot_spec = plotly_charts.plotly_bar(
+        tlds,
+        x="occurrences",
+        y="tld",
+        title="TLD分布",
+        x_title="回数",
+        y_title="TLD",
+        orientation="h",
+        category_order="array",
+        category_array=tlds["tld"].cast(pl.Utf8).to_list() if not tlds.is_empty() else [],
+        reverse_category=True,
+        margin_left=140,
+        height=chart_height,
+    )
+    plot_json = json.dumps(plot_spec)
+
+    return TEMPLATES.TemplateResponse(
+        "partials/tlds.html",
+        {
+            "request": request,
+            "file_id": file_id,
+            "tlds": tld_rows,
+            "plot_json": plot_json,
+        },
+    )
+
+
 @router.get("/partials/word_ranking", response_class=HTMLResponse)
 async def word_ranking_partial(request: Request, file_id: str) -> HTMLResponse:
     """単語ランキングを返す。"""
@@ -397,6 +496,49 @@ async def word_ranking_partial(request: Request, file_id: str) -> HTMLResponse:
     return TEMPLATES.TemplateResponse(
         "partials/word_ranking.html",
         {"request": request, "file_id": file_id, "rows": rows},
+    )
+
+
+@router.get("/partials/hashtags", response_class=HTMLResponse)
+async def hashtags_partial(request: Request, file_id: str) -> HTMLResponse:
+    """ハッシュタグランキングを返す。"""
+
+    try:
+        session = _get_session(file_id)
+    except HTTPException:
+        return _render_error(request, "セッションが見つかりません", 404)
+
+    frame = _filtered_frame(session)
+    hashtags = text_analysis.hashtag_ranking(frame, top_n=30)
+    hashtag_rows = hashtags.to_dicts() if not hashtags.is_empty() else []
+    chart_height = max(400, 24 * len(hashtag_rows) + 120) if hashtag_rows else 400
+    plot_frame = hashtags.with_columns(
+        pl.concat_str([pl.lit("#"), pl.col("hashtag")]).alias("label")
+    ) if not hashtags.is_empty() else hashtags
+    plot_spec = plotly_charts.plotly_bar(
+        plot_frame,
+        x="occurrences",
+        y="label",
+        title="ハッシュタグ上位",
+        x_title="回数",
+        y_title="ハッシュタグ",
+        orientation="h",
+        category_order="array",
+        category_array=plot_frame["label"].cast(pl.Utf8).to_list() if not plot_frame.is_empty() else [],
+        reverse_category=True,
+        margin_left=200,
+        height=chart_height,
+    )
+    plot_json = json.dumps(plot_spec)
+
+    return TEMPLATES.TemplateResponse(
+        "partials/hashtags.html",
+        {
+            "request": request,
+            "file_id": file_id,
+            "hashtags": hashtag_rows,
+            "plot_json": plot_json,
+        },
     )
 
 
@@ -433,6 +575,152 @@ async def tfidf_partial(request: Request, file_id: str) -> HTMLResponse:
     return TEMPLATES.TemplateResponse(
         "partials/tfidf.html",
         {"request": request, "file_id": file_id, "rows": rows},
+    )
+
+
+@router.get("/partials/intervals", response_class=HTMLResponse)
+async def intervals_partial(
+    request: Request, file_id: str, max_minutes: int = 720
+) -> HTMLResponse:
+    """投稿間隔とセッション長分布を返す。"""
+
+    try:
+        session = _get_session(file_id)
+    except HTTPException:
+        return _render_error(request, "セッションが見つかりません", 404)
+
+    frame = _filtered_frame(session)
+    max_minutes = _clamp_max_minutes(max_minutes)
+    intervals = statistics.posting_interval_distribution(
+        frame, bin_size=30, max_minutes=max_minutes
+    )
+    sessions = statistics.session_length_distribution(frame, gap_minutes=30)
+
+    interval_plot = plotly_charts.plotly_bar(
+        intervals,
+        x="bin_label",
+        y="posts",
+        title="投稿間隔分布（分）",
+        x_title="間隔（分）",
+        y_title="投稿数",
+        margin_bottom=90,
+        xaxis_title_standoff=20,
+    )
+    session_plot = plotly_charts.plotly_bar(
+        sessions,
+        x="session_size",
+        y="sessions",
+        title="連投セッション長分布",
+        x_title="セッション内投稿数",
+        y_title="セッション数",
+        category_order="array",
+        category_array=sessions["session_size"].cast(pl.Utf8).to_list()
+        if not sessions.is_empty()
+        else [],
+        margin_bottom=80,
+    )
+
+    interval_rows = (
+        intervals.select(["bin_label", "posts"]).to_dicts() if not intervals.is_empty() else []
+    )
+    session_rows = (
+        sessions.select(["session_size", "sessions"]).to_dicts()
+        if not sessions.is_empty()
+        else []
+    )
+
+    return TEMPLATES.TemplateResponse(
+        "partials/intervals.html",
+        {
+            "request": request,
+            "file_id": file_id,
+            "intervals": interval_rows,
+            "sessions": session_rows,
+            "interval_plot": json.dumps(interval_plot, default=str),
+            "session_plot": json.dumps(session_plot, default=str),
+            "max_minutes": max_minutes,
+        },
+    )
+
+
+@router.get("/partials/urls", response_class=HTMLResponse)
+async def urls_partial(request: Request, file_id: str) -> HTMLResponse:
+    """URL含有率とURL数分布を返す。"""
+
+    try:
+        session = _get_session(file_id)
+    except HTTPException:
+        return _render_error(request, "セッションが見つかりません", 404)
+
+    frame = _filtered_frame(session)
+    url_stats = statistics.url_presence_stats(frame)
+    url_counts = statistics.url_count_distribution(frame)
+    url_counts_plot = plotly_charts.plotly_bar(
+        url_counts.with_columns(pl.col("url_count").cast(pl.Utf8).alias("url_count_label"))
+        if not url_counts.is_empty()
+        else url_counts,
+        x="url_count_label",
+        y="posts",
+        title="URL数分布",
+        x_title="URL数",
+        y_title="投稿数",
+        category_order="array",
+        category_array=url_counts["url_count"].cast(pl.Utf8).to_list()
+        if not url_counts.is_empty()
+        else [],
+        margin_bottom=80,
+    )
+
+    url_rows = url_counts.to_dicts() if not url_counts.is_empty() else []
+
+    return TEMPLATES.TemplateResponse(
+        "partials/urls.html",
+        {
+            "request": request,
+            "file_id": file_id,
+            "url_stats": url_stats,
+            "url_counts": url_rows,
+            "url_counts_plot": json.dumps(url_counts_plot, default=str),
+        },
+    )
+
+
+@router.get("/partials/lengths", response_class=HTMLResponse)
+async def lengths_partial(request: Request, file_id: str) -> HTMLResponse:
+    """文字数分布を返す。"""
+
+    try:
+        session = _get_session(file_id)
+    except HTTPException:
+        return _render_error(request, "セッションが見つかりません", 404)
+
+    frame = _filtered_frame(session)
+    lengths = statistics.text_length_distribution(frame, bin_size=20)
+    length_rows = (
+        lengths.select(["bin_label", "posts"]).to_dicts() if not lengths.is_empty() else []
+    )
+    plot_spec = plotly_charts.plotly_bar(
+        lengths,
+        x="bin_label",
+        y="posts",
+        title="文字数分布",
+        x_title="文字数帯",
+        y_title="投稿数",
+        category_order="array",
+        category_array=lengths["bin_label"].cast(pl.Utf8).to_list() if not lengths.is_empty() else [],
+        margin_bottom=90,
+        xaxis_title_standoff=20,
+    )
+    plot_json = json.dumps(plot_spec)
+
+    return TEMPLATES.TemplateResponse(
+        "partials/lengths.html",
+        {
+            "request": request,
+            "file_id": file_id,
+            "lengths": length_rows,
+            "plot_json": plot_json,
+        },
     )
 
 
@@ -513,18 +801,56 @@ async def download_csv(kind: str, file_id: str) -> StreamingResponse:
     elif kind == "daily":
         df = timeseries.daily_counts(frame)
         fname = "daily_counts.csv"
+    elif kind == "weekly":
+        df = timeseries.weekly_counts(frame)
+        fname = "weekly_counts.csv"
+    elif kind == "daily_calendar":
+        df = timeseries.daily_counts_full(frame)
+        fname = "daily_counts_full.csv"
     elif kind == "domains":
-        df = link_analysis.domain_ranking(frame, top_n=100)
+        df = link_analysis.domain_ranking(frame, top_n=None)
         fname = "domain_ranking.csv"
     elif kind == "word_freq":
         analyzer = _build_text_analyzer(session)
         word_freq = analyzer.get_word_frequency(frame, text_column="text")
-        df = analyzer.get_top_words(word_freq, top_n=100)
+        df = analyzer.get_top_words(word_freq, top_n=None)
         fname = "word_ranking.csv"
     elif kind == "tfidf":
         analyzer = _build_text_analyzer(session)
-        df = analyzer.get_tfidf_ranking(frame, text_column="text", top_n=100)
+        df = analyzer.get_tfidf_ranking(frame, text_column="text", top_n=None)
         fname = "tfidf_ranking.csv"
+    elif kind == "hashtags":
+        df = text_analysis.hashtag_ranking(frame, top_n=None)
+        fname = "hashtag_ranking.csv"
+    elif kind == "lengths":
+        df = statistics.text_length_distribution(frame, bin_size=20)
+        if not df.is_empty():
+            df = df.select(["bin_label", "posts"])
+        fname = "text_length_distribution.csv"
+    elif kind == "tlds":
+        df = link_analysis.tld_distribution(frame, top_n=None)
+        fname = "tld_distribution.csv"
+    elif kind == "intervals":
+        df = statistics.posting_interval_distribution(frame, bin_size=30)
+        if not df.is_empty():
+            df = df.select(["bin_label", "posts"])
+        fname = "posting_interval_distribution.csv"
+    elif kind == "sessions":
+        df = statistics.session_length_distribution(frame, gap_minutes=30)
+        fname = "session_length_distribution.csv"
+    elif kind == "url_counts":
+        df = statistics.url_count_distribution(frame)
+        fname = "url_count_distribution.csv"
+    elif kind == "url_rate":
+        stats = statistics.url_presence_stats(frame)
+        df = pl.DataFrame(
+            {
+                "with_url": [stats["with_url"]],
+                "without_url": [stats["without_url"]],
+                "rate": [stats["rate"]],
+            }
+        )
+        fname = "url_presence_rate.csv"
     else:
         raise HTTPException(status_code=400, detail="unknown download kind")
 

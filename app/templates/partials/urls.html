@@ -1,0 +1,39 @@
+<div class="card">
+    <div class="card-header-row">
+        <h2>URL含有率 / URL数分布</h2>
+        <div class="card-actions">
+            <a class="btn-secondary" href="/download/url_rate?file_id={{ file_id }}">含有率CSV</a>
+            <a class="btn-secondary" href="/download/url_counts?file_id={{ file_id }}">URL数CSV</a>
+        </div>
+    </div>
+    <div class="summary-grid">
+        <div class="stat-box">
+            <div class="stat-label">URLあり投稿</div>
+            <div class="stat-value">{{ url_stats.with_url }}</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-label">URLなし投稿</div>
+            <div class="stat-value">{{ url_stats.without_url }}</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-label">URL含有率</div>
+            <div class="stat-value">{{ (url_stats.rate * 100) | round(2) }}%</div>
+        </div>
+    </div>
+    {% if url_counts %}
+    <div id="url-counts-chart-{{ file_id }}" class="plot" data-plot-json='{{ url_counts_plot | e }}'></div>
+    <details>
+        <summary>URL数表を開く</summary>
+        <table class="table">
+            <thead><tr><th>URL数</th><th>投稿数</th></tr></thead>
+            <tbody>
+                {% for row in url_counts %}
+                <tr><td>{{ row.url_count }}</td><td>{{ row.posts }}</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </details>
+    {% else %}
+    <p>データがありません。</p>
+    {% endif %}
+</div>

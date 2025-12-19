@@ -1,0 +1,22 @@
+<div class="card">
+    <div class="card-header-row">
+        <h2>ハッシュタグ上位</h2>
+        <a class="btn-secondary" href="/download/hashtags?file_id={{ file_id }}">CSVダウンロード</a>
+    </div>
+    {% if hashtags %}
+    <div id="hashtag-chart-{{ file_id }}" class="plot" data-plot-json='{{ plot_json | e }}'></div>
+    <details>
+        <summary>表を開く</summary>
+        <table class="table">
+            <thead><tr><th>ハッシュタグ</th><th>回数</th></tr></thead>
+            <tbody>
+                {% for row in hashtags %}
+                <tr><td>#{{ row.hashtag }}</td><td>{{ row.occurrences }}</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </details>
+    {% else %}
+    <p>データがありません。</p>
+    {% endif %}
+</div>

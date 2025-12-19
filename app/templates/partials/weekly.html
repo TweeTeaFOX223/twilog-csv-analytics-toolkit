@@ -1,0 +1,40 @@
+<div class="card">
+    <div class="card-header-row">
+        <h2>週別投稿数 / 日別カレンダー</h2>
+        <div class="card-actions">
+            <a class="btn-secondary" href="/download/weekly?file_id={{ file_id }}">週別CSV</a>
+            <a class="btn-secondary" href="/download/daily_calendar?file_id={{ file_id }}">日別CSV</a>
+        </div>
+    </div>
+    {% if weekly %}
+    <div id="weekly-chart-{{ file_id }}" class="plot" data-plot-json='{{ weekly_plot | e }}'></div>
+    <details>
+        <summary>週別表を開く</summary>
+        <table class="table">
+            <thead><tr><th>週</th><th>投稿数</th></tr></thead>
+            <tbody>
+                {% for row in weekly %}
+                <tr><td>{{ row.iso_week }}</td><td>{{ row.posts }}</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </details>
+    {% else %}
+    <p>データがありません。</p>
+    {% endif %}
+
+    {% if daily %}
+    <div id="calendar-chart-{{ file_id }}" class="plot" data-plot-json='{{ calendar_plot | e }}'></div>
+    <details>
+        <summary>日別表を開く</summary>
+        <table class="table">
+            <thead><tr><th>日付</th><th>投稿数</th></tr></thead>
+            <tbody>
+                {% for row in daily %}
+                <tr><td>{{ row.date }}</td><td>{{ row.posts }}</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </details>
+    {% endif %}
+</div>

@@ -13,10 +13,16 @@
         <div class="panel-nav">
             <button class="nav-btn" hx-get="/partials/summary?file_id={{ file_id }}" hx-target="#panel-content" hx-swap="innerHTML">平均</button>
             <button class="nav-btn" hx-get="/partials/time?file_id={{ file_id }}" hx-target="#panel-content" hx-swap="innerHTML">時間帯/曜日</button>
+            <button class="nav-btn" hx-get="/partials/weekly?file_id={{ file_id }}" hx-target="#panel-content" hx-swap="innerHTML">週別/カレンダー</button>
             <button class="nav-btn" hx-get="/partials/domains?file_id={{ file_id }}" hx-target="#panel-content" hx-swap="innerHTML">ドメイン</button>
+            <button class="nav-btn" hx-get="/partials/tlds?file_id={{ file_id }}" hx-target="#panel-content" hx-swap="innerHTML">TLD分布</button>
             <button class="nav-btn" hx-get="/partials/word_ranking?file_id={{ file_id }}" hx-target="#panel-content" hx-swap="innerHTML">単語ランキング</button>
             <button class="nav-btn" hx-get="/partials/wordcloud?file_id={{ file_id }}" hx-target="#panel-content" hx-swap="innerHTML">ワードクラウド</button>
             <button class="nav-btn" hx-get="/partials/tfidf?file_id={{ file_id }}" hx-target="#panel-content" hx-swap="innerHTML">TF-IDF</button>
+            <button class="nav-btn" hx-get="/partials/hashtags?file_id={{ file_id }}" hx-target="#panel-content" hx-swap="innerHTML">ハッシュタグ</button>
+            <button class="nav-btn" hx-get="/partials/lengths?file_id={{ file_id }}" hx-target="#panel-content" hx-swap="innerHTML">文字数分布</button>
+            <button class="nav-btn" hx-get="/partials/intervals?file_id={{ file_id }}" hx-target="#panel-content" hx-swap="innerHTML">投稿間隔</button>
+            <button class="nav-btn" hx-get="/partials/urls?file_id={{ file_id }}" hx-target="#panel-content" hx-swap="innerHTML">URL分布</button>
         </div>
         <div id="panel-content" hx-get="/partials/summary?file_id={{ file_id }}" hx-trigger="load" hx-swap="innerHTML">
             <div class="loading">読込中...</div>

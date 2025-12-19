@@ -12,6 +12,11 @@ __all__ = [
     "average_yearly_counts",
     "average_monthly_counts",
     "average_weekday_counts",
+    "text_length_distribution",
+    "posting_interval_distribution",
+    "session_length_distribution",
+    "url_presence_stats",
+    "url_count_distribution",
 ]
 
 
@@ -145,3 +150,132 @@ def hourly_counts(frame: pl.DataFrame) -> pl.DataFrame:
     if "hour" not in frame.columns:
         return pl.DataFrame()
     return frame.group_by("hour").count().rename({"count": "posts"}).sort("hour")
+
+
+def text_length_distribution(frame: pl.DataFrame, bin_size: int = 20) -> pl.DataFrame:
+    """文字数の分布（ヒストグラム用）を返す。"""
+    if "text_length" not in frame.columns:
+        return pl.DataFrame()
+    if bin_size <= 0:
+        bin_size = 20
+    lengths = frame.select(pl.col("text_length").cast(pl.Int64)).drop_nulls()
+    if lengths.is_empty():
+        return pl.DataFrame()
+    binned = lengths.with_columns((pl.col("text_length") // bin_size).alias("bin_idx")).with_columns(
+        (pl.col("bin_idx") * bin_size).alias("bin_start"),
+        (pl.col("bin_idx") * bin_size + (bin_size - 1)).alias("bin_end"),
+    )
+    grouped = (
+        binned.group_by(["bin_start", "bin_end"])
+        .count()
+        .rename({"count": "posts"})
+        .sort("bin_start")
+    )
+    return grouped.with_columns(
+        pl.concat_str(
+            [pl.col("bin_start").cast(pl.Utf8), pl.lit("-"), pl.col("bin_end").cast(pl.Utf8)]
+        ).alias("bin_label")
+    )
+
+
+def posting_interval_distribution(
+    frame: pl.DataFrame, bin_size: int = 30, max_minutes: int | None = None
+) -> pl.DataFrame:
+    """投稿間隔（分）の分布を返す。"""
+
+    if "created_at" not in frame.columns:
+        return pl.DataFrame()
+    if bin_size <= 0:
+        bin_size = 30
+    times = (
+        frame.select("created_at")
+        .drop_nulls()
+        .sort("created_at")
+        .with_columns(pl.col("created_at").dt.timestamp("ms").alias("ts"))
+    )
+    if times.height < 2:
+        return pl.DataFrame()
+    diffs = times.select((pl.col("ts").diff() / 60000).alias("diff_min")).drop_nulls()
+    diffs = diffs.filter(pl.col("diff_min") >= 0)
+    if max_minutes is not None and max_minutes > 0:
+        diffs = diffs.filter(pl.col("diff_min") <= max_minutes)
+    if diffs.is_empty():
+        return pl.DataFrame()
+    binned = diffs.with_columns((pl.col("diff_min") // bin_size).alias("bin_idx")).with_columns(
+        (pl.col("bin_idx") * bin_size).alias("bin_start"),
+        (pl.col("bin_idx") * bin_size + (bin_size - 1)).alias("bin_end"),
+    )
+    grouped = (
+        binned.group_by(["bin_start", "bin_end"])
+        .count()
+        .rename({"count": "posts"})
+        .sort("bin_start")
+    )
+    return grouped.with_columns(
+        pl.concat_str(
+            [pl.col("bin_start").cast(pl.Utf8), pl.lit("-"), pl.col("bin_end").cast(pl.Utf8)]
+        ).alias("bin_label")
+    )
+
+
+def session_length_distribution(frame: pl.DataFrame, gap_minutes: int = 30) -> pl.DataFrame:
+    """連投セッション長（投稿数）の分布を返す。"""
+
+    if "created_at" not in frame.columns:
+        return pl.DataFrame()
+    times = (
+        frame.select("created_at")
+        .drop_nulls()
+        .sort("created_at")
+        .with_columns(pl.col("created_at").dt.timestamp("ms").alias("ts"))
+    )
+    if times.is_empty():
+        return pl.DataFrame()
+    diffs = times.with_columns(
+        (pl.col("ts").diff() / 60000).alias("diff_min"),
+    )
+    gap = (pl.col("diff_min") > gap_minutes) | pl.col("diff_min").is_null()
+    sessions = diffs.with_columns(
+        gap.alias("new_session"),
+        gap.cast(pl.Int32).cum_sum().alias("session_id"),
+    )
+    session_sizes = (
+        sessions.group_by("session_id")
+        .count()
+        .rename({"count": "session_size"})
+        .sort("session_size")
+    )
+    return (
+        session_sizes.group_by("session_size")
+        .count()
+        .rename({"count": "sessions"})
+        .sort("session_size")
+    )
+
+
+def url_presence_stats(frame: pl.DataFrame) -> dict[str, float | int]:
+    """URL有無の件数と比率を返す。"""
+
+    if "url_count" not in frame.columns:
+        return {"with_url": 0, "without_url": 0, "rate": 0.0}
+    total = frame.height
+    with_url = frame.filter(pl.col("url_count") > 0).height
+    without_url = max(total - with_url, 0)
+    rate = round(with_url / total, 4) if total else 0.0
+    return {"with_url": with_url, "without_url": without_url, "rate": rate}
+
+
+def url_count_distribution(frame: pl.DataFrame) -> pl.DataFrame:
+    """投稿あたりURL数の分布を返す。"""
+
+    if "url_count" not in frame.columns:
+        return pl.DataFrame()
+    counts = frame.select(pl.col("url_count").cast(pl.Int64)).drop_nulls()
+    if counts.is_empty():
+        return pl.DataFrame()
+    return (
+        counts.group_by("url_count")
+        .count()
+        .rename({"count": "posts"})
+        .sort("url_count")
+    )

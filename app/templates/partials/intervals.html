@@ -1,0 +1,78 @@
+<div class="card">
+    <div class="card-header-row">
+        <h2>投稿間隔 / 連投セッション</h2>
+        <div class="card-actions">
+            <a class="btn-secondary" href="/download/intervals?file_id={{ file_id }}">間隔CSV</a>
+            <a class="btn-secondary" href="/download/sessions?file_id={{ file_id }}">セッションCSV</a>
+        </div>
+    </div>
+    <form
+        class="form"
+        hx-get="/partials/intervals"
+        hx-target="#panel-content"
+        hx-swap="innerHTML"
+    >
+        <input type="hidden" name="file_id" value="{{ file_id }}">
+        <label class="form-label">最大分数（30〜1440）</label>
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <input
+                type="range"
+                name="max_minutes"
+                min="30"
+                max="1440"
+                step="30"
+                value="{{ max_minutes }}"
+            >
+            <span data-max-minutes>{{ max_minutes }}</span>
+            <button type="submit" class="btn-primary">更新</button>
+        </div>
+    </form>
+    <p class="muted">
+        連投セッションは、前の投稿から30分以内に続いた投稿を同じセッションとしてまとめたものです。
+    </p>
+    {% if intervals %}
+    <div id="intervals-chart-{{ file_id }}" class="plot" data-plot-json='{{ interval_plot | e }}'></div>
+    <details>
+        <summary>間隔表を開く</summary>
+        <table class="table">
+            <thead><tr><th>間隔（分）</th><th>投稿数</th></tr></thead>
+            <tbody>
+                {% for row in intervals %}
+                <tr><td>{{ row.bin_label }}</td><td>{{ row.posts }}</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </details>
+    {% else %}
+    <p>データがありません。</p>
+    {% endif %}
+
+    {% if sessions %}
+    <div id="sessions-chart-{{ file_id }}" class="plot" data-plot-json='{{ session_plot | e }}'></div>
+    <details>
+        <summary>セッション表を開く</summary>
+        <table class="table">
+            <thead><tr><th>セッション内投稿数</th><th>セッション数</th></tr></thead>
+            <tbody>
+                {% for row in sessions %}
+                <tr><td>{{ row.session_size }}</td><td>{{ row.sessions }}</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </details>
+    {% endif %}
+</div>
+<script>
+(() => {
+  const panel = document.getElementById('panel-content');
+  if (!panel) return;
+  const range = panel.querySelector('input[name="max_minutes"]');
+  const value = panel.querySelector('[data-max-minutes]');
+  if (!range || !value) return;
+  const update = () => {
+    value.textContent = range.value;
+  };
+  range.addEventListener('input', update);
+  update();
+})();
+</script>
