@@ -1,0 +1,25 @@
+<div class="card">
+    <div class="card-header-row">
+        <h2>自分のツイートURL参照</h2>
+        <a class="btn-secondary" href="/download/self_post_urls?file_id={{ file_id }}">CSVダウンロード</a>
+    </div>
+    <div class="summary-grid">
+        <div class="stat-box">
+            <div class="stat-label">自分のツイート</div>
+            <div class="stat-value">{{ stats.self_post }}</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-label">その他URL</div>
+            <div class="stat-value">{{ stats.other_url }}</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-label">URLなし</div>
+            <div class="stat-value">{{ stats.no_url }}</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-label">参照率</div>
+            <div class="stat-value">{{ (stats.rate * 100) | round(2) }}%</div>
+        </div>
+    </div>
+    <div id="self-post-url-{{ file_id }}" class="plot" data-plot-json='{{ plot_json | e }}'></div>
+</div>

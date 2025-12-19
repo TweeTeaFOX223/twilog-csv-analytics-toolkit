@@ -9,6 +9,7 @@ __all__ = [
     "domain_month_trend",
     "path_depth_distribution",
     "self_reference_stats",
+    "self_post_url_stats",
 ]
 
 
@@ -183,3 +184,30 @@ def self_reference_stats(frame: pl.DataFrame) -> dict[str, int | float]:
     external = max(total - self_ref, 0)
     rate = round(self_ref / total, 4) if total else 0.0
     return {"self_ref": self_ref, "external": external, "rate": rate}
+
+
+def self_post_url_stats(frame: pl.DataFrame) -> dict[str, int | float]:
+    """自分のツイートURL参照の件数と比率を返す。"""
+
+    if "urls" not in frame.columns or "status_url" not in frame.columns:
+        return {"self_post": 0, "other_url": 0, "no_url": 0, "rate": 0.0}
+    url_rows = frame.select(
+        pl.col("urls"),
+        pl.col("status_url").cast(pl.Utf8).fill_null("").alias("status_url"),
+    ).to_dicts()
+    self_post = 0
+    other_url = 0
+    no_url = 0
+    for row in url_rows:
+        urls = row["urls"] or []
+        status_url = str(row["status_url"]).split("?")[0].split("#")[0]
+        if not urls:
+            no_url += 1
+            continue
+        if status_url and any(str(url).split("?")[0].split("#")[0] == status_url for url in urls):
+            self_post += 1
+        else:
+            other_url += 1
+    total = len(url_rows)
+    rate = round(self_post / total, 4) if total else 0.0
+    return {"self_post": self_post, "other_url": other_url, "no_url": no_url, "rate": rate}

@@ -4,19 +4,22 @@
         <a class="btn-secondary" href="/download/long_texts?file_id={{ file_id }}">CSVダウンロード</a>
     </div>
     {% if rows %}
-    <table class="table">
-        <thead><tr><th>文字数</th><th>本文</th><th>リンク</th></tr></thead>
+    <table class="table table-fixed">
+        <thead><tr><th>文字数</th><th>本文</th><th>リンク</th><th>操作</th></tr></thead>
         <tbody>
             {% for row in rows %}
             <tr>
                 <td>{{ row.text_length }}</td>
-                <td>{{ row.text }}</td>
+                <td class="truncate-cell"><span class="truncate-text">{{ row.text }}</span></td>
                 <td>
                     {% if row.status_url %}
                     <a class="btn-secondary" href="{{ row.status_url }}" target="_blank" rel="noopener">開く</a>
                     {% else %}
                     -
                     {% endif %}
+                </td>
+                <td>
+                    <button type="button" class="btn-secondary js-open-modal" data-full-text="{{ row.text | e }}">全文を見る</button>
                 </td>
             </tr>
             {% endfor %}
@@ -26,3 +29,61 @@
     <p>データがありません。</p>
     {% endif %}
 </div>
+<div class="modal-backdrop" id="longtext-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>全文</h3>
+            <button type="button" class="btn-secondary js-close-modal">閉じる</button>
+        </div>
+        <div class="modal-body" id="longtext-modal-body"></div>
+    </div>
+</div>
+<script>
+(() => {
+  const modal = document.getElementById('longtext-modal');
+  const body = document.getElementById('longtext-modal-body');
+  if (!modal || !body) return;
+  const openButtons = document.querySelectorAll('.js-open-modal');
+  const closeButtons = modal.querySelectorAll('.js-close-modal');
+  const escapeHtml = (value) => {
+    return String(value)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  };
+  const linkify = (value) => {
+    const text = String(value || '');
+    const urlPattern = /(https?:\/\/[^\s]+)/g;
+    let lastIndex = 0;
+    let result = '';
+    let match;
+    while ((match = urlPattern.exec(text)) !== null) {
+      const [url] = match;
+      result += escapeHtml(text.slice(lastIndex, match.index));
+      const href = encodeURI(url);
+      result += `<a href="${href}" target="_blank" rel="noopener noreferrer">${escapeHtml(url)}</a>`;
+      lastIndex = match.index + url.length;
+    }
+    result += escapeHtml(text.slice(lastIndex));
+    return result;
+  };
+  const open = (text) => {
+    body.innerHTML = linkify(text);
+    modal.classList.add('active');
+  };
+  const close = () => {
+    modal.classList.remove('active');
+  };
+  openButtons.forEach((btn) => {
+    btn.addEventListener('click', () => open(btn.getAttribute('data-full-text')));
+  });
+  closeButtons.forEach((btn) => {
+    btn.addEventListener('click', close);
+  });
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) close();
+  });
+})();
+</script>

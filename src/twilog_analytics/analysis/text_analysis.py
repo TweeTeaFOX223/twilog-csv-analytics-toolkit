@@ -20,6 +20,7 @@ __all__ = [
     "parse_keyword_dictionary",
     "keyword_category_counts",
     "word_monthly_counts",
+    "tfidf_by_period",
 ]
 
 JP_NOUN = "\u540d\u8a5e"
@@ -415,3 +416,74 @@ def word_monthly_counts(
             pl.col("year").cast(pl.Utf8) + "-" + pl.col("month").cast(pl.Utf8).str.zfill(2)
         ).alias("year_month")
     )
+
+
+def tfidf_by_period(
+    frame: pl.DataFrame, analyzer: "TextAnalyzer", period: str = "month", top_n: int = 50
+) -> pl.DataFrame:
+    """年または月を文書単位にしたTF-IDFランキングを返す。"""
+
+    if "text" not in frame.columns:
+        return pl.DataFrame()
+    if "year" in frame.columns and "month" in frame.columns:
+        df = frame.select(
+            pl.col("text").cast(pl.Utf8).fill_null("").alias("text"),
+            pl.col("year").cast(pl.Int32).alias("year"),
+            pl.col("month").cast(pl.Int8).alias("month"),
+        )
+    elif "created_at" in frame.columns:
+        df = frame.select(
+            pl.col("text").cast(pl.Utf8).fill_null("").alias("text"),
+            pl.col("created_at").dt.year().alias("year"),
+            pl.col("created_at").dt.month().alias("month"),
+        )
+    else:
+        return pl.DataFrame()
+
+    if df.is_empty():
+        return pl.DataFrame()
+
+    period_key = "year" if period == "year" else "year_month"
+    df = df.with_columns(
+        (
+            pl.col("year").cast(pl.Utf8) + "-" + pl.col("month").cast(pl.Utf8).str.zfill(2)
+        ).alias("year_month")
+    )
+
+    doc_terms: Dict[str, Dict[str, int]] = {}
+    df_counts: Dict[str, int] = {}
+    for row in df.to_dicts():
+        key = str(row[period_key])
+        terms = analyzer.extract_words_from_text(row["text"])
+        if not terms:
+            continue
+        bucket = doc_terms.setdefault(key, {})
+        for term in terms:
+            bucket[term] = bucket.get(term, 0) + 1
+        for term in set(terms):
+            df_counts[term] = df_counts.get(term, 0) + 1
+
+    if not doc_terms:
+        return pl.DataFrame()
+
+    doc_count = max(len(doc_terms), 1)
+    rows: List[Dict[str, object]] = []
+    for key, tf_counts in doc_terms.items():
+        scored = []
+        for term, tf in tf_counts.items():
+            idf = math.log((1 + doc_count) / (1 + df_counts.get(term, 0))) + 1
+            scored.append((term, tf, df_counts.get(term, 0), tf * idf))
+        scored.sort(key=lambda x: x[3], reverse=True)
+        for term, tf, df_count, score in scored[:top_n]:
+            rows.append(
+                {
+                    period_key: key,
+                    "word": term,
+                    "tf": tf,
+                    "df": df_count,
+                    "score": round(score, 4),
+                }
+            )
+
+    rows.sort(key=lambda r: (r[period_key], -float(r["score"])))
+    return pl.DataFrame(rows)

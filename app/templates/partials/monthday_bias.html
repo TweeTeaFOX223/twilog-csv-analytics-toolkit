@@ -1,0 +1,27 @@
+<div class="card">
+    <div class="card-header-row">
+        <h2>月内日偏り</h2>
+        <div class="card-actions">
+            <a class="btn-secondary" href="/download/monthday?file_id={{ file_id }}">月内日CSV</a>
+            <a class="btn-secondary" href="/download/weekday_monthday?file_id={{ file_id }}">曜日×月内日CSV</a>
+        </div>
+    </div>
+    <p class="muted">月内日とは、月の中の何日か（1〜31日）を示します。</p>
+    {% if monthday_rows %}
+    <div id="monthday-chart-{{ file_id }}" class="plot" data-plot-json='{{ monthday_plot | e }}'></div>
+    <details>
+        <summary>月内日表を開く</summary>
+        <table class="table">
+            <thead><tr><th>日</th><th>投稿数</th></tr></thead>
+            <tbody>
+                {% for row in monthday_rows %}
+                <tr><td>{{ row.monthday }}</td><td>{{ row.posts }}</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </details>
+    {% else %}
+    <p>データがありません。</p>
+    {% endif %}
+    <div id="weekday-monthday-{{ file_id }}" class="plot" data-plot-json='{{ heatmap_plot | e }}'></div>
+</div>

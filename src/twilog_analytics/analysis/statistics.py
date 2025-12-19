@@ -15,10 +15,19 @@ __all__ = [
     "text_length_distribution",
     "long_text_ranking",
     "posting_interval_distribution",
+    "posting_interval_summary",
     "session_length_distribution",
     "url_presence_stats",
     "url_count_distribution",
+    "newline_count_distribution",
+    "emoji_count_distribution",
+    "reply_ratio_stats",
+    "hashtag_count_distribution",
+    "mention_count_distribution",
+    "night_post_ratio",
 ]
+
+EMOJI_PATTERN = r"[\u2600-\u27BF\U0001F300-\U0001FAFF]"
 
 
 def basic_counts(frame: pl.DataFrame) -> dict[str, int | float]:
@@ -237,6 +246,45 @@ def posting_interval_distribution(
     )
 
 
+def posting_interval_summary(frame: pl.DataFrame) -> dict[str, float | int]:
+    """投稿間隔（分）の要約統計を返す。"""
+
+    if "created_at" not in frame.columns:
+        return {"count": 0, "min": 0.0, "median": 0.0, "mean": 0.0, "p90": 0.0}
+    times = (
+        frame.select("created_at")
+        .drop_nulls()
+        .sort("created_at")
+        .with_columns(pl.col("created_at").dt.timestamp("ms").alias("ts"))
+    )
+    if times.height < 2:
+        return {"count": 0, "min": 0.0, "median": 0.0, "mean": 0.0, "p90": 0.0}
+    diffs = (
+        times.select((pl.col("ts").diff() / 60000).alias("diff_min"))
+        .drop_nulls()
+        .filter(pl.col("diff_min") >= 0)
+        .to_series()
+        .to_list()
+    )
+    if not diffs:
+        return {"count": 0, "min": 0.0, "median": 0.0, "mean": 0.0, "p90": 0.0}
+    diffs_sorted = sorted(float(d) for d in diffs)
+    count = len(diffs_sorted)
+    mid = count // 2
+    median = (
+        (diffs_sorted[mid - 1] + diffs_sorted[mid]) / 2 if count % 2 == 0 else diffs_sorted[mid]
+    )
+    p90_index = max(int(round(count * 0.9)) - 1, 0)
+    mean = sum(diffs_sorted) / count
+    return {
+        "count": count,
+        "min": round(diffs_sorted[0], 2),
+        "median": round(median, 2),
+        "mean": round(mean, 2),
+        "p90": round(diffs_sorted[p90_index], 2),
+    }
+
+
 def session_length_distribution(frame: pl.DataFrame, gap_minutes: int = 30) -> pl.DataFrame:
     """連投セッション長（投稿数）の分布を返す。"""
 
@@ -298,3 +346,103 @@ def url_count_distribution(frame: pl.DataFrame) -> pl.DataFrame:
         .rename({"count": "posts"})
         .sort("url_count")
     )
+
+
+def newline_count_distribution(frame: pl.DataFrame) -> pl.DataFrame:
+    """改行数の分布を返す。"""
+
+    if "text" not in frame.columns:
+        return pl.DataFrame()
+    counts = (
+        frame.select(
+            pl.col("text").cast(pl.Utf8).fill_null("").str.count_matches(r"\n").alias("newlines")
+        )
+        .group_by("newlines")
+        .count()
+        .rename({"count": "posts"})
+        .sort("newlines")
+    )
+    return counts
+
+
+def emoji_count_distribution(frame: pl.DataFrame) -> pl.DataFrame:
+    """絵文字数の分布を返す。"""
+
+    if "text" not in frame.columns:
+        return pl.DataFrame()
+    counts = (
+        frame.select(
+            pl.col("text").cast(pl.Utf8).fill_null("").str.count_matches(EMOJI_PATTERN).alias("emojis")
+        )
+        .group_by("emojis")
+        .count()
+        .rename({"count": "posts"})
+        .sort("emojis")
+    )
+    return counts
+
+
+def reply_ratio_stats(frame: pl.DataFrame) -> dict[str, float | int]:
+    """リプライ比率（@開始）を返す。"""
+
+    if "is_reply" in frame.columns:
+        reply_flags = frame.select(pl.col("is_reply").cast(pl.Boolean)).to_series().to_list()
+    elif "text" in frame.columns:
+        reply_flags = (
+            frame.select(pl.col("text").cast(pl.Utf8).fill_null("").str.starts_with("@"))
+            .to_series()
+            .to_list()
+        )
+    else:
+        return {"reply": 0, "non_reply": 0, "rate": 0.0}
+    reply = sum(1 for flag in reply_flags if flag)
+    total = len(reply_flags)
+    non_reply = max(total - reply, 0)
+    rate = round(reply / total, 4) if total else 0.0
+    return {"reply": reply, "non_reply": non_reply, "rate": rate}
+
+
+def hashtag_count_distribution(frame: pl.DataFrame) -> pl.DataFrame:
+    """ハッシュタグ数の分布を返す。"""
+
+    if "hashtag_count" not in frame.columns:
+        return pl.DataFrame()
+    counts = (
+        frame.select(pl.col("hashtag_count").cast(pl.Int64).fill_null(0))
+        .group_by("hashtag_count")
+        .count()
+        .rename({"count": "posts"})
+        .sort("hashtag_count")
+    )
+    return counts
+
+
+def mention_count_distribution(frame: pl.DataFrame) -> pl.DataFrame:
+    """メンション数の分布を返す。"""
+
+    if "mention_count" not in frame.columns:
+        return pl.DataFrame()
+    counts = (
+        frame.select(pl.col("mention_count").cast(pl.Int64).fill_null(0))
+        .group_by("mention_count")
+        .count()
+        .rename({"count": "posts"})
+        .sort("mention_count")
+    )
+    return counts
+
+
+def night_post_ratio(frame: pl.DataFrame) -> dict[str, float | int]:
+    """深夜投稿比率（0-5時）を返す。"""
+
+    if "hour" in frame.columns:
+        hours = frame.select(pl.col("hour").cast(pl.Int64)).to_series().to_list()
+    elif "created_at" in frame.columns:
+        hours = frame.select(pl.col("created_at").dt.hour()).to_series().to_list()
+    else:
+        return {"night": 0, "daytime": 0, "rate": 0.0}
+    night = sum(1 for h in hours if h is not None and 0 <= int(h) <= 5)
+    total = len(hours)
+    daytime = max(total - night, 0)
+    rate = round(night / total, 4) if total else 0.0
+    return {"night": night, "daytime": daytime, "rate": rate}

@@ -416,6 +416,54 @@ async def weekly_partial(request: Request, file_id: str) -> HTMLResponse:
     )
 
 
+@router.get("/partials/monthday_bias", response_class=HTMLResponse)
+async def monthday_bias_partial(request: Request, file_id: str) -> HTMLResponse:
+    """月内日・曜日×月内日の偏りを返す。"""
+
+    try:
+        session = _get_session(file_id)
+    except HTTPException:
+        return _render_error(request, "セッションが見つかりません", 404)
+
+    frame = _filtered_frame(session)
+    monthday = timeseries.monthday_counts(frame)
+    days, weekdays, matrix = timeseries.weekday_monthday_matrix(frame)
+    monthday_rows = monthday.to_dicts() if not monthday.is_empty() else []
+
+    monthday_plot = plotly_charts.plotly_bar(
+        monthday,
+        x="monthday",
+        y="posts",
+        title="月内日別投稿数",
+        x_title="日",
+        y_title="投稿数",
+        category_order="array",
+        category_array=monthday["monthday"].cast(pl.Utf8).to_list()
+        if not monthday.is_empty()
+        else [],
+        margin_bottom=80,
+    )
+    heatmap_plot = plotly_charts.plotly_heatmap(
+        days,
+        weekdays,
+        matrix,
+        title="曜日×月内日ヒートマップ",
+        x_title="日",
+        y_title="曜日",
+    )
+
+    return TEMPLATES.TemplateResponse(
+        "partials/monthday_bias.html",
+        {
+            "request": request,
+            "file_id": file_id,
+            "monthday_rows": monthday_rows,
+            "monthday_plot": json.dumps(monthday_plot, default=str),
+            "heatmap_plot": json.dumps(heatmap_plot, default=str),
+        },
+    )
+
+
 @router.get("/partials/domains", response_class=HTMLResponse)
 async def domains_partial(request: Request, file_id: str) -> HTMLResponse:
     """URLドメインのランキングと棒グラフを返す。"""
@@ -596,7 +644,9 @@ async def wordcloud_nv_partial(
 
 
 @router.get("/partials/tfidf", response_class=HTMLResponse)
-async def tfidf_partial(request: Request, file_id: str) -> HTMLResponse:
+async def tfidf_partial(
+    request: Request, file_id: str, period: str = "month"
+) -> HTMLResponse:
     """TF-IDFランキングを返す。"""
 
     try:
@@ -606,12 +656,13 @@ async def tfidf_partial(request: Request, file_id: str) -> HTMLResponse:
 
     frame = _filtered_frame(session)
     analyzer = _build_text_analyzer(session)
-    tfidf_df = analyzer.get_tfidf_ranking(frame, text_column="text", top_n=50)
+    period = "year" if period == "year" else "month"
+    tfidf_df = text_analysis.tfidf_by_period(frame, analyzer, period=period, top_n=20)
     rows = tfidf_df.to_dicts() if not tfidf_df.is_empty() else []
 
     return TEMPLATES.TemplateResponse(
         "partials/tfidf.html",
-        {"request": request, "file_id": file_id, "rows": rows},
+        {"request": request, "file_id": file_id, "rows": rows, "period": period},
     )
 
 
@@ -676,6 +727,80 @@ async def intervals_partial(
             "interval_plot": json.dumps(interval_plot, default=str),
             "session_plot": json.dumps(session_plot, default=str),
             "max_minutes": max_minutes,
+        },
+    )
+
+
+@router.get("/partials/newlines", response_class=HTMLResponse)
+async def newlines_partial(request: Request, file_id: str) -> HTMLResponse:
+    """改行数分布を返す。"""
+
+    try:
+        session = _get_session(file_id)
+    except HTTPException:
+        return _render_error(request, "セッションが見つかりません", 404)
+
+    frame = _filtered_frame(session)
+    df = statistics.newline_count_distribution(frame)
+    rows = df.to_dicts() if not df.is_empty() else []
+    plot_spec = plotly_charts.plotly_bar(
+        df.with_columns(pl.col("newlines").cast(pl.Utf8).alias("newline_label"))
+        if not df.is_empty()
+        else df,
+        x="newline_label",
+        y="posts",
+        title="改行数分布",
+        x_title="改行数",
+        y_title="投稿数",
+        category_order="array",
+        category_array=df["newlines"].cast(pl.Utf8).to_list() if not df.is_empty() else [],
+        margin_bottom=80,
+    )
+
+    return TEMPLATES.TemplateResponse(
+        "partials/newlines.html",
+        {
+            "request": request,
+            "file_id": file_id,
+            "rows": rows,
+            "plot_json": json.dumps(plot_spec, default=str),
+        },
+    )
+
+
+@router.get("/partials/emojis", response_class=HTMLResponse)
+async def emojis_partial(request: Request, file_id: str) -> HTMLResponse:
+    """絵文字数分布を返す。"""
+
+    try:
+        session = _get_session(file_id)
+    except HTTPException:
+        return _render_error(request, "セッションが見つかりません", 404)
+
+    frame = _filtered_frame(session)
+    df = statistics.emoji_count_distribution(frame)
+    rows = df.to_dicts() if not df.is_empty() else []
+    plot_spec = plotly_charts.plotly_bar(
+        df.with_columns(pl.col("emojis").cast(pl.Utf8).alias("emoji_label"))
+        if not df.is_empty()
+        else df,
+        x="emoji_label",
+        y="posts",
+        title="絵文字数分布",
+        x_title="絵文字数",
+        y_title="投稿数",
+        category_order="array",
+        category_array=df["emojis"].cast(pl.Utf8).to_list() if not df.is_empty() else [],
+        margin_bottom=80,
+    )
+
+    return TEMPLATES.TemplateResponse(
+        "partials/emojis.html",
+        {
+            "request": request,
+            "file_id": file_id,
+            "rows": rows,
+            "plot_json": json.dumps(plot_spec, default=str),
         },
     )
 
@@ -907,6 +1032,44 @@ async def mentions_partial(
             "rows": rows,
             "plot_json": json.dumps(plot_spec, default=str),
             "exclude_retweets": exclude_retweets,
+        },
+    )
+
+
+@router.get("/partials/mention_weekday_detail", response_class=HTMLResponse)
+async def mention_weekday_detail_partial(request: Request, file_id: str) -> HTMLResponse:
+    """上位メンション別の曜日分布を返す。"""
+
+    try:
+        session = _get_session(file_id)
+    except HTTPException:
+        return _render_error(request, "セッションが見つかりません", 404)
+
+    frame = _filtered_frame(session)
+    top_mentions = text_analysis.mention_ranking(frame, top_n=5)
+    mention_list = top_mentions["mention"].cast(pl.Utf8).to_list() if not top_mentions.is_empty() else []
+    mention_df = text_analysis.mention_weekday_counts(frame)
+    if mention_list and not mention_df.is_empty():
+        mention_df = mention_df.filter(pl.col("mention").is_in(mention_list))
+    mention_df = mention_df.with_columns(WEEKDAY_LABEL_EXPR) if not mention_df.is_empty() else mention_df
+    rows = mention_df.to_dicts() if not mention_df.is_empty() else []
+    plot_spec = plotly_charts.plotly_multi_line(
+        mention_df.rename({"mention": "series"}) if not mention_df.is_empty() else mention_df,
+        x="weekday_label",
+        y="occurrences",
+        series="series",
+        title="メンション別 曜日分布",
+        x_title="曜日",
+        y_title="回数",
+    )
+
+    return TEMPLATES.TemplateResponse(
+        "partials/mention_weekday_detail.html",
+        {
+            "request": request,
+            "file_id": file_id,
+            "rows": rows,
+            "plot_json": json.dumps(plot_spec, default=str),
         },
     )
 
@@ -1274,6 +1437,178 @@ async def clusters_partial(
     )
 
 
+@router.get("/partials/reply_ratio", response_class=HTMLResponse)
+async def reply_ratio_partial(request: Request, file_id: str) -> HTMLResponse:
+    """リプライ比率を返す。"""
+
+    try:
+        session = _get_session(file_id)
+    except HTTPException:
+        return _render_error(request, "セッションが見つかりません", 404)
+
+    frame = _filtered_frame(session)
+    stats = statistics.reply_ratio_stats(frame)
+    chart_df = pl.DataFrame(
+        {
+            "label": ["リプライ", "通常投稿"],
+            "posts": [stats["reply"], stats["non_reply"]],
+        }
+    )
+    plot_spec = plotly_charts.plotly_bar(
+        chart_df,
+        x="label",
+        y="posts",
+        title="リプライ比率",
+        x_title="種別",
+        y_title="投稿数",
+        category_order="array",
+        category_array=["リプライ", "通常投稿"],
+        margin_bottom=80,
+    )
+
+    return TEMPLATES.TemplateResponse(
+        "partials/reply_ratio.html",
+        {
+            "request": request,
+            "file_id": file_id,
+            "stats": stats,
+            "plot_json": json.dumps(plot_spec, default=str),
+        },
+    )
+
+
+@router.get("/partials/hashtag_counts", response_class=HTMLResponse)
+async def hashtag_counts_partial(request: Request, file_id: str) -> HTMLResponse:
+    """ハッシュタグ数分布を返す。"""
+
+    try:
+        session = _get_session(file_id)
+    except HTTPException:
+        return _render_error(request, "セッションが見つかりません", 404)
+
+    frame = _filtered_frame(session)
+    df = statistics.hashtag_count_distribution(frame)
+    rows = df.to_dicts() if not df.is_empty() else []
+    plot_spec = plotly_charts.plotly_bar(
+        df.with_columns(pl.col("hashtag_count").cast(pl.Utf8).alias("count_label"))
+        if not df.is_empty()
+        else df,
+        x="count_label",
+        y="posts",
+        title="ハッシュタグ数分布",
+        x_title="ハッシュタグ数",
+        y_title="投稿数",
+        category_order="array",
+        category_array=df["hashtag_count"].cast(pl.Utf8).to_list() if not df.is_empty() else [],
+        margin_bottom=80,
+    )
+
+    return TEMPLATES.TemplateResponse(
+        "partials/hashtag_counts.html",
+        {
+            "request": request,
+            "file_id": file_id,
+            "rows": rows,
+            "plot_json": json.dumps(plot_spec, default=str),
+        },
+    )
+
+
+@router.get("/partials/mention_counts", response_class=HTMLResponse)
+async def mention_counts_partial(request: Request, file_id: str) -> HTMLResponse:
+    """メンション数分布を返す。"""
+
+    try:
+        session = _get_session(file_id)
+    except HTTPException:
+        return _render_error(request, "セッションが見つかりません", 404)
+
+    frame = _filtered_frame(session)
+    df = statistics.mention_count_distribution(frame)
+    rows = df.to_dicts() if not df.is_empty() else []
+    plot_spec = plotly_charts.plotly_bar(
+        df.with_columns(pl.col("mention_count").cast(pl.Utf8).alias("count_label"))
+        if not df.is_empty()
+        else df,
+        x="count_label",
+        y="posts",
+        title="メンション数分布",
+        x_title="メンション数",
+        y_title="投稿数",
+        category_order="array",
+        category_array=df["mention_count"].cast(pl.Utf8).to_list() if not df.is_empty() else [],
+        margin_bottom=80,
+    )
+
+    return TEMPLATES.TemplateResponse(
+        "partials/mention_counts.html",
+        {
+            "request": request,
+            "file_id": file_id,
+            "rows": rows,
+            "plot_json": json.dumps(plot_spec, default=str),
+        },
+    )
+
+
+@router.get("/partials/night_ratio", response_class=HTMLResponse)
+async def night_ratio_partial(request: Request, file_id: str) -> HTMLResponse:
+    """深夜投稿比率を返す。"""
+
+    try:
+        session = _get_session(file_id)
+    except HTTPException:
+        return _render_error(request, "セッションが見つかりません", 404)
+
+    frame = _filtered_frame(session)
+    stats = statistics.night_post_ratio(frame)
+    chart_df = pl.DataFrame(
+        {
+            "label": ["深夜(0-5時)", "その他"],
+            "posts": [stats["night"], stats["daytime"]],
+        }
+    )
+    plot_spec = plotly_charts.plotly_bar(
+        chart_df,
+        x="label",
+        y="posts",
+        title="深夜投稿比率",
+        x_title="時間帯",
+        y_title="投稿数",
+        category_order="array",
+        category_array=["深夜(0-5時)", "その他"],
+        margin_bottom=80,
+    )
+
+    return TEMPLATES.TemplateResponse(
+        "partials/night_ratio.html",
+        {
+            "request": request,
+            "file_id": file_id,
+            "stats": stats,
+            "plot_json": json.dumps(plot_spec, default=str),
+        },
+    )
+
+
+@router.get("/partials/interval_stats", response_class=HTMLResponse)
+async def interval_stats_partial(request: Request, file_id: str) -> HTMLResponse:
+    """投稿間隔の要約統計を返す。"""
+
+    try:
+        session = _get_session(file_id)
+    except HTTPException:
+        return _render_error(request, "セッションが見つかりません", 404)
+
+    frame = _filtered_frame(session)
+    stats = statistics.posting_interval_summary(frame)
+
+    return TEMPLATES.TemplateResponse(
+        "partials/interval_stats.html",
+        {"request": request, "file_id": file_id, "stats": stats},
+    )
+
+
 @router.get("/partials/domain_years", response_class=HTMLResponse)
 async def domain_years_partial(request: Request, file_id: str) -> HTMLResponse:
     """ドメイン×年の推移を返す。"""
@@ -1347,6 +1682,80 @@ async def self_reference_partial(request: Request, file_id: str) -> HTMLResponse
     )
 
 
+@router.get("/partials/self_post_urls", response_class=HTMLResponse)
+async def self_post_urls_partial(request: Request, file_id: str) -> HTMLResponse:
+    """自分のツイートURL参照の比率を返す。"""
+
+    try:
+        session = _get_session(file_id)
+    except HTTPException:
+        return _render_error(request, "セッションが見つかりません", 404)
+
+    frame = _filtered_frame(session)
+    stats = link_analysis.self_post_url_stats(frame)
+    chart_df = pl.DataFrame(
+        {
+            "label": ["自分のツイート", "その他URL", "URLなし"],
+            "posts": [stats["self_post"], stats["other_url"], stats["no_url"]],
+        }
+    )
+    plot_spec = plotly_charts.plotly_bar(
+        chart_df,
+        x="label",
+        y="posts",
+        title="自分のツイートURL参照",
+        x_title="種別",
+        y_title="投稿数",
+        category_order="array",
+        category_array=["自分のツイート", "その他URL", "URLなし"],
+        margin_bottom=80,
+    )
+
+    return TEMPLATES.TemplateResponse(
+        "partials/self_post_urls.html",
+        {
+            "request": request,
+            "file_id": file_id,
+            "stats": stats,
+            "plot_json": json.dumps(plot_spec, default=str),
+        },
+    )
+
+
+@router.get("/partials/topic_trends", response_class=HTMLResponse)
+async def topic_trends_partial(request: Request, file_id: str) -> HTMLResponse:
+    """代表語の推移を返す。"""
+
+    try:
+        session = _get_session(file_id)
+    except HTTPException:
+        return _render_error(request, "セッションが見つかりません", 404)
+
+    frame = _filtered_frame(session)
+    analyzer = _build_text_analyzer(session)
+    trend_df = topic_analysis.topic_word_trend(frame, analyzer, top_n=5)
+    rows = trend_df.to_dicts() if not trend_df.is_empty() else []
+    plot_spec = plotly_charts.plotly_multi_line(
+        trend_df,
+        x="year_month",
+        y="posts",
+        series="word",
+        title="代表語の推移",
+        x_title="年月",
+        y_title="投稿数",
+    )
+
+    return TEMPLATES.TemplateResponse(
+        "partials/topic_trends.html",
+        {
+            "request": request,
+            "file_id": file_id,
+            "rows": rows,
+            "plot_json": json.dumps(plot_spec, default=str),
+        },
+    )
+
+
 @router.post("/options", response_class=HTMLResponse)
 async def update_options(
     request: Request,
@@ -1393,7 +1802,12 @@ def _df_to_csv_response(df: pl.DataFrame, filename: str) -> StreamingResponse:
 
 
 @router.get("/download/{kind}")
-async def download_csv(kind: str, file_id: str, term: Optional[str] = None) -> StreamingResponse:
+async def download_csv(
+    kind: str,
+    file_id: str,
+    term: Optional[str] = None,
+    period: Optional[str] = None,
+) -> StreamingResponse:
     """集計結果をCSVでダウンロードする。"""
 
     session = _get_session(file_id)
@@ -1432,6 +1846,15 @@ async def download_csv(kind: str, file_id: str, term: Optional[str] = None) -> S
     elif kind == "daily_calendar":
         df = timeseries.daily_counts_full(frame)
         fname = "daily_counts_full.csv"
+    elif kind == "monthday":
+        df = timeseries.monthday_counts(frame)
+        fname = "monthday_counts.csv"
+    elif kind == "weekday_monthday":
+        days, weekdays, matrix = timeseries.weekday_monthday_matrix(frame)
+        df = pl.DataFrame(
+            [{"weekday": wd, **{day: matrix[i][j] for j, day in enumerate(days)}} for i, wd in enumerate(weekdays)]
+        )
+        fname = "weekday_monthday_matrix.csv"
     elif kind == "domains":
         df = link_analysis.domain_ranking(frame, top_n=None)
         fname = "domain_ranking.csv"
@@ -1442,7 +1865,8 @@ async def download_csv(kind: str, file_id: str, term: Optional[str] = None) -> S
         fname = "word_ranking.csv"
     elif kind == "tfidf":
         analyzer = _build_text_analyzer(session)
-        df = analyzer.get_tfidf_ranking(frame, text_column="text", top_n=None)
+        tfidf_period = "year" if period == "year" else "month"
+        df = text_analysis.tfidf_by_period(frame, analyzer, period=tfidf_period, top_n=50)
         fname = "tfidf_ranking.csv"
     elif kind == "hashtags":
         df = text_analysis.hashtag_ranking(frame, top_n=None)
@@ -1476,6 +1900,42 @@ async def download_csv(kind: str, file_id: str, term: Optional[str] = None) -> S
             }
         )
         fname = "url_presence_rate.csv"
+    elif kind == "newlines":
+        df = statistics.newline_count_distribution(frame)
+        fname = "newline_distribution.csv"
+    elif kind == "emojis":
+        df = statistics.emoji_count_distribution(frame)
+        fname = "emoji_distribution.csv"
+    elif kind == "reply_ratio":
+        stats = statistics.reply_ratio_stats(frame)
+        df = pl.DataFrame(
+            {
+                "reply": [stats["reply"]],
+                "non_reply": [stats["non_reply"]],
+                "rate": [stats["rate"]],
+            }
+        )
+        fname = "reply_ratio.csv"
+    elif kind == "hashtag_counts":
+        df = statistics.hashtag_count_distribution(frame)
+        fname = "hashtag_count_distribution.csv"
+    elif kind == "mention_counts":
+        df = statistics.mention_count_distribution(frame)
+        fname = "mention_count_distribution.csv"
+    elif kind == "night_ratio":
+        stats = statistics.night_post_ratio(frame)
+        df = pl.DataFrame(
+            {
+                "night": [stats["night"]],
+                "daytime": [stats["daytime"]],
+                "rate": [stats["rate"]],
+            }
+        )
+        fname = "night_post_ratio.csv"
+    elif kind == "interval_stats":
+        stats = statistics.posting_interval_summary(frame)
+        df = pl.DataFrame([stats])
+        fname = "posting_interval_summary.csv"
     elif kind == "long_texts":
         df = statistics.long_text_ranking(frame, top_n=100)
         fname = "long_text_ranking.csv"
@@ -1493,6 +1953,9 @@ async def download_csv(kind: str, file_id: str, term: Optional[str] = None) -> S
         if not df.is_empty():
             df = df.group_by("weekday").agg(pl.col("occurrences").sum().alias("occurrences"))
         fname = "mention_weekday_counts.csv"
+    elif kind == "mention_weekday_detail":
+        df = text_analysis.mention_weekday_counts(frame)
+        fname = "mention_weekday_detail.csv"
     elif kind == "hashtag_years":
         df = text_analysis.hashtag_year_trend(frame, top_n=20)
         fname = "hashtag_year_trend.csv"
@@ -1521,6 +1984,17 @@ async def download_csv(kind: str, file_id: str, term: Optional[str] = None) -> S
             }
         )
         fname = "self_reference_rate.csv"
+    elif kind == "self_post_urls":
+        stats = link_analysis.self_post_url_stats(frame)
+        df = pl.DataFrame(
+            {
+                "self_post": [stats["self_post"]],
+                "other_url": [stats["other_url"]],
+                "no_url": [stats["no_url"]],
+                "rate": [stats["rate"]],
+            }
+        )
+        fname = "self_post_url_rate.csv"
     elif kind == "word_cooccurrence":
         analyzer = _build_text_analyzer(session)
         df = text_analysis.word_cooccurrence_for_term(frame, analyzer, term or "", top_n=200)
@@ -1550,6 +2024,10 @@ async def download_csv(kind: str, file_id: str, term: Optional[str] = None) -> S
         analyzer = _build_text_analyzer(session)
         df = topic_analysis.monthly_tfidf_top(frame, analyzer, top_n=5)
         fname = "monthly_topics.csv"
+    elif kind == "topic_trends":
+        analyzer = _build_text_analyzer(session)
+        df = topic_analysis.topic_word_trend(frame, analyzer, top_n=5)
+        fname = "topic_word_trends.csv"
     elif kind == "clusters":
         analyzer = _build_text_analyzer(session)
         summary_df, _ = topic_analysis.kmeans_cluster_summary(

@@ -8,7 +8,7 @@ import polars as pl
 
 from .text_analysis import TextAnalyzer
 
-__all__ = ["monthly_tfidf_top", "kmeans_cluster_summary"]
+__all__ = ["monthly_tfidf_top", "kmeans_cluster_summary", "topic_word_trend"]
 
 
 def monthly_tfidf_top(
@@ -173,3 +173,30 @@ def kmeans_cluster_summary(
     summary_df = pl.DataFrame(summary_rows)
     counts_df = summary_df.select(["cluster_id", "size"])
     return summary_df, counts_df
+
+
+def topic_word_trend(
+    frame: pl.DataFrame, analyzer: TextAnalyzer, top_n: int = 5
+) -> pl.DataFrame:
+    """代表語の月次推移（投稿数）を返す。"""
+
+    if "text" not in frame.columns:
+        return pl.DataFrame()
+    tfidf_top = analyzer.get_tfidf_ranking(frame, text_column="text", top_n=top_n)
+    if tfidf_top.is_empty():
+        return pl.DataFrame()
+    from . import text_analysis  # 循環参照回避のため遅延import
+
+    frames: List[pl.DataFrame] = []
+    for term in tfidf_top["word"].to_list():
+        term_counts = text_analysis.word_monthly_counts(frame, str(term), analyzer)
+        if not term_counts.is_empty():
+            frames.append(
+                term_counts.select(
+                    pl.col("year_month"),
+                    pl.col("posts"),
+                ).with_columns(pl.lit(str(term)).alias("word"))
+            )
+    if not frames:
+        return pl.DataFrame()
+    return pl.concat(frames, how="vertical").sort(["year_month", "word"])

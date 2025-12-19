@@ -6,6 +6,8 @@ __all__ = [
     "daily_counts",
     "daily_counts_full",
     "weekly_counts",
+    "monthday_counts",
+    "weekday_monthday_matrix",
     "weekday_hour_counts",
     "weekday_hour_matrix",
     "daily_calendar_matrix",
@@ -47,6 +49,17 @@ def weekly_counts(frame: pl.DataFrame) -> pl.DataFrame:
         .rename({"count": "posts"})
         .sort("iso_week")
     )
+
+
+def monthday_counts(frame: pl.DataFrame) -> pl.DataFrame:
+    """月内日（1-31）の投稿数を返す。"""
+
+    if "date" not in frame.columns:
+        return pl.DataFrame()
+    df = frame.with_columns(pl.col("date").dt.day().alias("monthday"))
+    base = pl.DataFrame({"monthday": list(range(1, 32))})
+    counts = df.group_by("monthday").count().rename({"count": "posts"})
+    return base.join(counts, on="monthday", how="left").fill_null(0).sort("monthday")
 
 
 def weekday_hour_counts(frame: pl.DataFrame) -> pl.DataFrame:
@@ -100,6 +113,47 @@ def weekday_hour_matrix(frame: pl.DataFrame) -> tuple[list[str], list[str], list
             z_matrix.append([int(row.select(str(h)).item() if str(h) in row.columns else 0) for h in hours])
 
     return hours_labels, [weekday_labels[wd] for wd in weekdays], z_matrix
+
+
+def weekday_monthday_matrix(frame: pl.DataFrame) -> tuple[list[str], list[str], list[list[int]]]:
+    """曜日×月内日の投稿数行列を返す。"""
+
+    if "date" not in frame.columns:
+        return [], [], []
+    df = frame.with_columns(
+        (pl.col("date").dt.strftime("%u").cast(pl.Int8) - 1).alias("weekday"),
+        pl.col("date").dt.day().alias("monthday"),
+    )
+    counts = (
+        df.group_by(["weekday", "monthday"])
+        .count()
+        .rename({"count": "posts"})
+        .sort(["weekday", "monthday"])
+    )
+    weekdays = list(range(7))
+    monthdays = list(range(1, 32))
+    weekday_labels = ["\u6708", "\u706b", "\u6c34", "\u6728", "\u91d1", "\u571f", "\u65e5"]
+
+    pivoted = counts.pivot(
+        index="weekday", columns="monthday", values="posts", aggregate_function="sum"
+    ).sort("weekday")
+    rename_map = {col: str(col) for col in pivoted.columns if col != "weekday"}
+    pivoted = pivoted.rename(rename_map)
+
+    for day in monthdays:
+        if str(day) not in pivoted.columns:
+            pivoted = pivoted.with_columns(pl.lit(0).alias(str(day)))
+
+    z_matrix: list[list[int]] = []
+    for wd in weekdays:
+        row = pivoted.filter(pl.col("weekday") == wd)
+        if row.is_empty():
+            z_matrix.append([0 for _ in monthdays])
+        else:
+            z_matrix.append(
+                [int(row.select(str(day)).item() if str(day) in row.columns else 0) for day in monthdays]
+            )
+    return [str(day) for day in monthdays], weekday_labels, z_matrix
 
 
 def daily_calendar_matrix(frame: pl.DataFrame) -> tuple[list[str], list[str], list[list[int]]]:

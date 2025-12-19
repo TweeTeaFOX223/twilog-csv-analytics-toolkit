@@ -14,6 +14,9 @@
             <button class="nav-btn" hx-get="/partials/summary?file_id={{ file_id }}" hx-target="#panel-content" hx-swap="innerHTML">平均</button>
             <button class="nav-btn" hx-get="/partials/time?file_id={{ file_id }}" hx-target="#panel-content" hx-swap="innerHTML">時間帯/曜日</button>
             <button class="nav-btn" hx-get="/partials/weekly?file_id={{ file_id }}" hx-target="#panel-content" hx-swap="innerHTML">週別/カレンダー</button>
+            <button class="nav-btn" hx-get="/partials/monthday_bias?file_id={{ file_id }}" hx-target="#panel-content" hx-swap="innerHTML">月内日偏り</button>
+            <button class="nav-btn" hx-get="/partials/night_ratio?file_id={{ file_id }}" hx-target="#panel-content" hx-swap="innerHTML">深夜比率</button>
+            <button class="nav-btn" hx-get="/partials/reply_ratio?file_id={{ file_id }}" hx-target="#panel-content" hx-swap="innerHTML">リプライ比率</button>
             <button class="nav-btn" hx-get="/partials/domains?file_id={{ file_id }}" hx-target="#panel-content" hx-swap="innerHTML">ドメイン</button>
             <button class="nav-btn" hx-get="/partials/tlds?file_id={{ file_id }}" hx-target="#panel-content" hx-swap="innerHTML">TLD分布</button>
             <button class="nav-btn" hx-get="/partials/word_ranking?file_id={{ file_id }}" hx-target="#panel-content" hx-swap="innerHTML">単語ランキング</button>
@@ -23,9 +26,13 @@
             <button class="nav-btn" hx-get="/partials/hashtags?file_id={{ file_id }}" hx-target="#panel-content" hx-swap="innerHTML">ハッシュタグ</button>
             <button class="nav-btn" hx-get="/partials/hashtag_cooccurrence?file_id={{ file_id }}" hx-target="#panel-content" hx-swap="innerHTML">ハッシュタグ共起</button>
             <button class="nav-btn" hx-get="/partials/hashtag_years?file_id={{ file_id }}" hx-target="#panel-content" hx-swap="innerHTML">ハッシュタグ年次</button>
+            <button class="nav-btn" hx-get="/partials/hashtag_counts?file_id={{ file_id }}" hx-target="#panel-content" hx-swap="innerHTML">タグ数分布</button>
             <button class="nav-btn" hx-get="/partials/lengths?file_id={{ file_id }}" hx-target="#panel-content" hx-swap="innerHTML">文字数分布</button>
             <button class="nav-btn" hx-get="/partials/long_texts?file_id={{ file_id }}" hx-target="#panel-content" hx-swap="innerHTML">長文ランキング</button>
+            <button class="nav-btn" hx-get="/partials/newlines?file_id={{ file_id }}" hx-target="#panel-content" hx-swap="innerHTML">改行数</button>
+            <button class="nav-btn" hx-get="/partials/emojis?file_id={{ file_id }}" hx-target="#panel-content" hx-swap="innerHTML">絵文字数</button>
             <button class="nav-btn" hx-get="/partials/intervals?file_id={{ file_id }}" hx-target="#panel-content" hx-swap="innerHTML">投稿間隔</button>
+            <button class="nav-btn" hx-get="/partials/interval_stats?file_id={{ file_id }}" hx-target="#panel-content" hx-swap="innerHTML">間隔要約</button>
             <button class="nav-btn" hx-get="/partials/urls?file_id={{ file_id }}" hx-target="#panel-content" hx-swap="innerHTML">URL分布</button>
             <button class="nav-btn" hx-get="/partials/path_depth?file_id={{ file_id }}" hx-target="#panel-content" hx-swap="innerHTML">パス深さ</button>
             <button class="nav-btn" hx-get="/partials/keyword_categories?file_id={{ file_id }}" hx-target="#panel-content" hx-swap="innerHTML">カテゴリ辞書</button>
@@ -38,8 +45,12 @@
             <button class="nav-btn" hx-get="/partials/domain_years?file_id={{ file_id }}" hx-target="#panel-content" hx-swap="innerHTML">ドメイン年次</button>
             <button class="nav-btn" hx-get="/partials/domain_month?file_id={{ file_id }}" hx-target="#panel-content" hx-swap="innerHTML">ドメイン月次</button>
             <button class="nav-btn" hx-get="/partials/self_reference?file_id={{ file_id }}" hx-target="#panel-content" hx-swap="innerHTML">自己参照URL</button>
+            <button class="nav-btn" hx-get="/partials/self_post_urls?file_id={{ file_id }}" hx-target="#panel-content" hx-swap="innerHTML">自分ツイURL</button>
             <button class="nav-btn" hx-get="/partials/mentions?file_id={{ file_id }}" hx-target="#panel-content" hx-swap="innerHTML">メンション</button>
             <button class="nav-btn" hx-get="/partials/mention_weekday?file_id={{ file_id }}" hx-target="#panel-content" hx-swap="innerHTML">メンション曜日</button>
+            <button class="nav-btn" hx-get="/partials/mention_weekday_detail?file_id={{ file_id }}" hx-target="#panel-content" hx-swap="innerHTML">メンション曜日詳細</button>
+            <button class="nav-btn" hx-get="/partials/mention_counts?file_id={{ file_id }}" hx-target="#panel-content" hx-swap="innerHTML">メンション数</button>
+            <button class="nav-btn" hx-get="/partials/topic_trends?file_id={{ file_id }}" hx-target="#panel-content" hx-swap="innerHTML">代表語推移</button>
         </div>
         <div id="panel-content" hx-get="/partials/summary?file_id={{ file_id }}" hx-trigger="load" hx-swap="innerHTML">
             <div class="loading">読込中...</div>

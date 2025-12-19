@@ -1,0 +1,21 @@
+<div class="card">
+    <div class="card-header-row">
+        <h2>深夜投稿比率</h2>
+        <a class="btn-secondary" href="/download/night_ratio?file_id={{ file_id }}">CSVダウンロード</a>
+    </div>
+    <div class="summary-grid">
+        <div class="stat-box">
+            <div class="stat-label">深夜(0-5時)</div>
+            <div class="stat-value">{{ stats.night }}</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-label">その他</div>
+            <div class="stat-value">{{ stats.daytime }}</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-label">比率</div>
+            <div class="stat-value">{{ (stats.rate * 100) | round(2) }}%</div>
+        </div>
+    </div>
+    <div id="night-ratio-{{ file_id }}" class="plot" data-plot-json='{{ plot_json | e }}'></div>
+</div>

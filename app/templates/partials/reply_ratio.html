@@ -1,0 +1,21 @@
+<div class="card">
+    <div class="card-header-row">
+        <h2>リプライ比率</h2>
+        <a class="btn-secondary" href="/download/reply_ratio?file_id={{ file_id }}">CSVダウンロード</a>
+    </div>
+    <div class="summary-grid">
+        <div class="stat-box">
+            <div class="stat-label">リプライ</div>
+            <div class="stat-value">{{ stats.reply }}</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-label">通常投稿</div>
+            <div class="stat-value">{{ stats.non_reply }}</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-label">比率</div>
+            <div class="stat-value">{{ (stats.rate * 100) | round(2) }}%</div>
+        </div>
+    </div>
+    <div id="reply-ratio-{{ file_id }}" class="plot" data-plot-json='{{ plot_json | e }}'></div>
+</div>

@@ -1,14 +1,34 @@
 <div class="card">
     <div class="card-header-row">
         <h2>TF-IDFランキング</h2>
-        <a class="btn-secondary" href="/download/tfidf?file_id={{ file_id }}">CSVダウンロード</a>
+        <a class="btn-secondary" href="/download/tfidf?file_id={{ file_id }}&period={{ period }}">CSVダウンロード</a>
     </div>
+    <form
+        class="form"
+        hx-get="/partials/tfidf"
+        hx-target="#panel-content"
+        hx-swap="innerHTML"
+    >
+        <input type="hidden" name="file_id" value="{{ file_id }}">
+        <label class="form-label">文書単位</label>
+        <select name="period">
+            <option value="month" {% if period == 'month' %}selected{% endif %}>月</option>
+            <option value="year" {% if period == 'year' %}selected{% endif %}>年</option>
+        </select>
+        <button type="submit" class="btn-primary">更新</button>
+    </form>
     {% if rows %}
     <table class="table">
-        <thead><tr><th>単語</th><th>TF</th><th>DF</th><th>スコア</th></tr></thead>
+        <thead><tr><th>期間</th><th>単語</th><th>TF</th><th>DF</th><th>スコア</th></tr></thead>
         <tbody>
             {% for row in rows %}
-            <tr><td>{{ row.word }}</td><td>{{ row.tf }}</td><td>{{ row.df }}</td><td>{{ row.score }}</td></tr>
+            <tr>
+                <td>{{ row.year_month or row.year }}</td>
+                <td>{{ row.word }}</td>
+                <td>{{ row.tf }}</td>
+                <td>{{ row.df }}</td>
+                <td>{{ row.score }}</td>
+            </tr>
             {% endfor %}
         </tbody>
     </table>

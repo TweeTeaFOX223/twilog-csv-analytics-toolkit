@@ -1,0 +1,22 @@
+<div class="card">
+    <div class="card-header-row">
+        <h2>メンション別曜日分布</h2>
+        <a class="btn-secondary" href="/download/mention_weekday_detail?file_id={{ file_id }}">CSVダウンロード</a>
+    </div>
+    {% if rows %}
+    <div id="mention-weekday-detail-{{ file_id }}" class="plot" data-plot-json='{{ plot_json | e }}'></div>
+    <details>
+        <summary>表を開く</summary>
+        <table class="table">
+            <thead><tr><th>曜日</th><th>メンション</th><th>回数</th></tr></thead>
+            <tbody>
+                {% for row in rows %}
+                <tr><td>{{ row.weekday_label }}</td><td>@{{ row.mention }}</td><td>{{ row.occurrences }}</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </details>
+    {% else %}
+    <p>データがありません。</p>
+    {% endif %}
+</div>

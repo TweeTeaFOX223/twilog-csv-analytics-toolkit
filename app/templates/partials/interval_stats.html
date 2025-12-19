@@ -1,0 +1,28 @@
+<div class="card">
+    <div class="card-header-row">
+        <h2>投稿間隔の要約</h2>
+        <a class="btn-secondary" href="/download/interval_stats?file_id={{ file_id }}">CSVダウンロード</a>
+    </div>
+    <div class="summary-grid">
+        <div class="stat-box">
+            <div class="stat-label">件数</div>
+            <div class="stat-value">{{ stats.count }}</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-label">最小(分)</div>
+            <div class="stat-value">{{ stats.min }}</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-label">中央値(分)</div>
+            <div class="stat-value">{{ stats.median }}</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-label">平均(分)</div>
+            <div class="stat-value">{{ stats.mean }}</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-label">90%点(分)</div>
+            <div class="stat-value">{{ stats.p90 }}</div>
+        </div>
+    </div>
+</div>
