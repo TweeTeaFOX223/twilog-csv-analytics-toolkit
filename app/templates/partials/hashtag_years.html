@@ -1,0 +1,22 @@
+<div class="card">
+    <div class="card-header-row">
+        <h2>ハッシュタグ年次推移</h2>
+        <a class="btn-secondary" href="/download/hashtag_years?file_id={{ file_id }}">CSVダウンロード</a>
+    </div>
+    {% if rows %}
+    <div id="hashtag-years-{{ file_id }}" class="plot" data-plot-json='{{ plot_json | e }}'></div>
+    <details>
+        <summary>表を開く</summary>
+        <table class="table">
+            <thead><tr><th>年</th><th>ハッシュタグ</th><th>投稿数</th></tr></thead>
+            <tbody>
+                {% for row in rows %}
+                <tr><td>{{ row.year }}</td><td>#{{ row.hashtag }}</td><td>{{ row.occurrences }}</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </details>
+    {% else %}
+    <p>データがありません。</p>
+    {% endif %}
+</div>

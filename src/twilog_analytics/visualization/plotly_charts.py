@@ -231,9 +231,10 @@ def plotly_network(
         return {"data": [], "layout": {"title": title}}
     positions: Dict[str, tuple[float, float]] = {}
     step = 2 * math.pi / max(len(nodes), 1)
+    radius = 1.2
     for idx, node in enumerate(nodes):
         angle = idx * step
-        positions[node] = (math.cos(angle), math.sin(angle))
+        positions[node] = (math.cos(angle) * radius, math.sin(angle) * radius)
 
     edge_x: list[float] = []
     edge_y: list[float] = []
@@ -282,5 +283,6 @@ def plotly_network(
             "showlegend": False,
             "xaxis": {"visible": False},
             "yaxis": {"visible": False},
+            "margin": {"l": 40, "r": 40, "t": 60, "b": 40},
         },
     }

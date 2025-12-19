@@ -6,6 +6,8 @@ __all__ = [
     "domain_ranking",
     "tld_distribution",
     "domain_year_trend",
+    "domain_month_trend",
+    "path_depth_distribution",
     "self_reference_stats",
 ]
 
@@ -73,6 +75,82 @@ def domain_year_trend(frame: pl.DataFrame, top_n: int = 5) -> pl.DataFrame:
         .count()
         .rename({"count": "occurrences", "domains": "domain"})
         .sort(["year", "occurrences"], descending=[False, True])
+    )
+
+
+def domain_month_trend(frame: pl.DataFrame, domain: str) -> pl.DataFrame:
+    """指定ドメインの月次推移を返す。"""
+
+    if not domain or "domains" not in frame.columns:
+        return pl.DataFrame()
+    if "year" in frame.columns and "month" in frame.columns:
+        df = frame
+    elif "created_at" in frame.columns:
+        df = frame.with_columns(
+            pl.col("created_at").dt.year().alias("year"),
+            pl.col("created_at").dt.month().alias("month"),
+        )
+    else:
+        return pl.DataFrame()
+    exploded = df.explode("domains").drop_nulls("domains")
+    if exploded.is_empty():
+        return pl.DataFrame()
+    filtered = exploded.filter(pl.col("domains").cast(pl.Utf8) == domain)
+    if filtered.is_empty():
+        return pl.DataFrame()
+    return (
+        filtered.group_by(["year", "month"])
+        .count()
+        .rename({"count": "occurrences"})
+        .sort(["year", "month"])
+        .with_columns(
+            (
+                pl.col("year").cast(pl.Utf8)
+                + "-"
+                + pl.col("month").cast(pl.Utf8).str.zfill(2)
+            ).alias("year_month")
+        )
+    )
+
+
+def path_depth_distribution(frame: pl.DataFrame, exclude_self_ref: bool = True) -> pl.DataFrame:
+    """URLのパス深さ分布を返す。"""
+
+    if "urls" not in frame.columns:
+        return pl.DataFrame()
+    exploded = frame.explode("urls").drop_nulls("urls")
+    if exploded.is_empty():
+        return pl.DataFrame()
+    cleaned = exploded.with_columns(
+        pl.col("urls")
+        .cast(pl.Utf8)
+        .str.replace(r"^https?://", "")
+        .str.split("#")
+        .list.get(0)
+        .str.split("?")
+        .list.get(0)
+        .alias("url_trimmed")
+    ).with_columns(
+        pl.col("url_trimmed").str.split("/").alias("url_parts")
+    )
+    if exclude_self_ref:
+        cleaned = cleaned.with_columns(
+            pl.col("url_parts").list.get(0).alias("domain")
+        ).filter(
+            ~pl.col("domain").cast(pl.Utf8).str.to_lowercase().str.ends_with("twitter.com")
+        ).filter(
+            ~pl.col("domain").cast(pl.Utf8).str.to_lowercase().str.ends_with("x.com")
+        )
+    cleaned = cleaned.with_columns(
+        (pl.col("url_parts").list.len() - 1).alias("depth")
+    ).filter(pl.col("depth") >= 0)
+    if cleaned.is_empty():
+        return pl.DataFrame()
+    return (
+        cleaned.group_by("depth")
+        .count()
+        .rename({"count": "occurrences"})
+        .sort("depth")
     )
 
 

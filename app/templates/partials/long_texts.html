@@ -1,0 +1,28 @@
+<div class="card">
+    <div class="card-header-row">
+        <h2>長文ランキング</h2>
+        <a class="btn-secondary" href="/download/long_texts?file_id={{ file_id }}">CSVダウンロード</a>
+    </div>
+    {% if rows %}
+    <table class="table">
+        <thead><tr><th>文字数</th><th>本文</th><th>リンク</th></tr></thead>
+        <tbody>
+            {% for row in rows %}
+            <tr>
+                <td>{{ row.text_length }}</td>
+                <td>{{ row.text }}</td>
+                <td>
+                    {% if row.status_url %}
+                    <a class="btn-secondary" href="{{ row.status_url }}" target="_blank" rel="noopener">開く</a>
+                    {% else %}
+                    -
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>データがありません。</p>
+    {% endif %}
+</div>

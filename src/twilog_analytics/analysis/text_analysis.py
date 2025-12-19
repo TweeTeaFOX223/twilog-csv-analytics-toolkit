@@ -12,6 +12,11 @@ __all__ = [
     "TextAnalyzer",
     "hashtag_ranking",
     "hashtag_cooccurrence",
+    "hashtag_year_trend",
+    "mention_ranking",
+    "mention_weekday_counts",
+    "word_cooccurrence_for_term",
+    "word_cooccurrence_pairs",
     "parse_keyword_dictionary",
     "keyword_category_counts",
     "word_monthly_counts",
@@ -196,6 +201,134 @@ def hashtag_cooccurrence(
     if top_n:
         rows = rows[:top_n]
     return pl.DataFrame(rows)
+
+
+def hashtag_year_trend(frame: pl.DataFrame, top_n: int = 10) -> pl.DataFrame:
+    """ハッシュタグ×年の投稿数推移を返す。"""
+
+    if "hashtag_list" not in frame.columns or "year" not in frame.columns:
+        return pl.DataFrame()
+    exploded = frame.explode("hashtag_list").drop_nulls("hashtag_list")
+    if exploded.is_empty():
+        return pl.DataFrame()
+    cleaned = exploded.with_columns(
+        pl.col("hashtag_list").cast(pl.Utf8).str.strip_chars().alias("hashtag")
+    ).filter(pl.col("hashtag") != "")
+    if cleaned.is_empty():
+        return pl.DataFrame()
+    top_tags = (
+        cleaned.group_by("hashtag")
+        .count()
+        .rename({"count": "total"})
+        .sort("total", descending=True)
+        .head(top_n)
+        .select("hashtag")
+    )
+    if top_tags.is_empty():
+        return pl.DataFrame()
+    filtered = cleaned.join(top_tags, on="hashtag", how="inner")
+    return (
+        filtered.group_by(["year", "hashtag"])
+        .count()
+        .rename({"count": "occurrences"})
+        .sort(["year", "occurrences"], descending=[False, True])
+    )
+
+
+def mention_ranking(frame: pl.DataFrame, top_n: int = 20) -> pl.DataFrame:
+    """メンション先のランキングを返す。"""
+
+    if "mention_list" not in frame.columns:
+        return pl.DataFrame()
+    exploded = frame.explode("mention_list").drop_nulls("mention_list")
+    if exploded.is_empty():
+        return pl.DataFrame()
+    cleaned = exploded.with_columns(
+        pl.col("mention_list").cast(pl.Utf8).str.strip_chars().alias("mention")
+    ).filter(pl.col("mention") != "")
+    if cleaned.is_empty():
+        return pl.DataFrame()
+    return (
+        cleaned.group_by("mention")
+        .count()
+        .rename({"count": "occurrences"})
+        .sort("occurrences", descending=True)
+        .head(top_n)
+    )
+
+
+def mention_weekday_counts(frame: pl.DataFrame) -> pl.DataFrame:
+    """メンション×曜日の投稿数を返す。"""
+
+    if "mention_list" not in frame.columns or "weekday" not in frame.columns:
+        return pl.DataFrame()
+    exploded = frame.explode("mention_list").drop_nulls("mention_list")
+    if exploded.is_empty():
+        return pl.DataFrame()
+    cleaned = exploded.with_columns(
+        pl.col("mention_list").cast(pl.Utf8).str.strip_chars().alias("mention")
+    ).filter(pl.col("mention") != "")
+    if cleaned.is_empty():
+        return pl.DataFrame()
+    return (
+        cleaned.group_by(["weekday", "mention"])
+        .count()
+        .rename({"count": "occurrences"})
+        .sort(["weekday", "occurrences"], descending=[False, True])
+    )
+
+
+def word_cooccurrence_for_term(
+    frame: pl.DataFrame, analyzer: "TextAnalyzer", term: str, top_n: int = 30
+) -> pl.DataFrame:
+    """指定語と同投稿内に出る語のランキングを返す。"""
+
+    if not term or "text" not in frame.columns:
+        return pl.DataFrame()
+    rows = frame.select(pl.col("text").cast(pl.Utf8).fill_null("")).to_series().to_list()
+    counts: Dict[str, int] = {}
+    for text in rows:
+        tokens = analyzer.extract_words_from_text(text)
+        if term not in tokens:
+            continue
+        for token in set(tokens):
+            if token == term:
+                continue
+            counts[token] = counts.get(token, 0) + 1
+    if not counts:
+        return pl.DataFrame()
+    items = sorted(counts.items(), key=lambda x: x[1], reverse=True)[:top_n]
+    return pl.DataFrame({"word": [w for w, _ in items], "count": [c for _, c in items]})
+
+
+def word_cooccurrence_pairs(
+    frame: pl.DataFrame, analyzer: "TextAnalyzer", top_n: int = 50, min_count: int = 2
+) -> pl.DataFrame:
+    """語の共起ペアを返す。"""
+
+    if "text" not in frame.columns:
+        return pl.DataFrame()
+    pairs: Dict[Tuple[str, str], int] = {}
+    rows = frame.select(pl.col("text").cast(pl.Utf8).fill_null("")).to_series().to_list()
+    for text in rows:
+        tokens = analyzer.extract_words_from_text(text)
+        unique = sorted(set(tokens))
+        if len(unique) < 2:
+            continue
+        for word_a, word_b in combinations(unique, 2):
+            key = (word_a, word_b)
+            pairs[key] = pairs.get(key, 0) + 1
+    if not pairs:
+        return pl.DataFrame()
+    rows = [
+        {"word_a": word_a, "word_b": word_b, "count": count}
+        for (word_a, word_b), count in pairs.items()
+        if count >= min_count
+    ]
+    if not rows:
+        return pl.DataFrame()
+    rows.sort(key=lambda r: r["count"], reverse=True)
+    return pl.DataFrame(rows[:top_n])
 
 
 def parse_keyword_dictionary(raw: Optional[str]) -> Dict[str, List[str]]:

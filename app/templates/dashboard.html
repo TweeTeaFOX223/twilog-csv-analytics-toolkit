@@ -18,16 +18,28 @@
             <button class="nav-btn" hx-get="/partials/tlds?file_id={{ file_id }}" hx-target="#panel-content" hx-swap="innerHTML">TLD分布</button>
             <button class="nav-btn" hx-get="/partials/word_ranking?file_id={{ file_id }}" hx-target="#panel-content" hx-swap="innerHTML">単語ランキング</button>
             <button class="nav-btn" hx-get="/partials/wordcloud?file_id={{ file_id }}" hx-target="#panel-content" hx-swap="innerHTML">ワードクラウド</button>
+            <button class="nav-btn" hx-get="/partials/wordcloud_nv?file_id={{ file_id }}" hx-target="#panel-content" hx-swap="innerHTML">ワードクラウドN+V</button>
             <button class="nav-btn" hx-get="/partials/tfidf?file_id={{ file_id }}" hx-target="#panel-content" hx-swap="innerHTML">TF-IDF</button>
             <button class="nav-btn" hx-get="/partials/hashtags?file_id={{ file_id }}" hx-target="#panel-content" hx-swap="innerHTML">ハッシュタグ</button>
             <button class="nav-btn" hx-get="/partials/hashtag_cooccurrence?file_id={{ file_id }}" hx-target="#panel-content" hx-swap="innerHTML">ハッシュタグ共起</button>
+            <button class="nav-btn" hx-get="/partials/hashtag_years?file_id={{ file_id }}" hx-target="#panel-content" hx-swap="innerHTML">ハッシュタグ年次</button>
             <button class="nav-btn" hx-get="/partials/lengths?file_id={{ file_id }}" hx-target="#panel-content" hx-swap="innerHTML">文字数分布</button>
+            <button class="nav-btn" hx-get="/partials/long_texts?file_id={{ file_id }}" hx-target="#panel-content" hx-swap="innerHTML">長文ランキング</button>
             <button class="nav-btn" hx-get="/partials/intervals?file_id={{ file_id }}" hx-target="#panel-content" hx-swap="innerHTML">投稿間隔</button>
             <button class="nav-btn" hx-get="/partials/urls?file_id={{ file_id }}" hx-target="#panel-content" hx-swap="innerHTML">URL分布</button>
+            <button class="nav-btn" hx-get="/partials/path_depth?file_id={{ file_id }}" hx-target="#panel-content" hx-swap="innerHTML">パス深さ</button>
             <button class="nav-btn" hx-get="/partials/keyword_categories?file_id={{ file_id }}" hx-target="#panel-content" hx-swap="innerHTML">カテゴリ辞書</button>
             <button class="nav-btn" hx-get="/partials/word_trend?file_id={{ file_id }}" hx-target="#panel-content" hx-swap="innerHTML">単語推移</button>
+            <button class="nav-btn" hx-get="/partials/word_cooccurrence?file_id={{ file_id }}" hx-target="#panel-content" hx-swap="innerHTML">共起語</button>
+            <button class="nav-btn" hx-get="/partials/word_network?file_id={{ file_id }}" hx-target="#panel-content" hx-swap="innerHTML">共起ネット</button>
+            <button class="nav-btn" hx-get="/partials/sudachi_compare?file_id={{ file_id }}" hx-target="#panel-content" hx-swap="innerHTML">Sudachi比較</button>
+            <button class="nav-btn" hx-get="/partials/topics_monthly?file_id={{ file_id }}" hx-target="#panel-content" hx-swap="innerHTML">月代表語</button>
+            <button class="nav-btn" hx-get="/partials/clusters?file_id={{ file_id }}" hx-target="#panel-content" hx-swap="innerHTML">クラスタ</button>
             <button class="nav-btn" hx-get="/partials/domain_years?file_id={{ file_id }}" hx-target="#panel-content" hx-swap="innerHTML">ドメイン年次</button>
+            <button class="nav-btn" hx-get="/partials/domain_month?file_id={{ file_id }}" hx-target="#panel-content" hx-swap="innerHTML">ドメイン月次</button>
             <button class="nav-btn" hx-get="/partials/self_reference?file_id={{ file_id }}" hx-target="#panel-content" hx-swap="innerHTML">自己参照URL</button>
+            <button class="nav-btn" hx-get="/partials/mentions?file_id={{ file_id }}" hx-target="#panel-content" hx-swap="innerHTML">メンション</button>
+            <button class="nav-btn" hx-get="/partials/mention_weekday?file_id={{ file_id }}" hx-target="#panel-content" hx-swap="innerHTML">メンション曜日</button>
         </div>
         <div id="panel-content" hx-get="/partials/summary?file_id={{ file_id }}" hx-trigger="load" hx-swap="innerHTML">
             <div class="loading">読込中...</div>

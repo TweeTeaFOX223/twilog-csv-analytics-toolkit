@@ -1,0 +1,30 @@
+<div class="card">
+    <div class="card-header-row">
+        <h2>投稿クラスタ</h2>
+        <a class="btn-secondary" href="/download/clusters?file_id={{ file_id }}&term={{ clusters }}">CSVダウンロード</a>
+    </div>
+    <form
+        class="form"
+        hx-get="/partials/clusters"
+        hx-target="#panel-content"
+        hx-swap="innerHTML"
+    >
+        <input type="hidden" name="file_id" value="{{ file_id }}">
+        <label class="form-label">クラスタ数（2〜8）</label>
+        <input type="number" name="clusters" min="2" max="8" value="{{ clusters }}">
+        <button type="submit" class="btn-primary">更新</button>
+    </form>
+    {% if rows %}
+    <div id="cluster-chart-{{ file_id }}" class="plot" data-plot-json='{{ plot_json | e }}'></div>
+    <table class="table">
+        <thead><tr><th>クラスタ</th><th>投稿数</th><th>代表語</th></tr></thead>
+        <tbody>
+            {% for row in rows %}
+            <tr><td>{{ row.cluster_id }}</td><td>{{ row.size }}</td><td>{{ row.top_terms }}</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>データがありません。</p>
+    {% endif %}
+</div>

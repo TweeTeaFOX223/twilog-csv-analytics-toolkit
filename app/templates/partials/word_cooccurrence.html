@@ -1,0 +1,33 @@
+<div class="card">
+    <div class="card-header-row">
+        <h2>共起語ランキング</h2>
+        <a class="btn-secondary" href="/download/word_cooccurrence?file_id={{ file_id }}&term={{ term | urlencode }}">CSVダウンロード</a>
+    </div>
+    <form
+        class="form"
+        hx-get="/partials/word_cooccurrence"
+        hx-target="#panel-content"
+        hx-swap="innerHTML"
+    >
+        <input type="hidden" name="file_id" value="{{ file_id }}">
+        <label class="form-label">対象語</label>
+        <input type="text" name="term" value="{{ term }}" placeholder="例: Python">
+        <button type="submit" class="btn-primary">更新</button>
+    </form>
+    {% if rows %}
+    <div id="cooccurrence-chart-{{ file_id }}" class="plot" data-plot-json='{{ plot_json | e }}'></div>
+    <details>
+        <summary>表を開く</summary>
+        <table class="table">
+            <thead><tr><th>語</th><th>回数</th></tr></thead>
+            <tbody>
+                {% for row in rows %}
+                <tr><td>{{ row.word }}</td><td>{{ row.count }}</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </details>
+    {% else %}
+    <p>対象語を入力して更新してください。</p>
+    {% endif %}
+</div>

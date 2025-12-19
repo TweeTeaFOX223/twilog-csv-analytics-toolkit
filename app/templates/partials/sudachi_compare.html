@@ -1,0 +1,41 @@
+<div class="card">
+    <div class="card-header-row">
+        <h2>Sudachiモード比較</h2>
+        <a class="btn-secondary" href="/download/sudachi_compare?file_id={{ file_id }}">CSVダウンロード</a>
+    </div>
+    <div class="summary-grid">
+        <div>
+            <h3>A</h3>
+            <table class="table">
+                <thead><tr><th>単語</th><th>回数</th></tr></thead>
+                <tbody>
+                    {% for row in rows_a %}
+                    <tr><td>{{ row.word }}</td><td>{{ row.count }}</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div>
+            <h3>B</h3>
+            <table class="table">
+                <thead><tr><th>単語</th><th>回数</th></tr></thead>
+                <tbody>
+                    {% for row in rows_b %}
+                    <tr><td>{{ row.word }}</td><td>{{ row.count }}</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div>
+            <h3>C</h3>
+            <table class="table">
+                <thead><tr><th>単語</th><th>回数</th></tr></thead>
+                <tbody>
+                    {% for row in rows_c %}
+                    <tr><td>{{ row.word }}</td><td>{{ row.count }}</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

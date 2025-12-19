@@ -16,7 +16,13 @@ from fastapi.responses import HTMLResponse, RedirectResponse, StreamingResponse
 from fastapi.templating import Jinja2Templates
 
 from twilog_analytics.data import loader, preprocessor
-from twilog_analytics.analysis import statistics, timeseries, link_analysis, text_analysis
+from twilog_analytics.analysis import (
+    statistics,
+    timeseries,
+    link_analysis,
+    text_analysis,
+    topic_analysis,
+)
 from twilog_analytics.visualization import plotly_charts, wordcloud_viz
 
 WEEKDAY_LABELS = {0: "月", 1: "火", 2: "水", 3: "木", 4: "金", 5: "土", 6: "日"}
@@ -559,6 +565,24 @@ async def wordcloud_partial(request: Request, file_id: str, max_words: int = 150
     )
 
 
+@router.get("/partials/wordcloud_nv", response_class=HTMLResponse)
+async def wordcloud_nv_partial(
+    request: Request, file_id: str, max_words: int = 150
+) -> HTMLResponse:
+    """名詞+動詞ワードクラウドを返す。"""
+
+    try:
+        _get_session(file_id)
+    except HTTPException:
+        return _render_error(request, "セッションが見つかりません", 404)
+
+    max_words = _clamp_max_words(max_words)
+    return TEMPLATES.TemplateResponse(
+        "partials/wordcloud_nv.html",
+        {"request": request, "file_id": file_id, "max_words": max_words},
+    )
+
+
 @router.get("/partials/tfidf", response_class=HTMLResponse)
 async def tfidf_partial(request: Request, file_id: str) -> HTMLResponse:
     """TF-IDFランキングを返す。"""
@@ -686,6 +710,29 @@ async def urls_partial(request: Request, file_id: str) -> HTMLResponse:
     )
 
 
+@router.get("/partials/long_texts", response_class=HTMLResponse)
+async def long_texts_partial(request: Request, file_id: str) -> HTMLResponse:
+    """長文ランキングを返す。"""
+
+    try:
+        session = _get_session(file_id)
+    except HTTPException:
+        return _render_error(request, "セッションが見つかりません", 404)
+
+    frame = _filtered_frame(session)
+    ranking = statistics.long_text_ranking(frame, top_n=30)
+    rows = ranking.to_dicts() if not ranking.is_empty() else []
+
+    return TEMPLATES.TemplateResponse(
+        "partials/long_texts.html",
+        {
+            "request": request,
+            "file_id": file_id,
+            "rows": rows,
+        },
+    )
+
+
 @router.get("/partials/lengths", response_class=HTMLResponse)
 async def lengths_partial(request: Request, file_id: str) -> HTMLResponse:
     """文字数分布を返す。"""
@@ -721,6 +768,204 @@ async def lengths_partial(request: Request, file_id: str) -> HTMLResponse:
             "file_id": file_id,
             "lengths": length_rows,
             "plot_json": plot_json,
+        },
+    )
+
+
+@router.get("/partials/path_depth", response_class=HTMLResponse)
+async def path_depth_partial(request: Request, file_id: str) -> HTMLResponse:
+    """URLパス深さの分布を返す。"""
+
+    try:
+        session = _get_session(file_id)
+    except HTTPException:
+        return _render_error(request, "セッションが見つかりません", 404)
+
+    frame = _filtered_frame(session)
+    depth_df = link_analysis.path_depth_distribution(frame)
+    rows = depth_df.to_dicts() if not depth_df.is_empty() else []
+    plot_spec = plotly_charts.plotly_bar(
+        depth_df.with_columns(pl.col("depth").cast(pl.Utf8).alias("depth_label"))
+        if not depth_df.is_empty()
+        else depth_df,
+        x="depth_label",
+        y="occurrences",
+        title="URLパス深さ分布",
+        x_title="パス深さ",
+        y_title="件数",
+        category_order="array",
+        category_array=depth_df["depth"].cast(pl.Utf8).to_list() if not depth_df.is_empty() else [],
+        margin_bottom=80,
+    )
+
+    return TEMPLATES.TemplateResponse(
+        "partials/path_depth.html",
+        {
+            "request": request,
+            "file_id": file_id,
+            "rows": rows,
+            "plot_json": json.dumps(plot_spec, default=str),
+        },
+    )
+
+
+@router.get("/partials/domain_month", response_class=HTMLResponse)
+async def domain_month_partial(
+    request: Request, file_id: str, domain: Optional[str] = None
+) -> HTMLResponse:
+    """ドメイン×月の推移を返す。"""
+
+    try:
+        session = _get_session(file_id)
+    except HTTPException:
+        return _render_error(request, "セッションが見つかりません", 404)
+
+    frame = _filtered_frame(session)
+    top_domains = link_analysis.domain_ranking(frame, top_n=10)
+    domain_choices = top_domains["domain"].cast(pl.Utf8).to_list() if not top_domains.is_empty() else []
+    selected = domain or (domain_choices[0] if domain_choices else "")
+    trend = link_analysis.domain_month_trend(frame, selected) if selected else pl.DataFrame()
+    rows = trend.to_dicts() if not trend.is_empty() else []
+    plot_spec = plotly_charts.plotly_line(
+        trend,
+        x="year_month",
+        y="occurrences",
+        title="ドメイン月次推移",
+        x_title="年月",
+        y_title="投稿数",
+        legend_bottom=True,
+        trace_name=selected or "投稿数",
+        margin_bottom=90,
+        xaxis_title_standoff=30,
+    )
+
+    return TEMPLATES.TemplateResponse(
+        "partials/domain_month.html",
+        {
+            "request": request,
+            "file_id": file_id,
+            "domains": domain_choices,
+            "selected": selected,
+            "rows": rows,
+            "plot_json": json.dumps(plot_spec, default=str),
+        },
+    )
+
+
+@router.get("/partials/mentions", response_class=HTMLResponse)
+async def mentions_partial(request: Request, file_id: str) -> HTMLResponse:
+    """メンションランキングを返す。"""
+
+    try:
+        session = _get_session(file_id)
+    except HTTPException:
+        return _render_error(request, "セッションが見つかりません", 404)
+
+    frame = _filtered_frame(session)
+    mentions = text_analysis.mention_ranking(frame, top_n=30)
+    rows = mentions.to_dicts() if not mentions.is_empty() else []
+    plot_frame = (
+        mentions.with_columns(pl.concat_str([pl.lit("@"), pl.col("mention")]).alias("label"))
+        if not mentions.is_empty()
+        else mentions
+    )
+    plot_spec = plotly_charts.plotly_bar(
+        plot_frame,
+        x="occurrences",
+        y="label",
+        title="メンション上位",
+        x_title="回数",
+        y_title="メンション",
+        orientation="h",
+        category_order="array",
+        category_array=plot_frame["label"].cast(pl.Utf8).to_list()
+        if not plot_frame.is_empty()
+        else [],
+        reverse_category=True,
+        margin_left=200,
+    )
+
+    return TEMPLATES.TemplateResponse(
+        "partials/mentions.html",
+        {
+            "request": request,
+            "file_id": file_id,
+            "rows": rows,
+            "plot_json": json.dumps(plot_spec, default=str),
+        },
+    )
+
+
+@router.get("/partials/mention_weekday", response_class=HTMLResponse)
+async def mention_weekday_partial(request: Request, file_id: str) -> HTMLResponse:
+    """メンション×曜日の分布を返す。"""
+
+    try:
+        session = _get_session(file_id)
+    except HTTPException:
+        return _render_error(request, "セッションが見つかりません", 404)
+
+    frame = _filtered_frame(session)
+    mention_df = text_analysis.mention_weekday_counts(frame)
+    totals = (
+        mention_df.group_by("weekday").agg(pl.col("occurrences").sum().alias("occurrences"))
+        if not mention_df.is_empty()
+        else mention_df
+    )
+    totals = totals.with_columns(WEEKDAY_LABEL_EXPR) if not totals.is_empty() else totals
+    rows = totals.to_dicts() if not totals.is_empty() else []
+    plot_spec = plotly_charts.plotly_bar(
+        totals,
+        x="weekday_label",
+        y="occurrences",
+        title="曜日別メンション数",
+        x_title="曜日",
+        y_title="回数",
+        category_order="array",
+        category_array=WEEKDAY_ORDER_LABELS,
+        margin_bottom=80,
+    )
+
+    return TEMPLATES.TemplateResponse(
+        "partials/mention_weekday.html",
+        {
+            "request": request,
+            "file_id": file_id,
+            "rows": rows,
+            "plot_json": json.dumps(plot_spec, default=str),
+        },
+    )
+
+
+@router.get("/partials/hashtag_years", response_class=HTMLResponse)
+async def hashtag_years_partial(request: Request, file_id: str) -> HTMLResponse:
+    """ハッシュタグ×年の推移を返す。"""
+
+    try:
+        session = _get_session(file_id)
+    except HTTPException:
+        return _render_error(request, "セッションが見つかりません", 404)
+
+    frame = _filtered_frame(session)
+    trend = text_analysis.hashtag_year_trend(frame, top_n=8)
+    rows = trend.to_dicts() if not trend.is_empty() else []
+    plot_spec = plotly_charts.plotly_multi_line(
+        trend,
+        x="year",
+        y="occurrences",
+        series="hashtag",
+        title="ハッシュタグ年次推移",
+        x_title="年",
+        y_title="投稿数",
+    )
+
+    return TEMPLATES.TemplateResponse(
+        "partials/hashtag_years.html",
+        {
+            "request": request,
+            "file_id": file_id,
+            "rows": rows,
+            "plot_json": json.dumps(plot_spec, default=str),
         },
     )
 
@@ -834,6 +1079,181 @@ async def word_trend_partial(
             "file_id": file_id,
             "term": term_value,
             "rows": rows,
+            "plot_json": json.dumps(plot_spec, default=str),
+        },
+    )
+
+
+@router.get("/partials/word_cooccurrence", response_class=HTMLResponse)
+async def word_cooccurrence_partial(
+    request: Request, file_id: str, term: str | None = None
+) -> HTMLResponse:
+    """指定語の共起語ランキングを返す。"""
+
+    try:
+        session = _get_session(file_id)
+    except HTTPException:
+        return _render_error(request, "セッションが見つかりません", 404)
+
+    frame = _filtered_frame(session)
+    analyzer = _build_text_analyzer(session)
+    term_value = term.strip() if term else ""
+    cooccur = (
+        text_analysis.word_cooccurrence_for_term(frame, analyzer, term_value, top_n=30)
+        if term_value
+        else pl.DataFrame()
+    )
+    rows = cooccur.to_dicts() if not cooccur.is_empty() else []
+    plot_spec = plotly_charts.plotly_bar(
+        cooccur,
+        x="word",
+        y="count",
+        title="共起語ランキング",
+        x_title="語",
+        y_title="回数",
+        category_order="array",
+        category_array=cooccur["word"].cast(pl.Utf8).to_list() if not cooccur.is_empty() else [],
+        margin_bottom=90,
+        xaxis_title_standoff=20,
+    )
+
+    return TEMPLATES.TemplateResponse(
+        "partials/word_cooccurrence.html",
+        {
+            "request": request,
+            "file_id": file_id,
+            "term": term_value,
+            "rows": rows,
+            "plot_json": json.dumps(plot_spec, default=str),
+        },
+    )
+
+
+@router.get("/partials/word_network", response_class=HTMLResponse)
+async def word_network_partial(request: Request, file_id: str) -> HTMLResponse:
+    """語の共起ネットワークを返す。"""
+
+    try:
+        session = _get_session(file_id)
+    except HTTPException:
+        return _render_error(request, "セッションが見つかりません", 404)
+
+    frame = _filtered_frame(session)
+    analyzer = _build_text_analyzer(session)
+    pairs = text_analysis.word_cooccurrence_pairs(frame, analyzer, top_n=40, min_count=2)
+    rows = pairs.to_dicts() if not pairs.is_empty() else []
+    nodes = sorted({row["word_a"] for row in rows} | {row["word_b"] for row in rows})
+    edges = [
+        {"source": row["word_a"], "target": row["word_b"], "weight": row["count"]}
+        for row in rows
+    ]
+    network_plot = plotly_charts.plotly_network(nodes, edges, title="語の共起ネットワーク")
+
+    return TEMPLATES.TemplateResponse(
+        "partials/word_network.html",
+        {
+            "request": request,
+            "file_id": file_id,
+            "rows": rows,
+            "plot_json": json.dumps(network_plot, default=str),
+        },
+    )
+
+
+@router.get("/partials/sudachi_compare", response_class=HTMLResponse)
+async def sudachi_compare_partial(request: Request, file_id: str) -> HTMLResponse:
+    """Sudachi分割モード比較を返す。"""
+
+    try:
+        session = _get_session(file_id)
+    except HTTPException:
+        return _render_error(request, "セッションが見つかりません", 404)
+
+    frame = _filtered_frame(session)
+    stopwords = _parse_stopwords((session.options or {}).get("stopwords"))
+    pos_filter = (session.options or {}).get("pos_filter")
+
+    analyzer_a = text_analysis.TextAnalyzer(mode="A", pos_filter=pos_filter, stopwords=stopwords)
+    analyzer_b = text_analysis.TextAnalyzer(mode="B", pos_filter=pos_filter, stopwords=stopwords)
+    analyzer_c = text_analysis.TextAnalyzer(mode="C", pos_filter=pos_filter, stopwords=stopwords)
+
+    freq_a = analyzer_a.get_top_words(analyzer_a.get_word_frequency(frame), top_n=20).to_dicts()
+    freq_b = analyzer_b.get_top_words(analyzer_b.get_word_frequency(frame), top_n=20).to_dicts()
+    freq_c = analyzer_c.get_top_words(analyzer_c.get_word_frequency(frame), top_n=20).to_dicts()
+
+    return TEMPLATES.TemplateResponse(
+        "partials/sudachi_compare.html",
+        {
+            "request": request,
+            "file_id": file_id,
+            "rows_a": freq_a,
+            "rows_b": freq_b,
+            "rows_c": freq_c,
+        },
+    )
+
+
+@router.get("/partials/topics_monthly", response_class=HTMLResponse)
+async def topics_monthly_partial(request: Request, file_id: str) -> HTMLResponse:
+    """月ごとの代表語を返す。"""
+
+    try:
+        session = _get_session(file_id)
+    except HTTPException:
+        return _render_error(request, "セッションが見つかりません", 404)
+
+    frame = _filtered_frame(session)
+    analyzer = _build_text_analyzer(session)
+    topics = topic_analysis.monthly_tfidf_top(frame, analyzer, top_n=5)
+    rows = topics.to_dicts() if not topics.is_empty() else []
+
+    return TEMPLATES.TemplateResponse(
+        "partials/topics_monthly.html",
+        {"request": request, "file_id": file_id, "rows": rows},
+    )
+
+
+@router.get("/partials/clusters", response_class=HTMLResponse)
+async def clusters_partial(
+    request: Request, file_id: str, clusters: int = 4
+) -> HTMLResponse:
+    """クラスタリングの要約を返す。"""
+
+    try:
+        session = _get_session(file_id)
+    except HTTPException:
+        return _render_error(request, "セッションが見つかりません", 404)
+
+    frame = _filtered_frame(session)
+    analyzer = _build_text_analyzer(session)
+    clusters = max(2, min(clusters, 8))
+    summary_df, counts_df = topic_analysis.kmeans_cluster_summary(
+        frame, analyzer, k=clusters, max_features=200, max_iter=12
+    )
+    rows = summary_df.to_dicts() if not summary_df.is_empty() else []
+    plot_spec = plotly_charts.plotly_bar(
+        counts_df.with_columns(pl.col("cluster_id").cast(pl.Utf8).alias("cluster_label"))
+        if not counts_df.is_empty()
+        else counts_df,
+        x="cluster_label",
+        y="size",
+        title="クラスタ規模",
+        x_title="クラスタ",
+        y_title="投稿数",
+        category_order="array",
+        category_array=counts_df["cluster_id"].cast(pl.Utf8).to_list()
+        if not counts_df.is_empty()
+        else [],
+        margin_bottom=80,
+    )
+
+    return TEMPLATES.TemplateResponse(
+        "partials/clusters.html",
+        {
+            "request": request,
+            "file_id": file_id,
+            "rows": rows,
+            "clusters": clusters,
             "plot_json": json.dumps(plot_spec, default=str),
         },
     )
@@ -1041,6 +1461,26 @@ async def download_csv(kind: str, file_id: str, term: Optional[str] = None) -> S
             }
         )
         fname = "url_presence_rate.csv"
+    elif kind == "long_texts":
+        df = statistics.long_text_ranking(frame, top_n=100)
+        fname = "long_text_ranking.csv"
+    elif kind == "path_depth":
+        df = link_analysis.path_depth_distribution(frame)
+        fname = "url_path_depth.csv"
+    elif kind == "domain_month":
+        df = link_analysis.domain_month_trend(frame, term or "")
+        fname = "domain_month_trend.csv"
+    elif kind == "mentions":
+        df = text_analysis.mention_ranking(frame, top_n=200)
+        fname = "mention_ranking.csv"
+    elif kind == "mention_weekday":
+        df = text_analysis.mention_weekday_counts(frame)
+        if not df.is_empty():
+            df = df.group_by("weekday").agg(pl.col("occurrences").sum().alias("occurrences"))
+        fname = "mention_weekday_counts.csv"
+    elif kind == "hashtag_years":
+        df = text_analysis.hashtag_year_trend(frame, top_n=20)
+        fname = "hashtag_year_trend.csv"
     elif kind == "hashtag_pairs":
         df = text_analysis.hashtag_cooccurrence(frame, top_n=200, min_count=2)
         fname = "hashtag_cooccurrence.csv"
@@ -1066,6 +1506,42 @@ async def download_csv(kind: str, file_id: str, term: Optional[str] = None) -> S
             }
         )
         fname = "self_reference_rate.csv"
+    elif kind == "word_cooccurrence":
+        analyzer = _build_text_analyzer(session)
+        df = text_analysis.word_cooccurrence_for_term(frame, analyzer, term or "", top_n=200)
+        fname = "word_cooccurrence.csv"
+    elif kind == "word_network":
+        analyzer = _build_text_analyzer(session)
+        df = text_analysis.word_cooccurrence_pairs(frame, analyzer, top_n=200, min_count=2)
+        fname = "word_cooccurrence_pairs.csv"
+    elif kind == "sudachi_compare":
+        stopwords = _parse_stopwords((session.options or {}).get("stopwords"))
+        pos_filter = (session.options or {}).get("pos_filter")
+        analyzer_a = text_analysis.TextAnalyzer(mode="A", pos_filter=pos_filter, stopwords=stopwords)
+        analyzer_b = text_analysis.TextAnalyzer(mode="B", pos_filter=pos_filter, stopwords=stopwords)
+        analyzer_c = text_analysis.TextAnalyzer(mode="C", pos_filter=pos_filter, stopwords=stopwords)
+        top_a = analyzer_a.get_top_words(analyzer_a.get_word_frequency(frame), top_n=50).with_columns(
+            pl.lit("A").alias("mode")
+        )
+        top_b = analyzer_b.get_top_words(analyzer_b.get_word_frequency(frame), top_n=50).with_columns(
+            pl.lit("B").alias("mode")
+        )
+        top_c = analyzer_c.get_top_words(analyzer_c.get_word_frequency(frame), top_n=50).with_columns(
+            pl.lit("C").alias("mode")
+        )
+        df = pl.concat([top_a, top_b, top_c], how="vertical")
+        fname = "sudachi_compare.csv"
+    elif kind == "topics_monthly":
+        analyzer = _build_text_analyzer(session)
+        df = topic_analysis.monthly_tfidf_top(frame, analyzer, top_n=5)
+        fname = "monthly_topics.csv"
+    elif kind == "clusters":
+        analyzer = _build_text_analyzer(session)
+        summary_df, _ = topic_analysis.kmeans_cluster_summary(
+            frame, analyzer, k=max(2, min(int(term or 4), 8)), max_features=200, max_iter=12
+        )
+        df = summary_df
+        fname = "cluster_summary.csv"
     else:
         raise HTTPException(status_code=400, detail="unknown download kind")
 
@@ -1076,12 +1552,14 @@ async def download_csv(kind: str, file_id: str, term: Optional[str] = None) -> S
 
 
 @router.get("/wordcloud")
-async def wordcloud_image(file_id: str, max_words: int = 150) -> StreamingResponse:
+async def wordcloud_image(
+    file_id: str, max_words: int = 150, pos_filter: Optional[str] = "\u540d\u8a5e"
+) -> StreamingResponse:
     """名詞ワードクラウド画像を返す。"""
 
     session = _get_session(file_id)
     frame = _filtered_frame(session)
-    analyzer = _build_text_analyzer(session, pos_filter_override="\u540d\u8a5e")
+    analyzer = _build_text_analyzer(session, pos_filter_override=pos_filter)
     word_freq = analyzer.get_word_frequency(frame, text_column="text")
 
     generator = wordcloud_viz.WordCloudGenerator()

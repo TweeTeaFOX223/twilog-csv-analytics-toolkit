@@ -13,6 +13,7 @@ __all__ = [
     "average_monthly_counts",
     "average_weekday_counts",
     "text_length_distribution",
+    "long_text_ranking",
     "posting_interval_distribution",
     "session_length_distribution",
     "url_presence_stats",
@@ -176,6 +177,24 @@ def text_length_distribution(frame: pl.DataFrame, bin_size: int = 20) -> pl.Data
             [pl.col("bin_start").cast(pl.Utf8), pl.lit("-"), pl.col("bin_end").cast(pl.Utf8)]
         ).alias("bin_label")
     )
+
+
+def long_text_ranking(frame: pl.DataFrame, top_n: int = 20) -> pl.DataFrame:
+    """文字数が長い投稿のランキングを返す。"""
+
+    if "text" not in frame.columns:
+        return pl.DataFrame()
+    df = frame.with_columns(
+        pl.col("text").cast(pl.Utf8).fill_null("").alias("text"),
+        pl.col("text_length").cast(pl.Int64).alias("text_length")
+        if "text_length" in frame.columns
+        else pl.col("text").str.len_chars().alias("text_length"),
+    )
+    candidates = ["tweet_id", "created_at", "text_length", "text", "status_url"]
+    columns = [col for col in candidates if col in df.columns]
+    if not columns:
+        columns = ["text_length", "text"]
+    return df.select(columns).sort("text_length", descending=True).head(top_n)
 
 
 def posting_interval_distribution(

@@ -1,0 +1,37 @@
+<div class="card">
+    <div class="card-header-row">
+        <h2>ドメイン月次推移</h2>
+        <a class="btn-secondary" href="/download/domain_month?file_id={{ file_id }}&term={{ selected | urlencode }}">CSVダウンロード</a>
+    </div>
+    <form
+        class="form"
+        hx-get="/partials/domain_month"
+        hx-target="#panel-content"
+        hx-swap="innerHTML"
+    >
+        <input type="hidden" name="file_id" value="{{ file_id }}">
+        <label class="form-label">対象ドメイン</label>
+        <select name="domain">
+            {% for domain in domains %}
+            <option value="{{ domain }}" {% if domain == selected %}selected{% endif %}>{{ domain }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit" class="btn-primary">更新</button>
+    </form>
+    {% if rows %}
+    <div id="domain-month-{{ file_id }}" class="plot" data-plot-json='{{ plot_json | e }}'></div>
+    <details>
+        <summary>表を開く</summary>
+        <table class="table">
+            <thead><tr><th>年月</th><th>投稿数</th></tr></thead>
+            <tbody>
+                {% for row in rows %}
+                <tr><td>{{ row.year_month }}</td><td>{{ row.occurrences }}</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </details>
+    {% else %}
+    <p>データがありません。</p>
+    {% endif %}
+</div>
