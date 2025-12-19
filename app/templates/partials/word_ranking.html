@@ -1,0 +1,18 @@
+<div class="card">
+    <div class="card-header-row">
+        <h2>単語ランキング</h2>
+        <a class="btn-secondary" href="/download/word_freq?file_id={{ file_id }}">CSVダウンロード</a>
+    </div>
+    {% if rows %}
+    <table class="table">
+        <thead><tr><th>単語</th><th>回数</th></tr></thead>
+        <tbody>
+            {% for row in rows %}
+            <tr><td>{{ row.word }}</td><td>{{ row.count }}</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>データがありません。</p>
+    {% endif %}
+</div>

@@ -1,44 +1,89 @@
-﻿<div class="card">
-    <h2>概要</h2>
+<div class="card">
+    <h2>平均</h2>
     <div class="summary-grid">
         <div class="stat-box">
-            <div class="stat-label">総投稿数</div>
-            <div class="stat-value">{{ counts.total }}</div>
+            <div class="stat-label">1日平均</div>
+            <div class="stat-value">{{ counts.per_day }}</div>
         </div>
         <div class="stat-box">
-            <div class="stat-label">1日平均</div>
-            <div class="stat-value">{{ counts.avg_per_day }}</div>
+            <div class="stat-label">1週間平均</div>
+            <div class="stat-value">{{ counts.per_week }}</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-label">1ヶ月平均</div>
+            <div class="stat-value">{{ counts.per_month }}</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-label">1年平均</div>
+            <div class="stat-value">{{ counts.per_year }}</div>
         </div>
     </div>
 </div>
 
 <div class="card">
-    <h3>年別投稿数</h3>
+    <div class="card-header-row">
+        <h3>年別平均投稿数</h3>
+        <a class="btn-secondary" href="/download/avg_yearly?file_id={{ file_id }}">CSVダウンロード</a>
+    </div>
     {% if yearly %}
-    <table class="table">
-        <thead><tr><th>年</th><th>投稿数</th></tr></thead>
-        <tbody>
-            {% for row in yearly %}
-            <tr><td>{{ row.year }}</td><td>{{ row.posts }}</td></tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <div class="plot" data-plot-json='{{ yearly_plot | e }}'></div>
+    <details>
+        <summary>表を開く</summary>
+        <table class="table">
+            <thead><tr><th>年</th><th>平均投稿数</th></tr></thead>
+            <tbody>
+                {% for row in yearly %}
+                <tr><td>{{ row.year }}</td><td>{{ row.avg_posts }}</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </details>
     {% else %}
     <p>データがありません。</p>
     {% endif %}
 </div>
 
 <div class="card">
-    <h3>月別投稿数</h3>
+    <div class="card-header-row">
+        <h3>月別平均投稿数</h3>
+        <a class="btn-secondary" href="/download/avg_monthly?file_id={{ file_id }}">CSVダウンロード</a>
+    </div>
     {% if monthly %}
-    <table class="table">
-        <thead><tr><th>年</th><th>月</th><th>投稿数</th></tr></thead>
-        <tbody>
-            {% for row in monthly %}
-            <tr><td>{{ row.year }}</td><td>{{ row.month }}</td><td>{{ row.posts }}</td></tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <div class="plot" data-plot-json='{{ monthly_plot | e }}'></div>
+    <details>
+        <summary>表を開く</summary>
+        <table class="table">
+            <thead><tr><th>年月</th><th>平均投稿数</th></tr></thead>
+            <tbody>
+                {% for row in monthly %}
+                <tr><td>{{ row.year_month_label }}</td><td>{{ row.avg_posts }}</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </details>
+    {% else %}
+    <p>データがありません。</p>
+    {% endif %}
+</div>
+
+<div class="card">
+    <div class="card-header-row">
+        <h3>曜日別平均投稿数</h3>
+        <a class="btn-secondary" href="/download/avg_weekday?file_id={{ file_id }}">CSVダウンロード</a>
+    </div>
+    {% if weekday %}
+    <div class="plot" data-plot-json='{{ weekday_plot | e }}'></div>
+    <details>
+        <summary>表を開く</summary>
+        <table class="table">
+            <thead><tr><th>曜日</th><th>平均投稿数</th></tr></thead>
+            <tbody>
+                {% for row in weekday %}
+                <tr><td>{{ row.weekday_label }}</td><td>{{ row.avg_posts }}</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </details>
     {% else %}
     <p>データがありません。</p>
     {% endif %}

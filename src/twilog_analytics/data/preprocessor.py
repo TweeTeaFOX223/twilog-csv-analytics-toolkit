@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 from typing import Sequence
 
@@ -26,11 +26,13 @@ def add_derived_columns(frame: pl.DataFrame) -> pl.DataFrame:
     # テキストを欠損なしの文字列に統一
     df = frame.with_columns(pl.col("text").cast(pl.Utf8).fill_null(""))
     if "created_at" in df.columns:
+        # Normalize weekday to Monday=0..Sunday=6 using strftime("%u") (1-7) minus 1
+        weekday_expr = pl.col("created_at").dt.strftime("%u").cast(pl.Int8) - 1
         df = df.with_columns(
             pl.col("created_at").dt.date().alias("date"),
             pl.col("created_at").dt.year().alias("year"),
             pl.col("created_at").dt.month().alias("month"),
-            pl.col("created_at").dt.weekday().alias("weekday"),
+            weekday_expr.alias("weekday"),
             pl.col("created_at").dt.hour().alias("hour"),
         )
 

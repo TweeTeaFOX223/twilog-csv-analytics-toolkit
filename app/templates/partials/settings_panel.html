@@ -1,4 +1,4 @@
-﻿<div class="card">
+<div class="card">
     <h2>設定</h2>
     <form class="form" hx-post="/options" hx-target="#options-status" hx-swap="innerHTML">
         <input type="hidden" name="file_id" value="{{ file_id }}">
@@ -6,7 +6,7 @@
         <label class="form-label">対象年</label>
         <div class="radio-row">
             <label><input type="radio" name="years_mode" value="all" {% if options.years_mode == 'all' %}checked{% endif %}> すべて</label>
-            <label><input type="radio" name="years_mode" value="selected" {% if options.years_mode == 'selected' %}checked{% endif %}> 年を指定</label>
+            <label><input type="radio" name="years_mode" value="selected" {% if options.years_mode == 'selected' %}checked{% endif %}> 年を選択</label>
         </div>
         <div class="year-checkboxes">
             {% for y in available_years %}
@@ -16,12 +16,12 @@
 
         <label class="form-label">Sudachiモード</label>
         <select name="sudachi_mode">
-            <option value="A" {% if options.sudachi_mode == 'A' %}selected{% endif %}>A（最短）</option>
+            <option value="A" {% if options.sudachi_mode == 'A' %}selected{% endif %}>A（短単位）</option>
             <option value="B" {% if options.sudachi_mode == 'B' %}selected{% endif %}>B</option>
-            <option value="C" {% if options.sudachi_mode == 'C' %}selected{% endif %}>C（長め）</option>
+            <option value="C" {% if options.sudachi_mode == 'C' %}selected{% endif %}>C（長単位）</option>
         </select>
 
-        <label class="form-label">品詞フィルタ（例: 名詞,動詞）</label>
+        <label class="form-label">品詞フィルタ（例: 名詞 または 名詞,動詞）</label>
         <input type="text" name="pos_filter" value="{{ options.pos_filter or '' }}" placeholder="空なら制限なし">
 
         <label class="form-label">ストップワード（改行区切り）</label>
@@ -29,7 +29,7 @@
 and
 これ">{{ options.stopwords or '' }}</textarea>
 
-        <button type="submit" class="btn-primary">設定を適用</button>
+        <button type="submit" class="btn-primary">設定を保存</button>
     </form>
     <div id="options-status" class="muted"></div>
 </div>

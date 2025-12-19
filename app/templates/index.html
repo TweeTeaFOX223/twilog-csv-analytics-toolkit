@@ -1,4 +1,4 @@
-﻿{% extends "base.html" %}
+{% extends "base.html" %}
 
 {% block content %}
 <section class="card">
@@ -7,7 +7,7 @@
     <form id="upload-form" class="form" action="/upload" method="post" enctype="multipart/form-data">
         <label class="form-label">CSVファイル（必須）</label>
         <input type="file" name="file" accept=".csv" required>
-        <button type="submit" class="btn-primary">解析を開始</button>
+        <button type="submit" class="btn-primary btn-tall">解析を開始</button>
     </form>
 </section>
 {% endblock %}

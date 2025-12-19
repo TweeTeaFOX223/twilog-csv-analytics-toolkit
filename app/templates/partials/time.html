@@ -1,47 +1,153 @@
-﻿<div class="card">
-    <h2>時間帯別投稿数</h2>
-    {% if hourly %}
-    <table class="table">
-        <thead><tr><th>時</th><th>投稿数</th></tr></thead>
-        <tbody>
-            {% for row in hourly %}
-            <tr><td>{{ row.hour }}</td><td>{{ row.posts }}</td></tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    {% else %}
-    <p>データがありません。</p>
-    {% endif %}
-</div>
-
-<div class="card">
-    <h2>曜日別投稿数</h2>
-    {% if weekday %}
-    <table class="table">
-        <thead><tr><th>曜日(0=月)</th><th>投稿数</th></tr></thead>
-        <tbody>
-            {% for row in weekday %}
-            <tr><td>{{ row.weekday }}</td><td>{{ row.posts }}</td></tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    {% else %}
-    <p>データがありません。</p>
-    {% endif %}
-</div>
-
-<div class="card">
-    <h2>日別投稿数</h2>
-    {% if daily %}
-    <table class="table">
-        <thead><tr><th>日付</th><th>投稿数</th></tr></thead>
-        <tbody>
-            {% for row in daily %}
-            <tr><td>{{ row.date }}</td><td>{{ row.posts }}</td></tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    {% else %}
-    <p>データがありません。</p>
-    {% endif %}
-</div>
+<div class="card">
+
+    <div class="card-header-row">
+
+        <h2>曜日×時間ヒートマップ</h2>
+
+        <a class="btn-secondary" href="/download/weekday_hour?file_id={{ file_id }}">CSVダウンロード</a>
+
+    </div>
+
+    {% if heatmap_plot %}
+
+    <div class="plot" data-plot-json='{{ heatmap_plot | e }}'></div>
+
+    {% else %}
+
+    <p>データがありません。</p>
+
+    {% endif %}
+
+</div>
+
+<div class="card">
+
+    <div class="card-header-row">
+
+        <h2>時間帯別投稿数</h2>
+
+        <a class="btn-secondary" href="/download/hourly?file_id={{ file_id }}">CSVダウンロード</a>
+
+    </div>
+
+    {% if hourly %}
+
+    <div class="plot" data-plot-json='{{ hourly_plot | e }}'></div>
+
+    <details>
+
+        <summary>表を開く</summary>
+
+        <table class="table">
+
+            <thead><tr><th>時</th><th>投稿数</th></tr></thead>
+
+            <tbody>
+
+                {% for row in hourly %}
+
+                <tr><td>{{ row.hour }}</td><td>{{ row.posts }}</td></tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </details>
+
+    {% else %}
+
+    <p>データがありません。</p>
+
+    {% endif %}
+
+</div>
+
+<div class="card">
+
+    <div class="card-header-row">
+
+        <h2>曜日別投稿数</h2>
+
+        <a class="btn-secondary" href="/download/weekday?file_id={{ file_id }}">CSVダウンロード</a>
+
+    </div>
+
+    {% if weekday %}
+
+    <div class="plot" data-plot-json='{{ weekday_plot | e }}'></div>
+
+    <details>
+
+        <summary>表を開く</summary>
+
+        <table class="table">
+
+            <thead><tr><th>曜日</th><th>投稿数</th></tr></thead>
+
+            <tbody>
+
+                {% for row in weekday %}
+
+                <tr><td>{{ row.weekday_label }}</td><td>{{ row.posts }}</td></tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </details>
+
+    {% else %}
+
+    <p>データがありません。</p>
+
+    {% endif %}
+
+</div>
+
+<div class="card">
+
+    <div class="card-header-row">
+
+        <h2>日別投稿数</h2>
+
+        <a class="btn-secondary" href="/download/daily?file_id={{ file_id }}">CSVダウンロード</a>
+
+    </div>
+
+    {% if daily %}
+
+    <div class="plot" data-plot-json='{{ daily_plot | e }}'></div>
+
+    <details>
+
+        <summary>表を開く</summary>
+
+        <table class="table">
+
+            <thead><tr><th>日付</th><th>投稿数</th></tr></thead>
+
+            <tbody>
+
+                {% for row in daily %}
+
+                <tr><td>{{ row.date }}</td><td>{{ row.posts }}</td></tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </details>
+
+    {% else %}
+
+    <p>データがありません。</p>
+
+    {% endif %}
+
+</div>

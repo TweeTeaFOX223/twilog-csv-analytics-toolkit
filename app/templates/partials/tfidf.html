@@ -1,0 +1,18 @@
+<div class="card">
+    <div class="card-header-row">
+        <h2>TF-IDFランキング</h2>
+        <a class="btn-secondary" href="/download/tfidf?file_id={{ file_id }}">CSVダウンロード</a>
+    </div>
+    {% if rows %}
+    <table class="table">
+        <thead><tr><th>単語</th><th>TF</th><th>DF</th><th>スコア</th></tr></thead>
+        <tbody>
+            {% for row in rows %}
+            <tr><td>{{ row.word }}</td><td>{{ row.tf }}</td><td>{{ row.df }}</td><td>{{ row.score }}</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>データがありません。</p>
+    {% endif %}
+</div>

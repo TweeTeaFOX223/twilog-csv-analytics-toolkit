@@ -1,5 +1,6 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
+import io
 import json
 import re
 import shutil
@@ -11,12 +12,19 @@ from uuid import uuid4
 
 import polars as pl
 from fastapi import APIRouter, File, Form, HTTPException, Request, UploadFile, status
-from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.responses import HTMLResponse, RedirectResponse, StreamingResponse
 from fastapi.templating import Jinja2Templates
 
 from twilog_analytics.data import loader, preprocessor
-from twilog_analytics.analysis import statistics, timeseries, link_analysis
-from twilog_analytics.visualization import plotly_charts
+from twilog_analytics.analysis import statistics, timeseries, link_analysis, text_analysis
+from twilog_analytics.visualization import plotly_charts, wordcloud_viz
+
+WEEKDAY_LABELS = {0: "月", 1: "火", 2: "水", 3: "木", 4: "金", 5: "土", 6: "日"}
+WEEKDAY_LABEL_EXPR = pl.col("weekday").cast(pl.Int64, strict=False).map_elements(
+    lambda v: WEEKDAY_LABELS.get(int(v), "") if v is not None else None, return_dtype=pl.Utf8
+).alias("weekday_label")
+WEEKDAY_ORDER_LABELS = ["月", "火", "水", "木", "金", "土", "日"]
+WEEKDAY_BASE = pl.DataFrame({"weekday": list(range(7))})
 
 # テンプレートやルーターを初期化（HTMX用の部分テンプレートを返却する）
 router = APIRouter()
@@ -73,6 +81,47 @@ def _filtered_frame(session: UploadSession) -> pl.DataFrame:
     if opts.get("years_mode") == "selected" and opts.get("years"):
         frame = preprocessor.filter_by_years(frame, opts.get("years"))
     return frame
+
+
+def _parse_stopwords(raw: Optional[str]) -> set[str]:
+    """改行/カンマ区切りのストップワードをセットに変換する。"""
+
+    if not raw:
+        return set()
+    parts = re.split(r"[,\n\r]+", raw)
+    return {p.strip() for p in parts if p.strip()}
+
+
+def _build_text_analyzer(
+    session: UploadSession, pos_filter_override: Optional[str] = None
+) -> text_analysis.TextAnalyzer:
+    """Sudachi設定とストップワードを反映したTextAnalyzerを作成する。"""
+
+    opts = session.options or {}
+    mode = opts.get("sudachi_mode", "C")
+    pos_filter = pos_filter_override if pos_filter_override is not None else opts.get("pos_filter")
+    stopwords = _parse_stopwords(opts.get("stopwords"))
+    return text_analysis.TextAnalyzer(mode=mode, pos_filter=pos_filter, stopwords=stopwords)
+
+
+def _weekday_full_counts(counts_df: pl.DataFrame, value_col: str = "posts") -> pl.DataFrame:
+    """曜日が欠けても順序付きで7件そろえる（空きは0で埋める）。"""
+
+    if counts_df.is_empty():
+        filled = WEEKDAY_BASE.with_columns(pl.lit(0).alias(value_col))
+    else:
+        filled = WEEKDAY_BASE.join(counts_df, on="weekday", how="left").fill_null(0)
+    return filled.with_columns(WEEKDAY_LABEL_EXPR)
+
+
+def _clamp_max_words(value: int, min_value: int = 10, max_value: int = 400) -> int:
+    """ワードクラウドの最大単語数を安全な範囲に丸める。"""
+
+    if value < min_value:
+        return min_value
+    if value > max_value:
+        return max_value
+    return value
 
 
 @router.get("/", response_class=HTMLResponse)
@@ -155,12 +204,49 @@ async def summary_partial(request: Request, file_id: str) -> HTMLResponse:
         return _render_error(request, "セッションが見つかりません", 404)
 
     frame = _filtered_frame(session)
-    counts = statistics.basic_counts(frame)
-    yearly = statistics.yearly_counts(frame)
-    monthly = statistics.monthly_counts(frame)
+    counts = statistics.average_counts(frame)
+    yearly = statistics.average_yearly_counts(frame).with_columns(
+        pl.col("year").cast(pl.Utf8).alias("year_label")
+    )
+    monthly = statistics.average_monthly_counts(frame).with_columns(
+        (
+            pl.col("year").cast(pl.Utf8) + "年" + pl.col("month").cast(pl.Utf8) + "月"
+        ).alias("year_month_label")
+    )
+    weekday_counts_df = _weekday_full_counts(statistics.average_weekday_counts(frame), value_col="avg_posts")
+
+    yearly_plot = plotly_charts.plotly_bar(
+        yearly,
+        x="year_label",
+        y="avg_posts",
+        title="年別平均投稿数",
+        x_title="年",
+        y_title="平均投稿数",
+    )
+    monthly_plot = plotly_charts.plotly_bar(
+        monthly,
+        x="year_month_label",
+        y="avg_posts",
+        title="月別平均投稿数",
+        x_title="年月",
+        y_title="平均投稿数",
+        margin_bottom=110,
+        xaxis_title_standoff=30,
+    )
+    weekday_plot = plotly_charts.plotly_bar(
+        weekday_counts_df,
+        x="weekday_label",
+        y="avg_posts",
+        title="曜日別平均投稿数",
+        x_title="曜日",
+        y_title="平均投稿数",
+        category_order="array",
+        category_array=WEEKDAY_ORDER_LABELS,
+    )
 
     yearly_rows = yearly.to_dicts() if not yearly.is_empty() else []
     monthly_rows = monthly.to_dicts() if not monthly.is_empty() else []
+    weekday_rows = weekday_counts_df.to_dicts() if not weekday_counts_df.is_empty() else []
 
     return TEMPLATES.TemplateResponse(
         "partials/summary.html",
@@ -170,6 +256,10 @@ async def summary_partial(request: Request, file_id: str) -> HTMLResponse:
             "counts": counts,
             "yearly": yearly_rows,
             "monthly": monthly_rows,
+            "weekday": weekday_rows,
+            "yearly_plot": json.dumps(yearly_plot, default=str),
+            "monthly_plot": json.dumps(monthly_plot, default=str),
+            "weekday_plot": json.dumps(weekday_plot, default=str),
         },
     )
 
@@ -185,8 +275,48 @@ async def time_partial(request: Request, file_id: str) -> HTMLResponse:
 
     frame = _filtered_frame(session)
     hourly = statistics.hourly_counts(frame)
-    weekday = statistics.weekday_counts(frame)
-    daily = timeseries.daily_counts(frame)
+    weekday = _weekday_full_counts(statistics.weekday_counts(frame))
+    daily = timeseries.daily_counts(frame).with_columns(pl.col("date").cast(pl.Utf8))
+    hours, weekdays, z_matrix = timeseries.weekday_hour_matrix(frame)
+    daily_plot = plotly_charts.plotly_line(
+        daily,
+        x="date",
+        y="posts",
+        title="日別投稿数",
+        x_title="日付",
+        y_title="投稿数",
+        legend_bottom=True,
+        trace_name="投稿数",
+        margin_bottom=90,
+        xaxis_title_standoff=30,
+    )
+    hourly_plot = plotly_charts.plotly_bar(
+        hourly,
+        x="hour",
+        y="posts",
+        title="時間帯別投稿数",
+        x_title="時刻",
+        y_title="投稿数",
+        legend_bottom=True,
+        trace_name="投稿数",
+        margin_bottom=80,
+    )
+    heatmap_plot = plotly_charts.plotly_heatmap(
+        hours, weekdays, z_matrix, title="曜日×時間ヒートマップ", x_title="時刻", y_title="曜日"
+    )
+    weekday_plot = plotly_charts.plotly_bar(
+        weekday,
+        x="weekday_label",
+        y="posts",
+        title="曜日別投稿数",
+        x_title="曜日",
+        y_title="投稿数",
+        category_order="array",
+        category_array=WEEKDAY_ORDER_LABELS,
+        legend_bottom=True,
+        trace_name="投稿数",
+        margin_bottom=80,
+    )
 
     hourly_rows = hourly.to_dicts() if not hourly.is_empty() else []
     weekday_rows = weekday.to_dicts() if not weekday.is_empty() else []
@@ -200,6 +330,10 @@ async def time_partial(request: Request, file_id: str) -> HTMLResponse:
             "hourly": hourly_rows,
             "weekday": weekday_rows,
             "daily": daily_rows,
+            "daily_plot": json.dumps(daily_plot, default=str),
+            "hourly_plot": json.dumps(hourly_plot, default=str),
+            "heatmap_plot": json.dumps(heatmap_plot, default=str),
+            "weekday_plot": json.dumps(weekday_plot, default=str),
         },
     )
 
@@ -215,9 +349,23 @@ async def domains_partial(request: Request, file_id: str) -> HTMLResponse:
 
     frame = _filtered_frame(session)
     domains = link_analysis.domain_ranking(frame, top_n=20)
-    plot_spec = plotly_charts.plotly_bar(domains, x="domain", y="occurrences", title="Top Domains")
-
     domain_rows = domains.to_dicts() if not domains.is_empty() else []
+    chart_height = max(400, 24 * len(domain_rows) + 120) if domain_rows else 400
+    plot_spec = plotly_charts.plotly_bar(
+        domains,
+        x="occurrences",
+        y="domain",
+        title="ドメイン上位",
+        x_title="回数",
+        y_title="ドメイン",
+        orientation="h",
+        category_order="array",
+        category_array=domains["domain"].cast(pl.Utf8).to_list() if not domains.is_empty() else [],
+        reverse_category=True,
+        margin_left=200,
+        height=chart_height,
+    )
+
     plot_json = json.dumps(plot_spec)
 
     return TEMPLATES.TemplateResponse(
@@ -228,6 +376,63 @@ async def domains_partial(request: Request, file_id: str) -> HTMLResponse:
             "domains": domain_rows,
             "plot_json": plot_json,
         },
+    )
+
+
+@router.get("/partials/word_ranking", response_class=HTMLResponse)
+async def word_ranking_partial(request: Request, file_id: str) -> HTMLResponse:
+    """単語ランキングを返す。"""
+
+    try:
+        session = _get_session(file_id)
+    except HTTPException:
+        return _render_error(request, "セッションが見つかりません", 404)
+
+    frame = _filtered_frame(session)
+    analyzer = _build_text_analyzer(session)
+    word_freq = analyzer.get_word_frequency(frame, text_column="text")
+    top_words = analyzer.get_top_words(word_freq, top_n=50)
+    rows = top_words.to_dicts() if not top_words.is_empty() else []
+
+    return TEMPLATES.TemplateResponse(
+        "partials/word_ranking.html",
+        {"request": request, "file_id": file_id, "rows": rows},
+    )
+
+
+@router.get("/partials/wordcloud", response_class=HTMLResponse)
+async def wordcloud_partial(request: Request, file_id: str, max_words: int = 150) -> HTMLResponse:
+    """名詞ワードクラウドを返す。"""
+
+    try:
+        _get_session(file_id)
+    except HTTPException:
+        return _render_error(request, "セッションが見つかりません", 404)
+
+    max_words = _clamp_max_words(max_words)
+    return TEMPLATES.TemplateResponse(
+        "partials/wordcloud.html",
+        {"request": request, "file_id": file_id, "max_words": max_words},
+    )
+
+
+@router.get("/partials/tfidf", response_class=HTMLResponse)
+async def tfidf_partial(request: Request, file_id: str) -> HTMLResponse:
+    """TF-IDFランキングを返す。"""
+
+    try:
+        session = _get_session(file_id)
+    except HTTPException:
+        return _render_error(request, "セッションが見つかりません", 404)
+
+    frame = _filtered_frame(session)
+    analyzer = _build_text_analyzer(session)
+    tfidf_df = analyzer.get_tfidf_ranking(frame, text_column="text", top_n=50)
+    rows = tfidf_df.to_dicts() if not tfidf_df.is_empty() else []
+
+    return TEMPLATES.TemplateResponse(
+        "partials/tfidf.html",
+        {"request": request, "file_id": file_id, "rows": rows},
     )
 
 
@@ -261,3 +466,87 @@ async def update_options(
         "partials/options_status.html",
         {"request": request, "message": "設定を保存しました。必要に応じてパネルを再読み込みしてください。"},
     )
+
+
+def _df_to_csv_response(df: pl.DataFrame, filename: str) -> StreamingResponse:
+    """Polars DataFrameをCSVで返すレスポンスを作成する。"""
+
+    csv_bytes = df.write_csv().encode("utf-8")
+    return StreamingResponse(
+        iter([csv_bytes]),
+        media_type="text/csv",
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+    )
+
+
+@router.get("/download/{kind}")
+async def download_csv(kind: str, file_id: str) -> StreamingResponse:
+    """集計結果をCSVでダウンロードする。"""
+
+    session = _get_session(file_id)
+    frame = _filtered_frame(session)
+
+    if kind == "yearly":
+        df = statistics.yearly_counts(frame)
+        fname = "yearly_counts.csv"
+    elif kind == "monthly":
+        df = statistics.monthly_counts(frame)
+        fname = "monthly_counts.csv"
+    elif kind == "avg_yearly":
+        df = statistics.average_yearly_counts(frame)
+        fname = "average_yearly_counts.csv"
+    elif kind == "avg_monthly":
+        df = statistics.average_monthly_counts(frame)
+        fname = "average_monthly_counts.csv"
+    elif kind == "avg_weekday":
+        df = _weekday_full_counts(statistics.average_weekday_counts(frame), value_col="avg_posts")
+        fname = "average_weekday_counts.csv"
+    elif kind == "hourly":
+        df = statistics.hourly_counts(frame)
+        fname = "hourly_counts.csv"
+    elif kind == "weekday":
+        df = _weekday_full_counts(statistics.weekday_counts(frame))
+        fname = "weekday_counts.csv"
+    elif kind == "weekday_hour":
+        df = timeseries.weekday_hour_counts(frame).with_columns(WEEKDAY_LABEL_EXPR)
+        fname = "weekday_hour_counts.csv"
+    elif kind == "daily":
+        df = timeseries.daily_counts(frame)
+        fname = "daily_counts.csv"
+    elif kind == "domains":
+        df = link_analysis.domain_ranking(frame, top_n=100)
+        fname = "domain_ranking.csv"
+    elif kind == "word_freq":
+        analyzer = _build_text_analyzer(session)
+        word_freq = analyzer.get_word_frequency(frame, text_column="text")
+        df = analyzer.get_top_words(word_freq, top_n=100)
+        fname = "word_ranking.csv"
+    elif kind == "tfidf":
+        analyzer = _build_text_analyzer(session)
+        df = analyzer.get_tfidf_ranking(frame, text_column="text", top_n=100)
+        fname = "tfidf_ranking.csv"
+    else:
+        raise HTTPException(status_code=400, detail="unknown download kind")
+
+    if df.is_empty():
+        raise HTTPException(status_code=404, detail="データがありません")
+
+    return _df_to_csv_response(df, fname)
+
+
+@router.get("/wordcloud")
+async def wordcloud_image(file_id: str, max_words: int = 150) -> StreamingResponse:
+    """名詞ワードクラウド画像を返す。"""
+
+    session = _get_session(file_id)
+    frame = _filtered_frame(session)
+    analyzer = _build_text_analyzer(session, pos_filter_override="\u540d\u8a5e")
+    word_freq = analyzer.get_word_frequency(frame, text_column="text")
+
+    generator = wordcloud_viz.WordCloudGenerator()
+    max_words = _clamp_max_words(max_words)
+    image = generator.generate_wordcloud(word_freq, width=900, height=500, max_words=max_words)
+    buffer = io.BytesIO()
+    image.save(buffer, format="PNG")
+    buffer.seek(0)
+    return StreamingResponse(buffer, media_type="image/png")

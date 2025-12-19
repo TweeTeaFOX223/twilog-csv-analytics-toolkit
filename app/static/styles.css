@@ -1,4 +1,4 @@
-﻿:root {
+:root {
     --bg: #0b1021;
     --card: #151c37;
     --accent: #5ad1e8;
@@ -21,9 +21,12 @@ body {
     padding: 16px 24px;
     border-bottom: 1px solid rgba(255,255,255,0.06);
     display: flex;
-    flex-direction: column;
-    gap: 4px;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
 }
+.header-main { display: flex; flex-direction: column; gap: 4px; }
+.header-actions { display: flex; align-items: center; gap: 8px; }
 .brand { font-size: 20px; font-weight: 700; letter-spacing: 0.5px; }
 .subtitle { color: var(--muted); font-size: 14px; }
 
@@ -71,21 +74,39 @@ input[type="file"], input[type="text"], select, textarea {
 .loading { color: var(--muted); }
 .year-checkboxes { display: grid; grid-template-columns: repeat(auto-fit, minmax(90px, 1fr)); gap: 6px; }
 .radio-row { display: flex; gap: 12px; align-items: center; }
+.card-header-row { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
 
 .table { width: 100%; border-collapse: collapse; color: var(--text); }
 .table th, .table td { padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.08); text-align: left; }
 .table th { color: var(--muted); font-weight: 600; }
+.table td { font-size: 14px; }
 
 .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; }
 .stat-box { padding: 12px; border-radius: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.06); }
 .stat-label { color: var(--muted); font-size: 13px; }
 .stat-value { font-size: 24px; font-weight: 800; }
 
-.plot { width: 100%; height: 320px; }
+.plot { width: 100%; height: 320px; position: relative; }
+.plot-loading-text {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--muted);
+    font-weight: 600;
+    pointer-events: none;
+}
+.plot-loading img { opacity: 0.4; }
+.plot:not(.plot-loading) .plot-loading-text { display: none; }
 
 @media (max-width: 800px) {
+    .app-header { flex-direction: column; align-items: flex-start; }
+    .header-actions { width: 100%; }
     .dashboard { grid-template-columns: 1fr; }
     .side-nav { flex-direction: row; gap: 8px; flex-wrap: wrap; }
     .panel-nav { flex-direction: column; }
     .nav-btn { flex: 1; }
 }
+
+.btn-tall { padding: 14px 16px; }

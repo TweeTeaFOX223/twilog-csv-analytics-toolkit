@@ -1,16 +1,43 @@
-﻿<div class="card">
-    <h2>ドメイン上位</h2>
-    {% if domains %}
-    <div id="domain-chart-{{ file_id }}" class="plot" data-plot-json='{{ plot_json | e }}'></div>
-    <table class="table">
-        <thead><tr><th>ドメイン</th><th>回数</th></tr></thead>
-        <tbody>
-            {% for row in domains %}
-            <tr><td>{{ row.domain }}</td><td>{{ row.occurrences }}</td></tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    {% else %}
-    <p>データがありません。</p>
-    {% endif %}
-</div>
+<div class="card">
+
+    <div class="card-header-row">
+
+        <h2>ドメイン上位</h2>
+
+        <a class="btn-secondary" href="/download/domains?file_id={{ file_id }}">CSVダウンロード</a>
+
+    </div>
+
+    {% if domains %}
+
+    <div id="domain-chart-{{ file_id }}" class="plot" data-plot-json='{{ plot_json | e }}'></div>
+
+    <details>
+
+        <summary>表を開く</summary>
+
+        <table class="table">
+
+            <thead><tr><th>ドメイン</th><th>回数</th></tr></thead>
+
+            <tbody>
+
+                {% for row in domains %}
+
+                <tr><td>{{ row.domain }}</td><td>{{ row.occurrences }}</td></tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </details>
+
+    {% else %}
+
+    <p>データがありません。</p>
+
+    {% endif %}
+
+</div>

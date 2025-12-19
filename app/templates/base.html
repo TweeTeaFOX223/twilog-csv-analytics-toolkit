@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
@@ -11,8 +11,13 @@
 </head>
 <body>
     <header class="app-header">
-        <div class="brand">Twilog Analytics</div>
-        <div class="subtitle">CSVをアップロードして投稿を可視化</div>
+        <div class="header-main">
+            <div class="brand">Twilog Analytics</div>
+            <div class="subtitle">CSVをアップロードして投稿を可視化</div>
+        </div>
+        <div class="header-actions">
+            {% block header_actions %}{% endblock %}
+        </div>
     </header>
     <main class="app-main">
         {% block content %}{% endblock %}

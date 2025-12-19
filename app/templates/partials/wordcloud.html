@@ -1,0 +1,61 @@
+<div class="card" id="wordcloud-card">
+    <div class="card-header-row">
+        <h2>ワードクラウド（名詞）</h2>
+        <a class="btn-secondary" href="/download/word_freq?file_id={{ file_id }}">CSVダウンロード</a>
+    </div>
+    <form
+        class="form"
+        hx-get="/partials/wordcloud"
+        hx-target="#wordcloud-card"
+        hx-swap="outerHTML"
+    >
+        <input type="hidden" name="file_id" value="{{ file_id }}">
+        <label class="form-label">最大単語数（10〜400）</label>
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <input
+                type="range"
+                name="max_words"
+                min="10"
+                max="400"
+                step="10"
+                value="{{ max_words }}"
+            >
+            <span data-max-words>{{ max_words }}</span>
+            <button type="submit" class="btn-primary">更新</button>
+        </div>
+    </form>
+    <div class="plot plot-loading">
+        <div class="plot-loading-text">グラフを描画中...</div>
+        <img
+            src="/wordcloud?file_id={{ file_id }}&max_words={{ max_words }}"
+            alt="wordcloud"
+            style="width: 100%; height: auto;"
+            onload="this.closest('.plot').classList.remove('plot-loading')"
+            onerror="this.closest('.plot').classList.remove('plot-loading')"
+        >
+    </div>
+</div>
+<script>
+(() => {
+  const card = document.getElementById('wordcloud-card');
+  if (!card) return;
+  const range = card.querySelector('input[name="max_words"]');
+  const value = card.querySelector('[data-max-words]');
+  const image = card.querySelector('img');
+  const plot = card.querySelector('.plot');
+  if (!range || !value) return;
+  const update = () => {
+    value.textContent = range.value;
+  };
+  range.addEventListener('input', update);
+  update();
+  if (image && plot) {
+    const clearLoading = () => plot.classList.remove('plot-loading');
+    if (image.complete) {
+      clearLoading();
+    } else if (image.decode) {
+      image.decode().then(clearLoading).catch(clearLoading);
+    }
+  }
+})();
+</script>
