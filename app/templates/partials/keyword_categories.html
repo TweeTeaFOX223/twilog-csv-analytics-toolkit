@@ -1,0 +1,29 @@
+<div class="card">
+    <div class="card-header-row">
+        <h2>カテゴリ辞書の集計</h2>
+        <a class="btn-secondary" href="/download/keyword_categories?file_id={{ file_id }}">CSVダウンロード</a>
+    </div>
+    <p class="muted">設定パネルの「キーワード辞書」で定義したカテゴリを集計します。</p>
+    {% if rows %}
+    <div id="keyword-chart-{{ file_id }}" class="plot" data-plot-json='{{ plot_json | e }}'></div>
+    <details>
+        <summary>表を開く</summary>
+        <table class="table">
+            <thead><tr><th>カテゴリ</th><th>投稿数</th></tr></thead>
+            <tbody>
+                {% for row in rows %}
+                <tr><td>{{ row.category }}</td><td>{{ row.posts }}</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </details>
+    {% else %}
+    <p>データがありません。辞書を設定して再読み込みしてください。</p>
+    {% endif %}
+    {% if raw_dict %}
+    <details>
+        <summary>現在の辞書を表示</summary>
+        <pre class="muted">{{ raw_dict }}</pre>
+    </details>
+    {% endif %}
+</div>

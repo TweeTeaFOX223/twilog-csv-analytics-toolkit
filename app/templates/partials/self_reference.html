@@ -1,0 +1,21 @@
+<div class="card">
+    <div class="card-header-row">
+        <h2>自己参照URL比率</h2>
+        <a class="btn-secondary" href="/download/self_reference?file_id={{ file_id }}">CSVダウンロード</a>
+    </div>
+    <div class="summary-grid">
+        <div class="stat-box">
+            <div class="stat-label">twitter/x参照</div>
+            <div class="stat-value">{{ stats.self_ref }}</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-label">外部リンク</div>
+            <div class="stat-value">{{ stats.external }}</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-label">参照率</div>
+            <div class="stat-value">{{ (stats.rate * 100) | round(2) }}%</div>
+        </div>
+    </div>
+    <div id="self-ref-{{ file_id }}" class="plot" data-plot-json='{{ plot_json | e }}'></div>
+</div>

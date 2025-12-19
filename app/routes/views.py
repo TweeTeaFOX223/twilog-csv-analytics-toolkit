@@ -172,6 +172,7 @@ async def upload_csv(
         "sudachi_mode": "C",
         "pos_filter": None,
         "stopwords": None,
+        "keyword_dict": None,
     }
     UPLOAD_STORE[file_id] = UploadSession(file_id=file_id, path=dest, frame=frame, options=options)
 
@@ -724,6 +725,193 @@ async def lengths_partial(request: Request, file_id: str) -> HTMLResponse:
     )
 
 
+@router.get("/partials/hashtag_cooccurrence", response_class=HTMLResponse)
+async def hashtag_cooccurrence_partial(request: Request, file_id: str) -> HTMLResponse:
+    """ハッシュタグ共起のランキングと簡易ネットワークを返す。"""
+
+    try:
+        session = _get_session(file_id)
+    except HTTPException:
+        return _render_error(request, "セッションが見つかりません", 404)
+
+    frame = _filtered_frame(session)
+    pairs = text_analysis.hashtag_cooccurrence(frame, top_n=40, min_count=2)
+    pair_rows = pairs.to_dicts() if not pairs.is_empty() else []
+    nodes = sorted({row["tag_a"] for row in pair_rows} | {row["tag_b"] for row in pair_rows})
+    edges = [
+        {"source": row["tag_a"], "target": row["tag_b"], "weight": row["count"]}
+        for row in pair_rows
+    ]
+    network_plot = plotly_charts.plotly_network(nodes, edges, title="ハッシュタグ共起ネットワーク")
+
+    return TEMPLATES.TemplateResponse(
+        "partials/hashtag_cooccurrence.html",
+        {
+            "request": request,
+            "file_id": file_id,
+            "pairs": pair_rows,
+            "network_plot": json.dumps(network_plot, default=str),
+        },
+    )
+
+
+@router.get("/partials/keyword_categories", response_class=HTMLResponse)
+async def keyword_categories_partial(request: Request, file_id: str) -> HTMLResponse:
+    """キーワード辞書のカテゴリ別投稿数を返す。"""
+
+    try:
+        session = _get_session(file_id)
+    except HTTPException:
+        return _render_error(request, "セッションが見つかりません", 404)
+
+    frame = _filtered_frame(session)
+    raw_dict = (session.options or {}).get("keyword_dict")
+    keyword_dict = text_analysis.parse_keyword_dictionary(raw_dict)
+    counts = text_analysis.keyword_category_counts(frame, keyword_dict)
+    rows = counts.to_dicts() if not counts.is_empty() else []
+    plot_spec = plotly_charts.plotly_bar(
+        counts,
+        x="category",
+        y="posts",
+        title="カテゴリ別投稿数",
+        x_title="カテゴリ",
+        y_title="投稿数",
+        category_order="array",
+        category_array=counts["category"].cast(pl.Utf8).to_list() if not counts.is_empty() else [],
+        margin_bottom=90,
+        xaxis_title_standoff=20,
+    )
+
+    return TEMPLATES.TemplateResponse(
+        "partials/keyword_categories.html",
+        {
+            "request": request,
+            "file_id": file_id,
+            "rows": rows,
+            "raw_dict": raw_dict or "",
+            "plot_json": json.dumps(plot_spec, default=str),
+        },
+    )
+
+
+@router.get("/partials/word_trend", response_class=HTMLResponse)
+async def word_trend_partial(
+    request: Request, file_id: str, term: str | None = None
+) -> HTMLResponse:
+    """指定語の月次出現推移を返す。"""
+
+    try:
+        session = _get_session(file_id)
+    except HTTPException:
+        return _render_error(request, "セッションが見つかりません", 404)
+
+    frame = _filtered_frame(session)
+    analyzer = _build_text_analyzer(session)
+    term_value = term.strip() if term else ""
+    monthly = (
+        text_analysis.word_monthly_counts(frame, term_value, analyzer)
+        if term_value
+        else pl.DataFrame()
+    )
+    rows = monthly.to_dicts() if not monthly.is_empty() else []
+    plot_spec = plotly_charts.plotly_line(
+        monthly,
+        x="year_month",
+        y="posts",
+        title="単語の月次推移",
+        x_title="年月",
+        y_title="投稿数",
+        legend_bottom=True,
+        trace_name=term_value or "出現数",
+        margin_bottom=90,
+        xaxis_title_standoff=30,
+    )
+
+    return TEMPLATES.TemplateResponse(
+        "partials/word_trend.html",
+        {
+            "request": request,
+            "file_id": file_id,
+            "term": term_value,
+            "rows": rows,
+            "plot_json": json.dumps(plot_spec, default=str),
+        },
+    )
+
+
+@router.get("/partials/domain_years", response_class=HTMLResponse)
+async def domain_years_partial(request: Request, file_id: str) -> HTMLResponse:
+    """ドメイン×年の推移を返す。"""
+
+    try:
+        session = _get_session(file_id)
+    except HTTPException:
+        return _render_error(request, "セッションが見つかりません", 404)
+
+    frame = _filtered_frame(session)
+    trends = link_analysis.domain_year_trend(frame, top_n=5)
+    rows = trends.to_dicts() if not trends.is_empty() else []
+    plot_spec = plotly_charts.plotly_multi_line(
+        trends,
+        x="year",
+        y="occurrences",
+        series="domain",
+        title="ドメイン別 年次推移",
+        x_title="年",
+        y_title="投稿数",
+    )
+
+    return TEMPLATES.TemplateResponse(
+        "partials/domain_years.html",
+        {
+            "request": request,
+            "file_id": file_id,
+            "rows": rows,
+            "plot_json": json.dumps(plot_spec, default=str),
+        },
+    )
+
+
+@router.get("/partials/self_reference", response_class=HTMLResponse)
+async def self_reference_partial(request: Request, file_id: str) -> HTMLResponse:
+    """自己参照URLの比率を返す。"""
+
+    try:
+        session = _get_session(file_id)
+    except HTTPException:
+        return _render_error(request, "セッションが見つかりません", 404)
+
+    frame = _filtered_frame(session)
+    stats = link_analysis.self_reference_stats(frame)
+    chart_df = pl.DataFrame(
+        {
+            "label": ["twitter/x参照", "外部リンク"],
+            "posts": [stats["self_ref"], stats["external"]],
+        }
+    )
+    plot_spec = plotly_charts.plotly_bar(
+        chart_df,
+        x="label",
+        y="posts",
+        title="自己参照URL比率",
+        x_title="種別",
+        y_title="投稿数",
+        category_order="array",
+        category_array=["twitter/x参照", "外部リンク"],
+        margin_bottom=80,
+    )
+
+    return TEMPLATES.TemplateResponse(
+        "partials/self_reference.html",
+        {
+            "request": request,
+            "file_id": file_id,
+            "stats": stats,
+            "plot_json": json.dumps(plot_spec, default=str),
+        },
+    )
+
+
 @router.post("/options", response_class=HTMLResponse)
 async def update_options(
     request: Request,
@@ -733,6 +921,7 @@ async def update_options(
     sudachi_mode: str = Form("C"),
     pos_filter: Optional[str] = Form(None),
     stopwords: Optional[str] = Form(None),
+    keyword_dict: Optional[str] = Form(None),
 ) -> HTMLResponse:
     """ダッシュボード上の設定を更新する。"""
 
@@ -747,6 +936,7 @@ async def update_options(
         "sudachi_mode": sudachi_mode,
         "pos_filter": pos_filter,
         "stopwords": stopwords,
+        "keyword_dict": keyword_dict,
     }
     UPLOAD_STORE[file_id] = session
 
@@ -768,7 +958,7 @@ def _df_to_csv_response(df: pl.DataFrame, filename: str) -> StreamingResponse:
 
 
 @router.get("/download/{kind}")
-async def download_csv(kind: str, file_id: str) -> StreamingResponse:
+async def download_csv(kind: str, file_id: str, term: Optional[str] = None) -> StreamingResponse:
     """集計結果をCSVでダウンロードする。"""
 
     session = _get_session(file_id)
@@ -851,6 +1041,31 @@ async def download_csv(kind: str, file_id: str) -> StreamingResponse:
             }
         )
         fname = "url_presence_rate.csv"
+    elif kind == "hashtag_pairs":
+        df = text_analysis.hashtag_cooccurrence(frame, top_n=200, min_count=2)
+        fname = "hashtag_cooccurrence.csv"
+    elif kind == "keyword_categories":
+        raw_dict = (session.options or {}).get("keyword_dict")
+        keyword_dict = text_analysis.parse_keyword_dictionary(raw_dict)
+        df = text_analysis.keyword_category_counts(frame, keyword_dict)
+        fname = "keyword_category_counts.csv"
+    elif kind == "word_trend":
+        analyzer = _build_text_analyzer(session)
+        df = text_analysis.word_monthly_counts(frame, term or "", analyzer)
+        fname = "word_monthly_counts.csv"
+    elif kind == "domain_years":
+        df = link_analysis.domain_year_trend(frame, top_n=10)
+        fname = "domain_year_trend.csv"
+    elif kind == "self_reference":
+        stats = link_analysis.self_reference_stats(frame)
+        df = pl.DataFrame(
+            {
+                "self_ref": [stats["self_ref"]],
+                "external": [stats["external"]],
+                "rate": [stats["rate"]],
+            }
+        )
+        fname = "self_reference_rate.csv"
     else:
         raise HTTPException(status_code=400, detail="unknown download kind")
 

@@ -72,6 +72,7 @@ input[type="file"], input[type="text"], select, textarea {
 .panel { min-height: 200px; display: flex; flex-direction: column; gap: 12px; }
 .panel-nav { display: flex; gap: 8px; flex-wrap: wrap; }
 .loading { color: var(--muted); }
+.muted { color: var(--muted); }
 .year-checkboxes { display: grid; grid-template-columns: repeat(auto-fit, minmax(90px, 1fr)); gap: 6px; }
 .radio-row { display: flex; gap: 12px; align-items: center; }
 .card-header-row { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }

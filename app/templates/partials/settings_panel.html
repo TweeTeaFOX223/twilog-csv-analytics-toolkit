@@ -29,6 +29,11 @@
 and
 これ">{{ options.stopwords or '' }}</textarea>
 
+        <label class="form-label">キーワード辞書（カテゴリ:語1,語2）</label>
+        <textarea name="keyword_dict" rows="5" placeholder="Cloudflare: WAF,ゼロトラスト
+Next.js: App Router,ISR
+Auth: 認証,OAuth">{{ options.keyword_dict or '' }}</textarea>
+
         <button type="submit" class="btn-primary">設定を保存</button>
     </form>
     <div id="options-status" class="muted"></div>

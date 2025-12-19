@@ -1,0 +1,33 @@
+<div class="card">
+    <div class="card-header-row">
+        <h2>単語の月次推移</h2>
+        <a class="btn-secondary" href="/download/word_trend?file_id={{ file_id }}&term={{ term | urlencode }}">CSVダウンロード</a>
+    </div>
+    <form
+        class="form"
+        hx-get="/partials/word_trend"
+        hx-target="#panel-content"
+        hx-swap="innerHTML"
+    >
+        <input type="hidden" name="file_id" value="{{ file_id }}">
+        <label class="form-label">対象単語</label>
+        <input type="text" name="term" value="{{ term }}" placeholder="例: React">
+        <button type="submit" class="btn-primary">更新</button>
+    </form>
+    {% if rows %}
+    <div id="word-trend-{{ file_id }}" class="plot" data-plot-json='{{ plot_json | e }}'></div>
+    <details>
+        <summary>表を開く</summary>
+        <table class="table">
+            <thead><tr><th>年月</th><th>投稿数</th></tr></thead>
+            <tbody>
+                {% for row in rows %}
+                <tr><td>{{ row.year_month }}</td><td>{{ row.posts }}</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </details>
+    {% else %}
+    <p>対象単語を入力して更新してください。</p>
+    {% endif %}
+</div>

@@ -1,11 +1,12 @@
 from __future__ import annotations
 
 import json
+import math
 from typing import Any, Dict
 
 import polars as pl
 
-__all__ = ["plotly_bar", "plotly_line", "plotly_heatmap"]
+__all__ = ["plotly_bar", "plotly_line", "plotly_heatmap", "plotly_multi_line", "plotly_network"]
 
 
 def plotly_bar(
@@ -174,5 +175,112 @@ def plotly_heatmap(
             "title": title,
             "xaxis": {"title": x_title or "x"},
             "yaxis": {"title": y_title or "y"},
+        },
+    }
+
+
+def plotly_multi_line(
+    frame: pl.DataFrame,
+    x: str,
+    y: str,
+    series: str,
+    title: str = "",
+    x_title: str | None = None,
+    y_title: str | None = None,
+    legend_bottom: bool = True,
+) -> Dict[str, Any]:
+    """複数系列の折れ線図を返す。"""
+
+    if frame.is_empty():
+        return {"data": [], "layout": {"title": title}}
+    series_values = frame[series].cast(pl.Utf8).unique().to_list()
+    data = []
+    for value in series_values:
+        filtered = frame.filter(pl.col(series) == value).sort(x)
+        data.append(
+            {
+                "type": "scatter",
+                "mode": "lines+markers",
+                "x": filtered[x].cast(pl.Utf8).to_list(),
+                "y": filtered[y].to_list(),
+                "name": str(value),
+            }
+        )
+    layout: Dict[str, Any] = {
+        "title": title,
+        "xaxis": {"title": x_title or x, "type": "category"},
+        "yaxis": {"title": y_title or y},
+        "showlegend": True,
+    }
+    if legend_bottom:
+        layout["legend"] = {
+            "orientation": "h",
+            "y": -0.35,
+            "x": 0.5,
+            "xanchor": "center",
+        }
+    return {"data": data, "layout": layout}
+
+
+def plotly_network(
+    nodes: list[str], edges: list[dict[str, Any]], title: str = ""
+) -> Dict[str, Any]:
+    """簡易ネットワーク図を返す（円形レイアウト）。"""
+
+    if not nodes or not edges:
+        return {"data": [], "layout": {"title": title}}
+    positions: Dict[str, tuple[float, float]] = {}
+    step = 2 * math.pi / max(len(nodes), 1)
+    for idx, node in enumerate(nodes):
+        angle = idx * step
+        positions[node] = (math.cos(angle), math.sin(angle))
+
+    edge_x: list[float] = []
+    edge_y: list[float] = []
+    for edge in edges:
+        src = edge["source"]
+        tgt = edge["target"]
+        if src not in positions or tgt not in positions:
+            continue
+        x0, y0 = positions[src]
+        x1, y1 = positions[tgt]
+        edge_x.extend([x0, x1, None])
+        edge_y.extend([y0, y1, None])
+
+    degrees: Dict[str, int] = {node: 0 for node in nodes}
+    for edge in edges:
+        degrees[edge["source"]] = degrees.get(edge["source"], 0) + 1
+        degrees[edge["target"]] = degrees.get(edge["target"], 0) + 1
+
+    node_x = [positions[node][0] for node in nodes]
+    node_y = [positions[node][1] for node in nodes]
+    node_sizes = [10 + degrees.get(node, 0) * 2 for node in nodes]
+
+    return {
+        "data": [
+            {
+                "type": "scatter",
+                "mode": "lines",
+                "x": edge_x,
+                "y": edge_y,
+                "line": {"width": 1, "color": "rgba(150,150,150,0.5)"},
+                "hoverinfo": "none",
+            },
+            {
+                "type": "scatter",
+                "mode": "markers+text",
+                "x": node_x,
+                "y": node_y,
+                "text": nodes,
+                "textposition": "top center",
+                "marker": {"size": node_sizes, "color": "#5ad1e8"},
+                "hoverinfo": "text",
+            },
+        ],
+        "layout": {
+            "title": title,
+            "showlegend": False,
+            "xaxis": {"visible": False},
+            "yaxis": {"visible": False},
         },
     }

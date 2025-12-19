@@ -2,12 +2,20 @@ from __future__ import annotations
 
 import math
 import re
-from typing import Dict, Iterable, List, Optional
+from itertools import combinations
+from typing import Dict, Iterable, List, Optional, Tuple
 
 import polars as pl
 from sudachipy import Dictionary, Tokenizer
 
-__all__ = ["TextAnalyzer", "hashtag_ranking"]
+__all__ = [
+    "TextAnalyzer",
+    "hashtag_ranking",
+    "hashtag_cooccurrence",
+    "parse_keyword_dictionary",
+    "keyword_category_counts",
+    "word_monthly_counts",
+]
 
 JP_NOUN = "\u540d\u8a5e"
 JP_VERB = "\u52d5\u8a5e"
@@ -156,3 +164,121 @@ def hashtag_ranking(frame: pl.DataFrame, top_n: int | None = 20) -> pl.DataFrame
         .sort("occurrences", descending=True)
     )
     return result if top_n is None else result.head(top_n)
+
+
+def hashtag_cooccurrence(
+    frame: pl.DataFrame, top_n: int = 50, min_count: int = 2
+) -> pl.DataFrame:
+    """同一投稿内のハッシュタグ共起ペアを返す。"""
+
+    if "hashtag_list" not in frame.columns:
+        return pl.DataFrame()
+    pairs: Dict[Tuple[str, str], int] = {}
+    for tags in frame.select("hashtag_list").to_series():
+        if not tags:
+            continue
+        unique = sorted({str(t).strip() for t in tags if str(t).strip()})
+        if len(unique) < 2:
+            continue
+        for tag_a, tag_b in combinations(unique, 2):
+            key = (tag_a, tag_b)
+            pairs[key] = pairs.get(key, 0) + 1
+    if not pairs:
+        return pl.DataFrame()
+    rows = [
+        {"tag_a": tag_a, "tag_b": tag_b, "count": count}
+        for (tag_a, tag_b), count in pairs.items()
+        if count >= min_count
+    ]
+    if not rows:
+        return pl.DataFrame()
+    rows.sort(key=lambda r: r["count"], reverse=True)
+    if top_n:
+        rows = rows[:top_n]
+    return pl.DataFrame(rows)
+
+
+def parse_keyword_dictionary(raw: Optional[str]) -> Dict[str, List[str]]:
+    """カテゴリ: キーワード1,キーワード2 の形式を辞書に変換する。"""
+
+    if not raw:
+        return {}
+    mapping: Dict[str, List[str]] = {}
+    for line in raw.splitlines():
+        stripped = line.strip()
+        if not stripped:
+            continue
+        if ":" in stripped:
+            label, keywords = stripped.split(":", 1)
+        elif "\uFF1A" in stripped:
+            label, keywords = stripped.split("\uFF1A", 1)
+        else:
+            continue
+        label = label.strip()
+        if not label:
+            continue
+        terms = re.split(r"[,\u3001]+", keywords)
+        cleaned_terms = [term.strip() for term in terms if term.strip()]
+        if not cleaned_terms:
+            continue
+        mapping[label] = cleaned_terms
+    return mapping
+
+
+def keyword_category_counts(frame: pl.DataFrame, keyword_dict: Dict[str, List[str]]) -> pl.DataFrame:
+    """カテゴリ別投稿数を返す。"""
+
+    if not keyword_dict or "text" not in frame.columns:
+        return pl.DataFrame()
+    texts = frame.select(pl.col("text").cast(pl.Utf8).fill_null("")).to_series().to_list()
+    counts = {category: 0 for category in keyword_dict}
+    for text in texts:
+        lowered = text.lower()
+        for category, terms in keyword_dict.items():
+            if any(term.lower() in lowered for term in terms):
+                counts[category] += 1
+    rows = [{"category": category, "posts": posts} for category, posts in counts.items()]
+    rows.sort(key=lambda r: r["posts"], reverse=True)
+    return pl.DataFrame(rows)
+
+
+def word_monthly_counts(
+    frame: pl.DataFrame, term: str, analyzer: "TextAnalyzer"
+) -> pl.DataFrame:
+    """指定語の月次出現数を返す。"""
+
+    if not term or "text" not in frame.columns:
+        return pl.DataFrame()
+    if "year" in frame.columns and "month" in frame.columns:
+        rows = frame.select(
+            pl.col("text").cast(pl.Utf8).fill_null("").alias("text"),
+            pl.col("year").cast(pl.Int32).alias("year"),
+            pl.col("month").cast(pl.Int8).alias("month"),
+        ).to_dicts()
+    elif "created_at" in frame.columns:
+        rows = frame.select(
+            pl.col("text").cast(pl.Utf8).fill_null("").alias("text"),
+            pl.col("created_at").dt.year().alias("year"),
+            pl.col("created_at").dt.month().alias("month"),
+        ).to_dicts()
+    else:
+        return pl.DataFrame()
+
+    counts: Dict[Tuple[int, int], int] = {}
+    for row in rows:
+        tokens = analyzer.extract_words_from_text(row["text"])
+        if term in tokens:
+            key = (int(row["year"]), int(row["month"]))
+            counts[key] = counts.get(key, 0) + 1
+    if not counts:
+        return pl.DataFrame()
+    data = [
+        {"year": year, "month": month, "posts": count}
+        for (year, month), count in counts.items()
+    ]
+    data.sort(key=lambda r: (r["year"], r["month"]))
+    return pl.DataFrame(data).with_columns(
+        (
+            pl.col("year").cast(pl.Utf8) + "-" + pl.col("month").cast(pl.Utf8).str.zfill(2)
+        ).alias("year_month")
+    )

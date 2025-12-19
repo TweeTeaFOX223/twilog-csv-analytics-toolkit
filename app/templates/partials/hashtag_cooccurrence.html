@@ -1,0 +1,22 @@
+<div class="card">
+    <div class="card-header-row">
+        <h2>ハッシュタグ共起</h2>
+        <a class="btn-secondary" href="/download/hashtag_pairs?file_id={{ file_id }}">CSVダウンロード</a>
+    </div>
+    {% if pairs %}
+    <div id="hashtag-network-{{ file_id }}" class="plot" data-plot-json='{{ network_plot | e }}'></div>
+    <details>
+        <summary>共起表を開く</summary>
+        <table class="table">
+            <thead><tr><th>タグA</th><th>タグB</th><th>回数</th></tr></thead>
+            <tbody>
+                {% for row in pairs %}
+                <tr><td>#{{ row.tag_a }}</td><td>#{{ row.tag_b }}</td><td>{{ row.count }}</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </details>
+    {% else %}
+    <p>データがありません。</p>
+    {% endif %}
+</div>
