@@ -1,4 +1,6 @@
 # twilog-csv-analytics-toolkit
+![Twilog Analytics App](https://raw.githubusercontent.com/TweeTeaFOX223/twilog-csv-analytics-toolkit/refs/heads/main/docs/app1.png)
+
 X(旧Twitter)のツイートを保存する「Twilog」から出力した自分のポストデータを分析するGUIアプリ。htmx・FastAPI。自分のTwitter歴の振り返りに有用。
 
 
