@@ -245,7 +245,11 @@ def mention_ranking(frame: pl.DataFrame, top_n: int = 20) -> pl.DataFrame:
     if exploded.is_empty():
         return pl.DataFrame()
     cleaned = exploded.with_columns(
-        pl.col("mention_list").cast(pl.Utf8).str.strip_chars().alias("mention")
+        pl.col("mention_list")
+        .cast(pl.Utf8)
+        .str.strip_chars()
+        .str.replace_all(r"^@+", "")
+        .alias("mention")
     ).filter(pl.col("mention") != "")
     if cleaned.is_empty():
         return pl.DataFrame()
@@ -267,7 +271,11 @@ def mention_weekday_counts(frame: pl.DataFrame) -> pl.DataFrame:
     if exploded.is_empty():
         return pl.DataFrame()
     cleaned = exploded.with_columns(
-        pl.col("mention_list").cast(pl.Utf8).str.strip_chars().alias("mention")
+        pl.col("mention_list")
+        .cast(pl.Utf8)
+        .str.strip_chars()
+        .str.replace_all(r"^@+", "")
+        .alias("mention")
     ).filter(pl.col("mention") != "")
     if cleaned.is_empty():
         return pl.DataFrame()

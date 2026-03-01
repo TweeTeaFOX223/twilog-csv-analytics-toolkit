@@ -1004,7 +1004,11 @@ async def mentions_partial(
     mentions = text_analysis.mention_ranking(frame, top_n=30)
     rows = mentions.to_dicts() if not mentions.is_empty() else []
     plot_frame = (
-        mentions.with_columns(pl.concat_str([pl.lit("@"), pl.col("mention")]).alias("label"))
+        mentions.with_columns(
+            pl.concat_str(
+                [pl.lit("@"), pl.col("mention").cast(pl.Utf8).str.replace_all(r"^@+", "")]
+            ).alias("label")
+        )
         if not mentions.is_empty()
         else mentions
     )
