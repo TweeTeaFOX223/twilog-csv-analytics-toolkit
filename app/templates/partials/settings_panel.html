@@ -1,6 +1,6 @@
 <div class="card">
     <h2>設定</h2>
-    <form class="form" hx-post="/options" hx-target="#options-status" hx-swap="innerHTML">
+    <form class="form" hx-post="/options" hx-target="#options-status" hx-swap="innerHTML" hx-on::after-request="if (event.detail.successful) { window.location.reload(); }">
         <input type="hidden" name="file_id" value="{{ file_id }}">
 
         <label class="form-label">対象年</label>

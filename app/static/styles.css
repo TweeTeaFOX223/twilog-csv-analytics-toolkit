@@ -73,6 +73,7 @@ select option {
 .dashboard { display: grid; grid-template-columns: 260px 1fr; gap: 16px; }
 .side-nav { display: flex; flex-direction: column; gap: 10px; }
 .nav-btn { background: rgba(255,255,255,0.08); color: var(--text); }
+.nav-btn.is-active { background: var(--accent); color: var(--bg); }
 .panel { min-height: 200px; display: flex; flex-direction: column; gap: 12px; }
 .panel-nav { display: flex; gap: 8px; flex-wrap: wrap; }
 .loading { color: var(--muted); }

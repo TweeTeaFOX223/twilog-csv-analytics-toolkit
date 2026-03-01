@@ -52,9 +52,43 @@
             <button class="nav-btn" hx-get="/partials/mention_counts?file_id={{ file_id }}" hx-target="#panel-content" hx-swap="innerHTML">メンション数</button>
             <button class="nav-btn" hx-get="/partials/topic_trends?file_id={{ file_id }}" hx-target="#panel-content" hx-swap="innerHTML">代表語推移</button>
         </div>
-        <div id="panel-content" hx-get="/partials/summary?file_id={{ file_id }}" hx-trigger="load" hx-swap="innerHTML">
+        <div id="panel-content">
             <div class="loading">読込中...</div>
         </div>
     </section>
 </section>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const fileId = "{{ file_id }}";
+  const storageKey = `twilog:selected-panel:${fileId}`;
+  const panelContent = document.getElementById("panel-content");
+  const navButtons = Array.from(document.querySelectorAll(".panel-nav .nav-btn[hx-get]"));
+  if (!panelContent || !navButtons.length) return;
+
+  const setActiveButton = (activeButton) => {
+    navButtons.forEach((button) => {
+      button.classList.toggle("is-active", button === activeButton);
+    });
+  };
+
+  navButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      const targetUrl = button.getAttribute("hx-get");
+      if (!targetUrl) return;
+      sessionStorage.setItem(storageKey, targetUrl);
+      setActiveButton(button);
+    });
+  });
+
+  const savedUrl = sessionStorage.getItem(storageKey);
+  const initialButton = navButtons.find((button) => button.getAttribute("hx-get") === savedUrl) || navButtons[0];
+  const initialUrl = initialButton?.getAttribute("hx-get");
+  if (!initialButton || !initialUrl) return;
+
+  setActiveButton(initialButton);
+  if (window.htmx) {
+    window.htmx.ajax("GET", initialUrl, { target: "#panel-content", swap: "innerHTML" });
+  }
+});
+</script>
 {% endblock %}
