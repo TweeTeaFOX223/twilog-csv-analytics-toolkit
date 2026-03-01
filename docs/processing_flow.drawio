@@ -1,0 +1,76 @@
+<mxfile host="app.diagrams.net" modified="2026-03-01T00:00:00.000Z" agent="Codex" version="24.7.17">
+  <diagram id="twilog-flow-01" name="Twilog Processing Flow">
+    <mxGraphModel dx="1280" dy="720" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1000" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <mxCell id="n1" value="ユーザー: CSV + 設定を送信&#10;(index.html)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="60" y="120" width="220" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="n2" value="FastAPI 受信&#10;(app/routes/views.py)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="340" y="120" width="220" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="n3" value="CSV 読み込み・前処理&#10;(src/twilog_analytics/data)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="620" y="120" width="250" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="n4" value="セッション保存&#10;(file_id + options)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="930" y="120" width="220" height="70" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="n5" value="dashboard.html 表示&#10;初期タブ復元 / 選択" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="340" y="290" width="250" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="n6" value="HTMX: /partials/* を GET&#10;(ページ全体リロードなし)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="650" y="290" width="260" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="n7" value="分析実行&#10;(src/twilog_analytics/analysis)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="970" y="270" width="250" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="n8" value="可視化生成&#10;(Plotly / Matplotlib / WordCloud)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="970" y="370" width="250" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="n9" value="partials/*.html を返却&#10;panel-content 差し替え表示" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="650" y="420" width="260" height="70" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="e1" style="endArrow=block;html=1;rounded=0;" edge="1" parent="1" source="n1" target="n2">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e2" style="endArrow=block;html=1;rounded=0;" edge="1" parent="1" source="n2" target="n3">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e3" style="endArrow=block;html=1;rounded=0;" edge="1" parent="1" source="n3" target="n4">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e4" style="endArrow=block;html=1;rounded=0;" edge="1" parent="1" source="n4" target="n5">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1040" y="250"/>
+              <mxPoint x="465" y="250"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e5" style="endArrow=block;html=1;rounded=0;" edge="1" parent="1" source="n5" target="n6">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e6" style="endArrow=block;html=1;rounded=0;" edge="1" parent="1" source="n6" target="n7">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e7" style="endArrow=block;html=1;rounded=0;" edge="1" parent="1" source="n7" target="n8">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e8" style="endArrow=block;html=1;rounded=0;" edge="1" parent="1" source="n8" target="n9">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="920" y="455"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e9" value="次のタブ操作で繰り返し" style="endArrow=block;html=1;rounded=0;dashed=1;strokeColor=#666666;" edge="1" parent="1" source="n9" target="n6">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
