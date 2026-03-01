@@ -1,17 +1,30 @@
 # twilog-csv-analytics-toolkit
 ![Twilog Analytics App](https://raw.githubusercontent.com/TweeTeaFOX223/twilog-csv-analytics-toolkit/refs/heads/main/docs/app1.png)
 
-X(旧Twitter)のツイートを保存する「Twilog」から出力した自分のポストデータを分析するGUIアプリ。htmx・FastAPI。自分のTwitter歴の振り返りに有用。
+  
+## 概要
+X(旧Twitter)のツイートを保存する「Twilog」から出力した自分のポストデータを分析するGUIアプリ。htmx・FastAPI。自分のTwitter歴の振り返りに有用。思い付いた限りの全ての分析手法を入れた。    
+  
+[「FastAPI + htmxが最強説」- AIエンジニアがモック作るならReactは不要、Streamlitも捨てよう](https://zenn.dev/livetoon/articles/04dccf642d324c)の記事を見て、htmx・FastAPIを実際に試すために作成した。AIエージェントとしてGPT-5.3-Codexを使用している。    
 
-
-
+ほぼ同じUIを持つアプリをStreamlitで作成したことがあるが、それと比べると「レンダリング順序と状態管理」が非常に簡単だった。→「[bookmark-analytics-toolkit > streamlitのUI作成(地獄)](https://github.com/TweeTeaFOX223/bookmark-analytics-toolkit?tab=readme-ov-file#streamlit%E3%81%AEui%E4%BD%9C%E6%88%90%E5%9C%B0%E7%8D%84)」を参照。  
+  
 ## uvでの実行方法
 - 依存インストール: `uv sync`
 - 開発サーバ: `uv run uvicorn app.main:app --reload`
 - テスト実行: `uv run pytest -q`
 
 ## プロジェクト構成と動作概要
-
+  
+### 技術スタック
+- 言語：Python
+- パッケージ管理：uv
+- AIエージェント：GPT-5.3-Codex
+- アプリ: FastAPI + Jinja2 + HTMX（SSR + 部分更新）
+- データフレーム: Polars
+- 形態素解析: SudachiPy + sudachidict-full
+- 可視化: Plotly / Matplotlib / WordCloud
+  
 ### ディレクトリ構成（役割）
 - `app/main.py`  
   FastAPIアプリのエントリポイント。`/static` をマウントし、`app/routes/views.py` のルーターを登録。
@@ -34,12 +47,7 @@ X(旧Twitter)のツイートを保存する「Twilog」から出力した自分�
 3. `dashboard.html` を表示し、分析タブはHTMXで `/partials/*` を順次取得。
 4. 各 `/partials/*` で `analysis` 層の集計結果を作成し、`visualization` 層でグラフ仕様/画像を生成。
 5. パーシャルHTMLを差し替え描画し、ページ全体リロードなしでパネルを切り替え。
-
-### 技術スタック
-- ウェブ: FastAPI + Jinja2 + HTMX（SSR + 部分更新）
-- DataFrame: Polars
-- 形態素解析: SudachiPy + sudachidict-full
-- 可視化: Plotly / Matplotlib / WordCloud
+  
 
 ## 機能一覧
 
