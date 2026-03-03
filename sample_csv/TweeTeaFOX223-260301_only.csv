@@ -1,0 +1,667 @@
+"2027960832928501907","https://x.com/TweeTeaFOX223/status/2027960832928501907","2026-03-01 13:15:14","Next.jsのリポジトリに入ってるテストスイート(13708のテストケース全部)ではなく、Cloudflareがvinext用に独自で作ったチェックリストの中で94%を通過…ということか
+
+next.js/test at canary · vercel/next.js · GitHub
+https://github.com/vercel/next.js/tree/canary/test","1"
+"2027958688645079397","https://x.com/TweeTeaFOX223/status/2027958688645079397","2026-03-01 13:06:43","Vercel社のNext.js開発者の人が、Cloudflare社の人に引用ポストで「vinextのNext 16のテスト94%突破は実態と違うよ～」って言ってる感じなのね。ちゃんとしたテストが用意されていても「AIを使って一週間実装！」というのはまだ難しいのかな https://twitter.com/feedthejim/status/2027156055617364272","1"
+"2027937419765682686","https://x.com/TweeTeaFOX223/status/2027937419765682686","2026-03-01 11:42:12","vinextの説明見たけど「Cloudflare WorkersでのISRに対応(デフォルトはCloudflare KV)」「CacheHandlerがNext.js 16と互換性あるので、R2,Redis, DynamoDB等も使えます」って感じか。「Cloudflare Workers・OpenNext・ISR(R2使用)」からの移行も簡単?
+https://blog.cloudflare.com/vinext/#deploying-to-cloudflare-workers
+https://github.com/cloudflare/vinext?tab=readme-ov-file#caching https://twitter.com/TweeTeaFOX223/status/2001536942752829715","1"
+"2027926531427995980","https://x.com/TweeTeaFOX223/status/2027926531427995980","2026-03-01 10:58:56","海外CTFでAI使用前提なのは知らなかった。今後は難易度が高くない脆弱性はAIの物量で発見するのが基本になってくのかな？→「並列数は30×4の120並列で実施しました」
+
+【優勝🥇】防衛省サイバーコンテストをAIで攻略した話 https://qiita.com/satoki/items/955302bf2615813bae5a","1"
+"2027919453300904061","https://x.com/TweeTeaFOX223/status/2027919453300904061","2026-03-01 10:30:49","自分(T2フォックス)のホームページです。内容→「プロフィール・公開中のアプリ・開発方針&amp;振り返り・雑多な記事・技術の記事・GitHubリポジトリ検索」
+https://home.t2fox.workers.dev/","1"
+"2005386135930061302","https://x.com/TweeTeaFOX223/status/2005386135930061302","2025-12-29 06:11:27","日本国内で↓の投稿分析が行われた事例ってあるのだろうか？4chanは公式API利用時の承諾が不要だから気軽に出来そう。英語だと分析論文多いみたい（4chan内の政治思想に関するものが多い
+
+SNS＆電子掲示板の投稿検索/取得のAPIで珍しいやつメモ「4chan・TikTok・Instagram」
+https://zenn.dev/tweeteafox300/scraps/d5ff2aab647d45","1"
+"2005383746548371841","https://x.com/TweeTeaFOX223/status/2005383746548371841","2025-12-29 06:01:58","爆サイ、下記記事の通りで投稿されてる内容が色々と…なので表で評価することが困難なサービスだが、日本国内のSNS/電子掲示板の中で利用者数上位な方なので、SNS投稿分析の研究として注目。
+
+爆サイ.com - Wikipedia
+https://ja.wikipedia.org/wiki/%E7%88%86%E3%82%B5%E3%82%A4.com
+爆サイとは- ニコニコ大百科
+https://dic.nicovideo.jp/a/%E7%88%86%E3%82%B5%E3%82%A4","1"
+"2005381656782500248","https://x.com/TweeTeaFOX223/status/2005381656782500248","2025-12-29 05:53:39","npmのプロジェクトのライセンス管理、license-reportとgenerate-license-fileを使おうかなと思ってたが、このパッケージ「license-output」が一番良さそうね
+
+node_modules を直接走査してレビューしやすいサードパーティライセンス生成 CLI を作った｜myooken https://zenn.dev/kyoten/articles/4cf2e638bb0dcd #zenn","1"
+"2005380654058590478","https://x.com/TweeTeaFOX223/status/2005380654058590478","2025-12-29 05:49:40","爆サイ運営が学術研究協力は意外すぎるな。おそらく日本国内のSNS？というか電子掲示板の中で最も混沌な所だけどどんな結果出るだろうか？
+
+爆サイ.com | 筑波大学と社会研究開始 ～数十億件の投稿を分析し、オンラインにおける選挙言説・プロパガンダの実態の解明を目指す～
+https://bakusai.com/press/20251104/","1"
+"2004346996115886360","https://x.com/TweeTeaFOX223/status/2004346996115886360","2025-12-26 09:22:17","CodexもClaude CodeもAntigravityも、Web検索を有効して使う場合、読んだサイトに書いてある変な命令を実行してしまうリスクはまだあるのね。公式の対策あるから安心って訳ではないと
+
+間接的プロンプトインジェクション攻撃の実践的検証：基本攻撃から高度な攻撃パターンまで
+https://zenn.dev/maikushimomi/articles/cbaa9d77d7d267","1"
+"2003756503946453216","https://x.com/TweeTeaFOX223/status/2003756503946453216","2025-12-24 18:15:53","ClaudeのProプランの週制限がキツく感じたので、ChatGPT Plusプランも契約して週制限の違いをお試し中。自分の使い方の問題かもしれないが、Claude Codeは2～3日で週制限に達する一方で、Codexは7日ずっと使っても50%ぐらいしか消費しなかった。今低コストで使いまくりたいならCodexの方が良さそう","1"
+"2003751613337657756","https://x.com/TweeTeaFOX223/status/2003751613337657756","2025-12-24 17:56:27","GrokのWeb検索機能、Grokipediaのプログラミング関係の自動生成記事を適当に見た限りでは、ChatGPTやClaudeのそれと同等の性能はあるように感じた。「Xのポスト検索→数千件のポストを要約、重要度高いのはURL提示」とかできたら面白いのだけどなあ
+
+TypeScript：Grokipedia
+https://grokipedia.com/page/Typescript","1"
+"2003748232892141575","https://x.com/TweeTeaFOX223/status/2003748232892141575","2025-12-24 17:43:01","GrokはXのポスト検索が可能な唯一のAIサービス ＝ Web検索用途で使うならかなり良い感じなのでは？と考えたことあったが、現状だと検索数制限が厳しすぎて実用性は無い感じなのか
+
+Grok の Live Search は X の検索APIみたいに使えるのか？｜blue.pen5805 https://zenn.dev/blue_pen5805/articles/c8fccf7ca5b0a6 #zenn","1"
+"2003743201459572847","https://x.com/TweeTeaFOX223/status/2003743201459572847","2025-12-24 17:23:01","2025年3月6日の古い記事だが、当時のモデル(ChatGPT・Perplexity・Copilot・Gemini・DeepSeek、Grok)に対して、「Web検索機能で捏造せず正しく引用できるか？」を比較した記事発見。現在だと全然違う結果と思われる
+
+AI検索には引用問題がある：8種のAI検索エンジンを比較
+https://www.cjr.org/tow_center/we-compared-eight-ai-search-engines-theyre-all-bad-at-citing-news.php","1"
+"2003741755104198860","https://x.com/TweeTeaFOX223/status/2003741755104198860","2025-12-24 17:17:16","「Web検索機能で検索結果上位の情報を取らせる→ソース引用含む回答をさせる」という用途に強いAIサービスは現状どれなんだろう？今はGPT5.2、Sonnet 4.5でやってるが、どっちもインライン引用リンク先の内容を捏造することが時々ある(指摘して詰めると無いって認める)","1"
+"2003137136388972749","https://x.com/TweeTeaFOX223/status/2003137136388972749","2025-12-23 01:14:44","プログラミングに限らず、創作では以下の工夫が重要だなと感じた。→チームの情報共有/コミュの体制、企画考案/技術選定の体制、プレゼン/広報、被評価と改善、同業者との交流…など
+
+実装までにする7つの企画作業 
+https://yusukebe.com/posts/2012/0507112346/
+ハッカソンにおける技術の「外側」
+https://note.com/rkita_12/n/ndaa6c199c713","1"
+"2003123203552768096","https://x.com/TweeTeaFOX223/status/2003123203552768096","2025-12-23 00:19:22","「RSCを活用したSPA」を作る場合、Next.js(Static Exports)を含め選択肢として良い感じなのは現状どれなんだろう？
+
+脆弱性が怖い人でもRSCを活用する方法
+https://qiita.com/uhyo/items/cd5f8e6d55433286826e","1"
+"2002011503080452316","https://x.com/TweeTeaFOX223/status/2002011503080452316","2025-12-19 22:41:52","AIエージェント関連のツイート、あまりにも数が多すぎる＋概要紹介のような投稿が多い関係で、適当にX検索をやっても欲しい情報を得るのが難しいな。「人気がありすぎる話題」のことを検索するのは難易度が高い","1"
+"2001998574507471321","https://x.com/TweeTeaFOX223/status/2001998574507471321","2025-12-19 21:50:30","WindowsのVSCodeでGPT‑5.2-Codex使ってみたが、日本語の書き込みで文字化けした＋作業が異常に遅い(Claudeの半分ぐらい)。 →これ見てデフォルトターミナルをPowerShell 7(https://learn.microsoft.com/ja-jp/powershell/scripting/install/install-powershell-on-windows?view=powershell-7.5)に変更したら文字化け直った＋速度もClaude並になった
+
+Codexの文字化け対策
+https://note.com/aiaicreate/n/n42a8214528e8","1"
+"2001922470182572271","https://x.com/TweeTeaFOX223/status/2001922470182572271","2025-12-19 16:48:05","Vue.js、公式ドキュメントを見たがトランジションを使えば追加ライブラリ無しで良い感じのアニメーションが作れるらしい？→なのでデザイン重視のゲーム公式サイトでの採用率が高い？という仮説を立てた。どうだろう
+
+トランジション | Vue.js
+https://ja.vuejs.org/guide/built-ins/transition.html","1"
+"2001920018184048908","https://x.com/TweeTeaFOX223/status/2001920018184048908","2025-12-19 16:38:20","Wappalyzerでスマホ向けゲーム公式サイトの使用技術を色々と見てみたのが、Vue.js/Nuxt.jsの使用率が若干高い気がする。何か理由があるのかな？自分で少し調べた限りでは「トランジションでアニメーションが作りやすいから」と予測
+
+Vue 3のトランジションについて調べてみた
+https://zenn.dev/shunsuke_stack/articles/aaa4d386788a0f","1"
+"2001910430021882193","https://x.com/TweeTeaFOX223/status/2001910430021882193","2025-12-19 16:00:14","認証やISR的なことをやる場合、現状だと関連パッケージ数やネット情報量的に、Next.jsと比較して難しい部分が多く見える(素人並の感想)が…。内部の仕組みがセキュリティ的に安全というのは魅力的だなあ
+
+Astroでreact2shellのような脆弱性が起きない理由
+https://zenn.dev/reyalka/articles/63bb023051afcd","1"
+"2001887730259894571","https://x.com/TweeTeaFOX223/status/2001887730259894571","2025-12-19 14:30:02","WebhookやCloudflare Cache APIを上手く使えば、Astro.jsのSSRモードで、Next.jsのようなキャッシュができるのか
+
+Astro + Cloudflare WorkersでOn-demand ISRみたいなことをする｜TP https://zenn.dev/trpd/articles/ondemand-isr-astro #zenn","1"
+"2001766244295545112","https://x.com/TweeTeaFOX223/status/2001766244295545112","2025-12-19 06:27:18","これ正常な動作だった。Bash実行失敗は昔に自分が「~/.bash_profile」にexec winpty bashと書いてたのが原因だった。最近はGit Bash使ってないので戻した
+
+Git Bashのttyで怒られないように
+https://qiita.com/amanoese/items/7b237e8703c3b4c7f001 https://twitter.com/TweeTeaFOX223/status/1996320836949881060","1"
+"2001643042412048766","https://x.com/TweeTeaFOX223/status/2001643042412048766","2025-12-18 22:17:44","TwilogでDLできる自分の全ポスト(全ツイート)のログデータ(CSV)。これを対象に統計の分析・グラフの可視化をやるみたいなアプリ/スクリプトがあるか探したけど無いっぽいな？話題のFastAPI + htmxと、Codexの使用テストで作ってみるか
+https://twilog.togetter.com/page-help#h250","1"
+"2001539112826998893","https://x.com/TweeTeaFOX223/status/2001539112826998893","2025-12-18 15:24:45","Cloudflare Workersにデプロイする用のNext.js(OpenNext)で『ISR』を使うのに必要な、キャッシング設定(Cloudflare R2のみ対応)に関する説明は、OpenNext公式ドキュメントのここに書いてある（見つけるのに地味に時間かかったのでメモ）
+
+OpenNext：Cloudflare &gt; Caching
+https://opennext.js.org/cloudflare/caching https://twitter.com/TweeTeaFOX223/status/2001536942752829715","1"
+"2001536942752829715","https://x.com/TweeTeaFOX223/status/2001536942752829715","2025-12-18 15:16:08","メモ：CloudflareでR2バケット作成→Next.jsのopen-next.config.tsとwrangler.jsoncを少し設定するだけで、Next.jsのISRは簡単に使える
+
+Cloudflare × Next.js SSG・SSR・ISRをデプロイ
+https://qiita.com/sattoon/items/bdb66ee327741b777aaf#%E3%83%AD%E3%83%BC%E3%82%AB%E3%83%AB%E3%81%A7isr%E3%81%AE%E8%A8%AD%E5%AE%9A%E3%82%92%E3%81%99%E3%82%8B
+🍞 Next.js を OpenNext で Cloudflare Workers にデプロイする
+https://zenn.dev/taksnr/articles/5b4108ad14fcad#isr-(incremental-static-regeneration)%E3%81%A3%E3%81%A6%E4%BD%95%EF%BC%9F","1"
+"2001534756274786658","https://x.com/TweeTeaFOX223/status/2001534756274786658","2025-12-18 15:07:27","Cloudflare Workers用のモノレポの「Hono.js ＆ Next.js」のサンプルで良さそうなのを発見
+
+imkeanserna/cloudflare-turbo-stack
+https://github.com/imkeanserna/cloudflare-turbo-stack
+Cloudflare Workers, D1, Hono, Next.jsを使ってちゃんと使えるアプリを作成する
+https://zenn.dev/fatricepaddyy/books/cf_sample_app https://twitter.com/TweeTeaFOX223/status/2001471543050932265","1"
+"2001471543050932265","https://x.com/TweeTeaFOX223/status/2001471543050932265","2025-12-18 10:56:16","諸々見てると、TypeScript限定の個人開発だと、「サーバー:Hono.js(DB操作や認証等・RPC使用)」と、「フロント:任意のSPA or SSRの何か(BFF・API呼ぶだけ」を、モノレポ管理するのが開発体験・デプロイ先・ミス対策的に安定かな？Next.jsフルスタックはサーバー/クライアント境界線のミスが怖い感ある https://twitter.com/TweeTeaFOX223/status/2000913913064640871","1"
+"2000962696146284951","https://x.com/TweeTeaFOX223/status/2000962696146284951","2025-12-17 01:14:17","C#のBlazor Serverのデプロイ先、ClaudeのWeb検索でザッと調べた感じだと「Azure App Service」と「Fly .io」が運用コスト安価で扱い簡単らしい?これらへのBlazor Serverのアプリのデプロイに関する日本語情報は少ないみたいなので時間あったら実際に試して記事書いてみるかも
+https://claude.ai/share/70f8fa79-4230-4b0f-8142-e218a61510fb","1"
+"2000956504309137757","https://x.com/TweeTeaFOX223/status/2000956504309137757","2025-12-17 00:49:41","C#のBlazor Serverでのフルスタック、Next.js/RSCでのフルスタックと比較しても同じぐらいに作りやすそうで良さげだけど…。Next.js/RSCにおけるVercelやWorkersのような「扱いが簡単・運用コストが安い（無料枠が多い）・日本語情報が多い」というデプロイ先が現状無いっぽい？のが少しだけネック https://twitter.com/TweeTeaFOX223/status/1960839794151579769","1"
+"2000913913064640871","https://x.com/TweeTeaFOX223/status/2000913913064640871","2025-12-16 22:00:26","これ読んだ時にも思ったが、私のような「個人開発者で経験浅い→うっかりミスする可能性高い」が、認証機能あるサイトを作る場合、どんな技術とサーバー構成が安定なんだろうか？というのは無限に考えさせられる(難しい
+
+【感想】Next.js は手に余るから初心者に推奨できない
+https://qiita.com/tomy0610/items/f07d586c08a0a2aadb01","1"
+"2000890313280512336","https://x.com/TweeTeaFOX223/status/2000890313280512336","2025-12-16 20:26:40","TypeScriptオンリーでのアプリ開発、Cloudflare Workers(運用コスト安い)との相性の関係で 「Hono.js＋色々」と「Next.js/RSCでフルスタック」を重点的にやってるが…。VPSや自前鯖ならこれも選択肢として良さそう
+
+「とりあえずNext.js」をやめてBetter-T-Stackを試してみた
+https://zenn.dev/appleworld/articles/567515443c85a3","1"
+"2000867939810206065","https://x.com/TweeTeaFOX223/status/2000867939810206065","2025-12-16 18:57:45","API設計＋Nuxt.jsのSSRが関係してたのか…。今話題の「Next.js/RSCはBFFとして使用、ログイン認証やDB操作は別のバックエンド鯖にAPI作る」でミスった事例がこれか。こういうのあるので「認証するならSPA (CSR)」って意見がある感じ？
+
+noteで執筆者のIPアドレスが漏洩した件
+https://boscono.hatenablog.com/entry/2020/08/16/232233","1"
+"2000841783459381575","https://x.com/TweeTeaFOX223/status/2000841783459381575","2025-12-16 17:13:49","「SmoothCSV」使ってるがサイズが1GBぐらいまでのCSVの閲覧/編集なら一番！という印象。SQLのクエリ使えるのは本当に便利すぎる
+
+超巨大なCSV(数GB～16TB、数百万～数億行)の閲覧だけは「EmEditor Free」使う。編集をする必要あるならPythonのデータ系ライブラリでやってる
+https://jp.emeditor.com/text-editor-features/large-file-support/files-up-to-248gb/ https://twitter.com/TweeTeaFOX223/status/1965591660458619334","1"
+"2000825153740329447","https://x.com/TweeTeaFOX223/status/2000825153740329447","2025-12-16 16:07:44","FirefoxのIDパスワードの保存＆自動入力機能は2004年のv0.1の時点で存在していた。
+https://website-archive.mozilla.org/www.mozilla.org/firefox_releasenotes/en-us/firefox/releases/0.10
+
+偽スラドのドメインは2015年に「srad jp」に移転する前の旧ドメイン「slashdot jp」。2015年以前にスラドに垢持ってた人＋Firefoxユーザーは気をつける必要ある。
+https://internet.watch.impress.co.jp/docs/yajiuma/2071555.html","1"
+"2000822446228955582","https://x.com/TweeTeaFOX223/status/2000822446228955582","2025-12-16 15:56:59","「スラド垢を持っていた＋Firefoxのパスワードマネージャにログイン情報を保存していた」かつ『他のサービスでもスラド垢と同じIDパスワードを使ってる』って人が、例のスラド偽サイトにFirefoxでアクセスするとIDパスを盗られて、他サービスで不正アクセスの可能性あるってことか → パス流用は危険 https://twitter.com/HiromitsuTakagi/status/2000592873667125570","1"
+"2000470294562300035","https://x.com/TweeTeaFOX223/status/2000470294562300035","2025-12-15 16:37:39","音ゲーのosu!のGitHubリポジトリ(C#)、何となくDeep WikiでURLを入力してみたら既にドキュメントが生成されていて解説が読めた。C#の知識ないけど「ユーザーインターフェース描画」「ビートマップのデータ管理」の仕組みがちょっとわかったので面白かった
+
+ppy/osu | DeepWiki
+https://deepwiki.com/ppy/osu","1"
+"2000443550626984143","https://x.com/TweeTeaFOX223/status/2000443550626984143","2025-12-15 14:51:23","React脆弱性の件を調べていたら今更気づいたけど、GitHubのDependabotってFreeプランでも無料で制限無しで使えるのか。Pro限定だと思い込んでいた
+https://github.co.jp/pricing.html
+
+公式コミュニティ見たがリポジトリがパブリックだと完全無料、プライベートだとActionsの分数消費か
+https://github.com/orgs/community/discussions/171374 https://x.com/TweeTeaFOX223/status/2000443550626984143/photo/1","1"
+"2000403760691184078","https://x.com/TweeTeaFOX223/status/2000403760691184078","2025-12-15 12:13:16","自分のブックマークデータを何かに利用したい人の役に立ちそうなのでnoteに記事を出してみた
+
+ブラウザのブックマークをCSV・JSONのファイルに変換できるフリーソフト「WebBrowserBookmarksView(NirSoft)」の紹介
+https://note.com/tweeteafox300/n/n30167316af05","1"
+"2000268836948602892","https://x.com/TweeTeaFOX223/status/2000268836948602892","2025-12-15 03:17:08","「複雑なUIが必要になってもAPI設計あるのでReact移行容易」というのはすごく良いな。個人用ツールでもGradio/Streamlitで実装困難なUI足す可能性が少しでもあるなら採用ありかも
+
+「FastAPI + htmxが最強説」- AIエンジニアがモック作るならReactは不要、Streamlitも捨てようhttps://zenn.dev/livetoon/articles/04dccf642d324c","1"
+"2000235084801363995","https://x.com/TweeTeaFOX223/status/2000235084801363995","2025-12-15 01:03:01","scikit-learnの異なるモデルをfit()とpredict()で使えるやつがこのパターンなのか
+
+俺が一番好きなデザインパターン「Strategy Pattern」の話｜かみけん https://zenn.dev/zozotech/articles/204d6bfe2e4314 #zenn","1"
+"2000233755722838431","https://x.com/TweeTeaFOX223/status/2000233755722838431","2025-12-15 00:57:44","PC内に設定保存するデスクトップ版も作ってみた →プロファイル切り替え＆指定ブラウザで起動する機能も追加。複数のブラウザでの同時起動やシークレットモード使用を想定
+
+技術スタック：サーバーはHono.js、ブラウザ間の設定同期はSocket .IO、exeファイル化はNode.js SEA
+https://github.com/TweeTeaFOX223/WDIMS-desktop-by-sea https://x.com/TweeTeaFOX223/status/2000233755722838431/photo/1 https://twitter.com/TweeTeaFOX223/status/1998498985317986794","1"
+"1998501683727646915","https://x.com/TweeTeaFOX223/status/1998501683727646915","2025-12-10 06:15:06","World Dev Info Meta Searcher（WDIMS）のソースコード。ブラウザからfileプロトコルで直接開くだけで動作する単一HTMLも置いてある(GitHub Pages上ではなくローカルでの動作が可能)。Preact使用なのでサイズは100KB程度で軽量
+
+TweeTeaFOX223/world-dev-info-metasearcher 
+https://github.com/TweeTeaFOX223/world-dev-info-metasearcher","1"
+"1998498985317986794","https://x.com/TweeTeaFOX223/status/1998498985317986794","2025-12-10 06:04:23","世界の開発技術＋αの情報を素早く検索するためのメタ検索エンジンアプリを作ってみた。UI表示の調節＆検索エンジンやタブの追加と編集と位置移動＆設定のインポート/エクスポートが可能。設定保存先はブラウザのローカルストレージ
+
+World Dev Info Meta Searcher（WDIMS）
+https://tweeteafox223.github.io/world-dev-info-metasearcher/?tab=tech-blogs&q=Preact https://x.com/TweeTea277/status/1998498985317986794/photo/1","1"
+"1997823959442874876","https://x.com/TweeTeaFOX223/status/1997823959442874876","2025-12-08 09:22:04","バックエンドで高度な処理をしないのであれば、Rustが書けなくても使える感じなのか
+
+[TSKaigi2025] TypeScript だけを書いて Tauri でデスクトップアプリを作ろう (記事版)｜tris https://zenn.dev/tris/articles/tskaigi2025-tauri-with-only-ts #zenn","1"
+"1997817246979407887","https://x.com/TweeTeaFOX223/status/1997817246979407887","2025-12-08 08:55:23","ブラウザ拡張機能開発＆公開をやってみようと思って色々調べたが、どのブラウザのストアにも「拡張機能のソースコードの公開＆真正性を担保する機能」は現状ないのか
+
+拡張機能経由の乗っ取り盗難被害が多い中、自分のような無名開発者が公開しても信用＆追加してもらうのは難易度高そうな感じあるな…","1"
+"1997301198848950669","https://x.com/TweeTeaFOX223/status/1997301198848950669","2025-12-06 22:44:48","カトホーム(有名配信者さんの配信状況を確認できる&amp;通知してくれるアプリ)、クライアントがFlutter(Dart)だと界隈の人から聞いたことがあった。調べたらサーバー構成含む技術情報が公開されてた
+https://blog.katohome.jp/entry/profile
+
+カトホームの技術構成2024冬｜ちょうげ(pixivFANBOX)
+https://chougegege.fanbox.cc/posts/8882449","1"
+"1996776651058041167","https://x.com/TweeTeaFOX223/status/1996776651058041167","2025-12-05 12:00:26","シークレットモードだとlocalStorageは閉じる度に全部消える。複雑な設定をlocalStorageで管理する場合、シークレット使用者を想定してファイル保存を可能にした方がいいかも？
+
+ブラウザストレージ比較：localStorage、Cookie、IndexedDBの選び方｜株式会社くりぼー https://zenn.dev/crebo_tech/articles/article-0019-20251103 #zenn","1"
+"1996773510933561542","https://x.com/TweeTeaFOX223/status/1996773510933561542","2025-12-05 11:47:57","ブラウザブックマークの分析＆可視化をやるなら項目はこれぐらいかな？という印象。SudachiPyの試用をしつつ年単位のブクマ分析で過去振り返りできたので個人的には満足
+
+WebBrowserBookmarksViewのCSV/JSON変換に依存しているので、これか各ブラウザ本体のブクマ仕様に変化あったら使えなくなるかも https://x.com/TweeTea277/status/1996773510933561542/photo/1","1"
+"1996519014387098006","https://x.com/TweeTeaFOX223/status/1996519014387098006","2025-12-04 18:56:41","WebBrowserBookmarksView (NirSoft)で出力したブラウザブックマークのCSV/JSONを分析する用のGUIアプリ(Streamlit)を、Claude Code on Desktopのお試しで作ってみた。数年前の自分のブクマ歴を可視化すると結構面白い
+
+Bookmark Analytics Toolkit (BAT)
+https://github.com/TweeTeaFOX223/bookmark-analytics-toolkit","1"
+"1996375267754025137","https://x.com/TweeTeaFOX223/status/1996375267754025137","2025-12-04 09:25:29","Next.jsのアプリをVPSや自前鯖でセルフホストしている人は即刻対応しないとヤバいやつだ https://twitter.com/nextjs/status/1996258069639246082","1"
+"1996367745836061155","https://x.com/TweeTeaFOX223/status/1996367745836061155","2025-12-04 08:55:35","「精度or速度は落ちてもいいから、辞書ファイルのサイズを100MBぐらいまでに抑えたい」って条件も加えるなら、SudachiPy＋Dictのsmalll:100MBか、Janome(おおよそ100MB)のどちらかになってくる？この2つを比較した記事とかあるかな？
+https://github.com/mocobeta/janome","1"
+"1996367300371661159","https://x.com/TweeTeaFOX223/status/1996367300371661159","2025-12-04 08:53:49","2025年現在、Pythonでお手軽に形態素解析をしたい場合、「辞書をpipで準備可能・ある程度は高速」を重視するならこの辺が選択肢になるのかな？
+
+fugashi＋unidic-lite(250MB) 
+https://github.com/polm/fugashi
+SudachiPy＋SudachiDict(おおよそsmall:100MB、core:200MB、full:300MB) 
+https://github.com/WorksApplications/SudachiPy/blob/develop/docs/tutorial.md","1"
+"1996322381930086621","https://x.com/TweeTeaFOX223/status/1996322381930086621","2025-12-04 05:55:20","Claude Code CLIの方もWindows環境での不具合発生報告のIssueが複数件出ているみたい。議論の内容を見たけど自分のCLIツール知識では理解が難しい…。「WSLのLinux環境じゃないと不安定」って感じなのかな？
+
+[Bug] Claude Code freezes intermittently on Windows Terminal
+https://github.com/anthropics/claude-code/issues/12299","1"
+"1996320836949881060","https://x.com/TweeTeaFOX223/status/1996320836949881060","2025-12-04 05:49:12","WindowsのClaude Desktop内で直接使用可能になったClaude Code試してみたが「Bash実行が全部失敗。bash.exeが大量起動して時々フリーズ。ReadとEditは成功するので最終的に完成はする」って感じだな
+
+GitHubにWindows環境での同じ現象のIssueが大量に出てるのでアプデ修正待つ
+https://github.com/anthropics/claude-code/issues/12636 https://x.com/TweeTea277/status/1996320836949881060/photo/1","1"
+"1995823811967812002","https://x.com/TweeTeaFOX223/status/1995823811967812002","2025-12-02 20:54:12","WebBrowserBookmarksView (NirSoft)、起動すると自動的にPC内のブクマ情報を全読み取りする→Ctrl+Aで全選択して左上の保存ボタンを押すと全部のブラウザブックマークをCSVやTSVやJSONに変換してエクスポートできる。カラム情報の確認したがちゃんとブクマの全データが含まれていた。 https://x.com/TweeTea277/status/1995823811967812002/photo/1","1"
+"1995818452351930764","https://x.com/TweeTeaFOX223/status/1995818452351930764","2025-12-02 20:32:54","ブラウザ(Chrome・Firefox)のブックマークの全データ(タイトル・URL・フォルダ名・フォルダパス・位置・作成日時・変更日時・固有ID等)を、CSVかTSVに出力するフリーソフト発見。ローカルでPython使って分析するならこれ使うのが良さそう
+
+WebBrowserBookmarksView (NirSoft)
+https://www.nirsoft.net/utils/web_browser_bookmarks_view.html https://twitter.com/TweeTea277/status/1995810613034189187","1"
+"1995812201312256310","https://x.com/TweeTeaFOX223/status/1995812201312256310","2025-12-02 20:08:03","プライバシーのこと(開発者がブクマを勝手に取得して閲覧しないか？)を考慮すると、開発者情報が曖昧なブラウザ拡張機能を利用するより、ブックマークデータを生成AIに解析させる方が、運営の信用的には無難かもしれない？
+
+Chromeのブックマークを整理するGPTsつくってみた
+https://zenn.dev/ap_com/articles/bookmark-management-with-gpts","1"
+"1995810613034189187","https://x.com/TweeTeaFOX223/status/1995810613034189187","2025-12-02 20:01:45","ブラウザのブックマークの統計情報を分析するようなChrome拡張機能あるかな？と思って探したらあった。利用者数少ない＋プライバシー的なこと(開発者がブクマ内容見れるか？)はわからない
+
+Bookmark Remainder and Manager Pro
+https://chromewebstore.google.com/detail/bookmark-remainder-and-ma/kmbddcbmgnniadjbfbcalifdnaehicko
+Bookmarks Analysis
+https://chromewebstore.google.com/detail/bookmarks-analysis/ailmlmhbdjgkfadgglhnkhjnoakblkkn https://twitter.com/TweeTea277/status/1907772923743711270","1"
+"1995724916537106802","https://x.com/TweeTeaFOX223/status/1995724916537106802","2025-12-02 14:21:13","AI関係でよく見る「SearXNG」というメタ検索エンジン、公式のインスタンスリスト(https://searx.space/)から試してみたが、「各サービスの検索結果URLを表示」ではなく、「複数の検索エンジンでの検索結果を混合して表示」ってタイプか
+
+メタ検索エンジン「SearXNG」を試す
+https://zenn.dev/kun432/scraps/26fe53e6ae51f4 https://twitter.com/TweeTea277/status/1995427941472432560","1"
+"1995437222427066548","https://x.com/TweeTeaFOX223/status/1995437222427066548","2025-12-01 19:18:01","設定不要で使えるメタ検索エンジン、日本政府公式・政治経済金融・ショッピング・報道各社のサイト検索では「最速一括検索」が最推し。ありとあらゆる所の検索を羅列していて最強すぎる
+https://skensaku.com/","1"
+"1995427941472432560","https://x.com/TweeTeaFOX223/status/1995427941472432560","2025-12-01 18:41:09","Perplexityの検索部分に使われてるやつがこれなのか
+
+SearXNGを用いたWebスクレイピングをしてみた｜NITI Technology https://note.com/niti_technology/n/n9b00aecfb159?sub_rt=share_pw","1"
+"1995364383032279374","https://x.com/TweeTeaFOX223/status/1995364383032279374","2025-12-01 14:28:35","世界中の検索エンジンの検索クエリのURLをまとめたリポジトリを見つけた。海外情報検索やメタ検索エンジン作成に使えそうで面白い
+
+davidshq / awesome-search-engines
+https://github.com/davidshq/awesome-search-engines
+matomo-org / searchengine-and-social-list 
+https://github.com/matomo-org/searchengine-and-social-list","1"
+"1995352759026209142","https://x.com/TweeTeaFOX223/status/1995352759026209142","2025-12-01 13:42:24","はてブ、noteやAmebaと違ってサイト内検索機能ないけどグーグル検索のsiteとOR使えばサイト内検索できるのか
+
+はてなブログだけを検索する
+https://trivial-pocket.hatenablog.jp/entry/2024/11/17/230145","1"
+"1995261607551885721","https://x.com/TweeTeaFOX223/status/1995261607551885721","2025-12-01 07:40:12","この部分も刺さりすぎた。完成前に開発ぶん投げたやつを思い出してみると「自分には役立たないだろな」と思いつつ作ったやつばかりだ…
+
+&gt;自分は欲しくないが、きっと売れるだろうみたいな壮大なアプリはお勧めしない","1"
+"1995253340016718312","https://x.com/TweeTeaFOX223/status/1995253340016718312","2025-12-01 07:07:20","開発で遊び始めた頃の初心を思い出した。「自分自身の課題解決や効率化のために作る」のは安定した面白さがある
+
+モチベという言葉を使うのをやめようの会 2025
+https://sizu.me/imaimai17468/posts/8d3b7uoiisz4 
+&gt; お勧めなのは一番のファンが自分になれるアプリを作ることだ。自分が必要だから作るので飽きることが基本ない","1"
+"1994129569390219585","https://x.com/TweeTeaFOX223/status/1994129569390219585","2025-11-28 04:41:53","Cloudflare WorkersにデプロイしているNext.jsのアプリで「開発環境だとエラー無し。本番環境だとReact error #418 が発生」となり困ってたが原因は↓と同じだった
+
+ハイドレーションエラーの原因は（デプロイ先の）タイムゾーンかも？new Dateなど日付データを扱う際の注意
+https://zenn.dev/benjuwan/articles/f02ceb81cd59f1","1"
+"1991858807757320413","https://x.com/TweeTeaFOX223/status/1991858807757320413","2025-11-21 22:18:41","Next.jsのfetchのheaderでUser-Agent未設定の場合、各環境でリクエストのUAがこうなる。GitHub API使うなら注意必要かも
+
+Vercel→「Next.js Middleware」
+https://github.com/vercel/next.js/issues/35546
+ローカルホストのNode.js→「undici」
+https://github.com/nodejs/undici/issues/2306
+Cloudflare Workers→UA無し
+https://community.cloudflare.com/t/how-to-fetch-as-client/396090","1"
+"1991854912003875001","https://x.com/TweeTeaFOX223/status/1991854912003875001","2025-11-21 22:03:12","GitHub APIを使うNext.jsのサイトをVercelからCloudflare Workersに移行したら「Vercelでは問題なく動いたのに、WorkersではGitHub APIへのリクエストが403になる」という現象が発生。原因調べたら↓と同じくfetchのheaderにUser-Agent未設定だったからと判明。初歩的なミス!
+https://qiita.com/takayukioda/items/af1738571b7b729feb44","1"
+"1986554187547877566","https://x.com/TweeTeaFOX223/status/1986554187547877566","2025-11-07 07:00:01","特定サービスの非公開APIを利用して何かするタイプの拡張機能、公式から厳しいNG対応が出る可能性は考える必要あるなと思った。今はセーフでもXのように運営の方針転換でNG化は有り得る
+
+「使ってたユーザー多分全員凍結してる」今のX凍結祭りの原因、OldTweetDeck説が浮上
+https://togetter.com/li/2624825","1"
+"1981302068951560323","https://x.com/TweeTeaFOX223/status/1981302068951560323","2025-10-23 19:09:58","StrapiというCMSも機能的に良い感じだが、公式FAQに「常時稼働サーバーとして動く構成なので、サーバーレス環境向けではありません」と書いてあった。絶対にCloudflare Workersにデプロイしたいって場合だとPayload CMSの方が良さそう
+https://docs.strapi.io/cms/faq#can-strapi-be-run-in-serverless-environments","1"
+"1981297074605084769","https://x.com/TweeTeaFOX223/status/1981297074605084769","2025-10-23 18:50:07","Payload CMS、「Next.jsでCMS機能あるサイトを作りたい＋Cloudflare Workersにデプロイしたい」って場合だと良い感じらしいが…。日本語情報が少ないので少し尻込み
+https://blog.cloudflare.com/payload-cms-workers/","1"
+"1978022670869393524","https://x.com/TweeTeaFOX223/status/1978022670869393524","2025-10-14 17:58:49","「""use server""; を付けるのはServer Actionsで外部から呼び出したい時」も絶対に忘れてはいけない…
+
+""use server"";を勘違いして使うと危ない｜zaru https://zenn.dev/moozaru/articles/c7335f66dfb8df #zenn","1"
+"1978022036359254267","https://x.com/TweeTeaFOX223/status/1978022036359254267","2025-10-14 17:56:17","Server Actions機能、コメにある「""use server""を使ってexportした時点でもうそれはAPI Endpoint」は本当に気をつける必要がある
+
+""use server""; でexportした関数が意図せず？公開される｜zaru https://zenn.dev/moozaru/articles/b0ef001e20baaf #zenn","1"
+"1977546180268896697","https://x.com/TweeTeaFOX223/status/1977546180268896697","2025-10-13 10:25:25","ClaudeのProプラン使ってるけど、数日前から使用量制限がかなり厳しくなってるような気がする。Sonnet4.5(じっくり考えるOFF)を20回ぐらい使うとセッション制限かかる
+
+この「Claude Codeの制限が厳しくなった」というのと関係あるやつかな？ https://twitter.com/sdrzn/status/1976958834074620309","1"
+"1977472024336605367","https://x.com/TweeTeaFOX223/status/1977472024336605367","2025-10-13 05:30:44","使用量やコンテキスト制限の関係で、現時点の生成AIにそのまま入力するのがキツいような「500MB以上～GB～TBクラスの巨大データ」から、Draw.​io用XMLへの変換に必要な部分だけを抽出するようなものなら、まだ需要ありそうと思ったけど、具体的に何のデータを対象にするのかが中々思い付かない","1"
+"1977464253042000214","https://x.com/TweeTeaFOX223/status/1977464253042000214","2025-10-13 04:59:52","生成AIが流行る前ぐらい(2021年頃)に、「何かしらのデータをDraw.​io用XMLに変換、編集可能なグラフにするアプリやライブラリ」を色々作ろうかなと考えてたことがあったけど、現在はこの通りでGPTやGeminiやClaude等に生データ入れるだけで出来るのでボツになった https://twitter.com/TweeTea277/status/1966602191537320318","1"
+"1970687349995810885","https://x.com/TweeTeaFOX223/status/1970687349995810885","2025-09-24 12:10:52","AIモード、自分も技術調査で試したが「ChatGPTやClaude等のWeb検索」よりも回答精度は劣る印象。「高速＆使用回数制限無し」なのは強い →重要度低い調査用・有料LLM使用制限中に使う用が適切？
+
+Google AIモードはChatGPT検索の代わりになるか?技術調査で徹底比較してみた
+https://zenn.dev/yksn/articles/a159f7260d4fc8","1"
+"1970678473040769203","https://x.com/TweeTeaFOX223/status/1970678473040769203","2025-09-24 11:35:36","何故か「AI モード」のタブが消える時あるが、このMeet AI ModeのURL「https://www.google.com/search?udm=50&aep=11」から飛ぶと使える
+
+【Google検索】AIモードが使えない問題について（「お使いのデバイスまたはアカウントでは、現在 AI モードをご利用いただけません」エラー等）
+https://did2memo.net/2025/09/10/google-search-ai-mode-tsukaenai-issue/ https://twitter.com/TweeTea277/status/1967012730352922777","1"
+"1967012730352922777","https://x.com/TweeTeaFOX223/status/1967012730352922777","2025-09-14 08:49:14","現時点では使用回数に制限がなくて、検索限定のGemini 2.5を無料で使い放題な状態だが…。今後もずっと無料のままなのかな？「ある程度浸透したら有料化」がありそうでちょっと怖い。
+
+Google検索における「AI モード」を日本語で提供開始
+https://blog.google/intl/ja-jp/products/explore-get-answers/ai-mode-search/ https://twitter.com/googlejapan/status/1966260464041574629","1"
+"1966619950472171795","https://x.com/TweeTeaFOX223/status/1966619950472171795","2025-09-13 06:48:28","Draw.​io拡張のGitHub見たら「分割編集可能です」とgifアニメ付き説明あった
+https://github.com/hediet/vscode-drawio?tab=readme-ov-file#editing-the-diagram-and-its-xml-side-by-side
+
+中身がXMLだけの「*.drawio」でのみ有効、他の編集可能ファイル形式(メタデータに図形情報保存)の「*.drawio.png」「*.drawio.svg」等では無効なのは忘れんようにしよう
+https://zenn.dev/kaakaa/articles/qiita-20200728-ff9ab5933cc0fb6fd8d8 https://twitter.com/TweeTea277/status/1966596300461535692","1"
+"1966607832544854517","https://x.com/TweeTeaFOX223/status/1966607832544854517","2025-09-13 06:00:19","今気づいたが、Draw.​io(diagrams.​net)のXMLデータの構造仕様の公式ドキュメントって現時点では公開されてないのか。生成AIに質問すると仕様情報出るので特に問題は無いが…
+
+公式Googleグループ見たが「2018年に作成作業が中断されてからそれっきり」という状況らしい
+https://groups.google.com/g/drawio/c/bSzneA2AzP0/m/u0rf1yMlBAAJ https://twitter.com/TweeTea277/status/1966602191537320318","1"
+"1966602191537320318","https://x.com/TweeTeaFOX223/status/1966602191537320318","2025-09-13 05:37:54","大体の状況は「生成AIにXML生成させてGUIエディタで微調整」だけで十分だろうけど、「手動でXMLのコードを書いて構造を作る」というのが有効な場面もあるかも？ 
+
+XML構造のガイドあるのでWebサイトのHTMLやJSXのような感覚で書けそう
+
+Draw.​io XML文書作成ガイド (フロー図)https://zenn.dev/centervil/articles/2025-03-14-drawio-xml-creation-guide","1"
+"1966596300461535692","https://x.com/TweeTeaFOX223/status/1966596300461535692","2025-09-13 05:14:30","このポストの画像見て気付いたけど、VS CodeのDraw.​io拡張機能って、同じファイルを「GUI図形エディタ」と「XMLコードエディタ」の分割画面で同時編集することが可能なのだな。一方を編集するともう一方に即時反映される(ホットリロード)
+
+図形エディタとxmlの両方同時に編集
+https://rikoubou.hatenablog.com/entry/2021/06/02/184357 https://x.com/TweeTea277/status/1966596300461535692/photo/1 https://twitter.com/ai_biostat/status/1949799920703074787","1"
+"1965673674914300133","https://x.com/TweeTeaFOX223/status/1965673674914300133","2025-09-10 16:08:19","DuckDB-WASMのマルウェア汚染怖いな…。それはそれとして、ブラウザ上でデータ解析できるやつの中で現状最速なのでオススメ(サイズ巨大なのが弱点、約3MB)
+
+2023年「Arquero、Danfo.js、SQLite-WASM、DuckDB-WASM」の処理速度をBandcampデータセット(301MB)で比較したって記事
+https://www.timlrx.com/blog/the-best-in-browser-data-processing-framework-is-sql","1"
+"1965596475834106096","https://x.com/TweeTeaFOX223/status/1965596475834106096","2025-09-10 11:01:33","Pythonのデータ解析ライブラリの「H2O datatable(https://github.com/h2oai/datatable)」、性能がかなり良いらしいけど、現時点では日本語情報が少なめ＋ライブラリ名が一般的な単語で検索難易度高めなので使用ハードルが高そうだ
+
+datatable vs pandas　～処理が速いのはどっちだ！？～
+https://note.com/bunsekiya_tech/n/nb9aadb0c7e6d","1"
+"1965591660458619334","https://x.com/TweeTeaFOX223/status/1965591660458619334","2025-09-10 10:42:25","Pythonのデータ解析ライブラリ、流行を全然追えていないが、『メモリ使用量の少なさ重視(少メモリPCで巨大データ解析をやる場合)』だと、今もPolarsが最良なのかな？
+
+2023年:「Pandas・Polars・Vaex・Datatable(ライブラリ名)」の実行時間とメモリ使用量を比較。5.7 GBのCSV
+https://www.datacamp.com/tutorial/benchmarking-high-performance-pandas-alternatives","1"
+"1961626808501375166","https://x.com/TweeTeaFOX223/status/1961626808501375166","2025-08-30 12:07:31","コミケのWebカタログって「ASP .NET MVC」なのか。AzureでWebサイト公開してる場合はASP .NETの可能性高いというのは知らなかった
+
+ASP .NET のシェアは本当に低いのか https://blog.shibayan.jp/entry/20130306/1362537319","1"
+"1960839794151579769","https://x.com/TweeTeaFOX223/status/1960839794151579769","2025-08-28 08:00:12",".NET 9.0のBlazorで認証とDB操作を実装してるサンプル見つけたが、シンプルに作れそうで良さげに見える
+
+2025 実践的なBlazor Server業務アプリケーションの作り方 - 受注管理システムを例に
+https://qiita.com/masayahak/items/bfbf5dea084a055f06c4 https://twitter.com/TweeTea277/status/1960811703190651055","1"
+"1960811703190651055","https://x.com/TweeTeaFOX223/status/1960811703190651055","2025-08-28 06:08:34","C#の「ASP .NET Core Blazor」。Redditを適当に見たが、Webアプリ(SSR使用、フルスタック)だけ作る場合、「.NET中心の開発者が使うなら◎」「Next.js/Reactと比較するとパッケージ数やデプロイ先や連携サービスが少なくまだ未成熟」という意見が多い?
+https://www.reddit.com/r/dotnet/comments/196g28a/its_2024_now_how_do_you_see_blazor_in_net8_vs/?tl=ja
+https://www.reddit.com/r/dotnet/comments/1hljus5/is_blazor_in_net_9_comparable_to_reactnextjs_again/?tl=ja","1"
+"1960794218022232528","https://x.com/TweeTeaFOX223/status/1960794218022232528","2025-08-28 04:59:06","JavaScriptでも「Next.js＋React Native(Expo)＋Tamagui＋Solito」というスタックを使えば、同じようにほぼ共通のReactのコンポーネントからWeb(SSR可能)・スマホPCネイティブアプリを作れるようだった
+https://zenn.dev/kazukix/articles/4951b51ad8187a
+https://zenn.dev/dev_zacker/articles/83e9ac82bc4c98","1"
+"1960775571853730285","https://x.com/TweeTeaFOX223/status/1960775571853730285","2025-08-28 03:45:00","C#の「ASP .NET Core Blazor」＋「.NET MAUI Blazor Hybrid」。共通のUIコンポーネント(ロジック含む)を使って、Webアプリ(SSR可能)・スマホPCネイティブアプリを一括で作るということができるのか
+https://codezine.jp/article/detail/22093?p=3
+
+JavaScriptで例えると「React NativeとNext.jsの機能が合体」という感じ？","1"
+"1954395721546772697","https://x.com/TweeTeaFOX223/status/1954395721546772697","2025-08-10 13:13:45","TikTokとInstagram、要承認のAPIを使ったとしても「サービス全体の投稿＆ハッシュタグのトレンド情報」を取るのは厳しそう。現時点では「完全把握できるのは運営だけ」かな？若い世代の間ではXとYouTube以上に普及率高いSNSなので何とか知りたい感はある","1"
+"1954369051842732118","https://x.com/TweeTeaFOX223/status/1954369051842732118","2025-08-10 11:27:47","TikTokと並んでインスタグラムの政治投稿も少し注目されていたが…
+
+インスタグラムの投稿検索APIは「ビジネス垢限定・使用用途に審査あり・最大30個の指定したハッシュタグの投稿を取得可能・ストーリーズ対象外」というものなので、同じく個人が投稿分析に利用するのは無理
+https://developers.facebook.com/docs/instagram-platform/instagram-api-with-facebook-login/hashtag-search https://twitter.com/TweeTea277/status/1952844691730514084","1"
+"1954365577327477219","https://x.com/TweeTeaFOX223/status/1954365577327477219","2025-08-10 11:13:58","英語圏向けの電子掲示板サイトの4chan、データ取得APIの利用ルールが「ユーザー登録不要・リクエストは1秒あたり1回まで・スレッド更新の間隔は最低10秒」ぐらいなので気軽に投稿の分析ができる
+https://github.com/4chan/4chan-API
+
+これを使ったと思われる投稿分析の論文は数百件ある
+https://scholar.google.co.jp/scholar?hl=ja&as_sdt=0%2C5&q=4chan+analysis&btnG=&oq=4chan+anal","1"
+"1952844691730514084","https://x.com/TweeTeaFOX223/status/1952844691730514084","2025-08-06 06:30:31","TikTokの政治動画が選挙で注目されていたので、YouTubeのように人気動画のデータを取れないかな？と思って調べてみたが…
+
+TikTokのResearch API（人気動画の検索API）は「研究者限定、研究計画含む申請書を提出して承認されないと使用不可能」というもので個人利用無理だった
+https://www.tiktok.com/legal/page/global/terms-of-service-research-api/en","1"
+"1947107542989201581","https://x.com/TweeTeaFOX223/status/1947107542989201581","2025-07-21 10:33:08","汎用掲示板ビューアSiki、主要な匿名掲示板サイト(2ch互換掲示板・ふたばちゃんねる・Reddit・ニコニコ大百科、爆サイ・ガールズちゃんねる・4chan・Steamコミュニティ等)のスレッドログを、「統一された形式のJSON」としてローカルに保存してくれるという特徴がある(独自)
+https://sikiapp.net/support/ https://twitter.com/TweeTea277/status/1947101909497905314","1"
+"1947101909497905314","https://x.com/TweeTeaFOX223/status/1947101909497905314","2025-07-21 10:10:45","汎用掲示板ビューアSikiでローカルに手動保存した各種匿名掲示板サイトのスレッドログ(JSON)を分析or加工する用のPythonスクリプト、素人なりに最低限動くまで作った後に放置してたが、政治関係の分析で色々使えそうなので何か機能追加しようかな
+
+siki-logdata-tsv-converter
+https://github.com/TweeTeaFOX223/siki-logdata-tsv-converter","1"
+"1937614588838862889","https://x.com/TweeTeaFOX223/status/1937614588838862889","2025-06-25 05:51:31","Notion、ページの限定公開で「Web上でリンクを知る全ユーザー」に「編集権限」を設定すれば、フリープランでもゲスト10人とブロック1000個の制限無しで共同編集ができるのか
+
+80人規模の大学生サークルで（強引に）Notion導入した
+https://qiita.com/hajimism/items/91fa2d260b01b0f00fec#%E5%B0%8E%E5%85%A5%E3%81%AE%E3%82%B9%E3%83%86%E3%83%83%E3%83%97","1"
+"1937539115245084811","https://x.com/TweeTeaFOX223/status/1937539115245084811","2025-06-25 00:51:37","GensparkのWeb検索、読み取ったWebページの内容をGenspark内に全部そのまま表示してしまう機能があるのか…。AI検索と広告の議論は色々あるけど、GPTやClaudeのWeb検索のように「全内容を読みたい場合は引用元/出典元のWebページに自分でアクセスしてね」という風にするのがラインとしてある気がする","1"
+"1936700699087380859","https://x.com/TweeTeaFOX223/status/1936700699087380859","2025-06-22 17:20:03","PHPカンファレンス、Youtubeでセッション動画のアーカイブを公開しているのか(見た感じほぼ全部ありそう？)
+
+PHP Conference Japan
+https://www.youtube.com/@PHPConferenceJapan/featured","1"
+"1936690237738254670","https://x.com/TweeTeaFOX223/status/1936690237738254670","2025-06-22 16:38:29","プログラミング関係のイベントやコミュニティの探し方、QiitaとZennの「イベントレポート」「コミュニティ」のタグを見るのが良さそう…と今更気付いた
+
+イベントレポート
+https://zenn.dev/topics/%E3%82%A4%E3%83%99%E3%83%B3%E3%83%88%E3%83%AC%E3%83%9D%E3%83%BC%E3%83%88
+https://qiita.com/tags/%e3%82%a4%e3%83%99%e3%83%b3%e3%83%88%e3%83%ac%e3%83%9d%e3%83%bc%e3%83%88
+コミュニティ
+https://zenn.dev/topics/community
+https://qiita.com/tags/%e3%82%b3%e3%83%9f%e3%83%a5%e3%83%8b%e3%83%86%e3%82%a3","1"
+"1931667350178394277","https://x.com/TweeTeaFOX223/status/1931667350178394277","2025-06-08 19:59:19","生成AIのWeb検索機能使って、中国語・ドイツ語・フランス語・ヒンディー語等のプログラミング系のブログやQ&amp;Aサイトの記事を探してちょっと読んでるが、各国のローカルな流行があって面白い
+
+例：中国のCSDN・OSCHINA・SegmentFaultだと、HarmonyOS環境でのアプリ開発やDeepSeek関連の記事が沢山ある","1"
+"1931658990943134127","https://x.com/TweeTeaFOX223/status/1931658990943134127","2025-06-08 19:26:06","既出アイディアな予感しかしないが、生成AIのWeb検索＆要約機能の活用法を追加
+
+「特定のサイト(特にReddit)から通常検索では探すことが難しいような情報を探す」、「外国のローカル限定な情報を探す　→日本語と英語以外の言語(特に中国語・ドイツ語・フランス語辺り)で書かれてる面白い情報を探す」 https://x.com/TweeTea277/status/1931658990943134127/photo/1 https://twitter.com/TweeTea277/status/1893608987398144237","1"
+"1931500882157535694","https://x.com/TweeTeaFOX223/status/1931500882157535694","2025-06-08 08:57:50","「CursorのProプラン：月に500回まで高速、後は低速」と「ClaudeのProプラン：一定使用でレート制限、5時間でリセット」、片方だけ契約するならどっちが良いのか迷いどころ
+
+外出先でスマホ版からプログラミング以外の用途にも使用する関係で、とりあえずClaude Proの方を契約してる","1"
+"1931473892557894097","https://x.com/TweeTeaFOX223/status/1931473892557894097","2025-06-08 07:10:35","Zennに情報投げる用のスクラップ作成
+
+キーボード(キースイッチ)＆マウスの騒音対策に関するメモ置き場：キーマウの静音性能の調べ方、静音性能向上の方法、騒音が出せない場所でのデスク環境構築など色々
+https://zenn.dev/tweeteafox300/scraps/31f7a11305358e","1"
+"1931450360717250592","https://x.com/TweeTeaFOX223/status/1931450360717250592","2025-06-08 05:37:05","人気な静音マウス(Logitech、HP、Razer、MOJOのやつ)のクリック音を比較している動画を発見。デシベルの測定実験まではやってないけど参考になる
+
+7 Best Silent Mice in 2025 (Real Sound Tests)
+https://youtu.be/We5D3EMcaeg?si=8chSoNDG9yuCnFBx","1"
+"1931447051721884076","https://x.com/TweeTeaFOX223/status/1931447051721884076","2025-06-08 05:23:56","海外の人によるREALFORCEのRM1のレビュー＆性能検証動画。「クリック反応速度が遅いのでゲーミングマウスとしては最悪」「クリック音が無音なので、静音性能では現存するマウスの中で最高。図書館でのPC使用に最適」とのことだった。
+
+The Worst Mouse You've Never Heard Of
+https://youtu.be/NfbVWICTERc?si=CR-Vs5QFHUpCnO6G","1"
+"1931440683984081305","https://x.com/TweeTeaFOX223/status/1931440683984081305","2025-06-08 04:58:38","Click and Thockが「キーボード本体、ケース、プレート、キーキャップ」の条件を揃えて、主要な静音スイッチの打鍵音のデシベルの測定実験をしたら「Outemu Silent Peach V3」が最良だったらしい(約62dBA
+
+21 Silent Switch Sound Tests on One Keyboard (2025 Compilation)!
+https://youtu.be/h4vT9z4gALs?si=bTRBTsOgWB71oSgM https://twitter.com/TweeTea277/status/1844189044143734960","1"
+"1931440512437039593","https://x.com/TweeTeaFOX223/status/1931440512437039593","2025-06-08 04:57:57","REALFORCEのRM1マウス、クリックのスイッチがキーボードと同じく静電容量無接点方式で物理的にクリック音(カチッ)が発生しない構造なのが面白い
+https://pc.watch.impress.co.jp/docs/news/1238678.html
+
+サイドボタンが通常のカチ音出るやつなのが難点。ここもTopre軸化されたら最強の静音マウスになるかも
+https://www.youtube.com/watch?v=uw75w9jv9zc","1"
+"1930276809725358334","https://x.com/TweeTeaFOX223/status/1930276809725358334","2025-06-04 23:53:48","noteに補足情報加えたやつを投下。ブラウザにブクマ数千件登録している人ならかなり役立つものだと思う
+
+ブラウザのブックマークの追加日・最終編集日を表示＆検索機能強化の拡張機能「Bookmarks Commander」
+https://note.com/tweeteafox300/n/nf8cea7e1a62a https://twitter.com/TweeTea277/status/1907778976522948905","1"
+"1908106442877575662","https://x.com/TweeTeaFOX223/status/1908106442877575662","2025-04-04 19:36:41","CursorのProプラン、高速プレミアムリクエスト500回を使い切った後の「無制限の低速プレミアムリクエスト」の速度がどれくらいか、ネット情報がバラバラで謎
+
+Cursor公式フォーラムだと、sonnet 3.7の低速リクエストに関して「数秒」「5分かかる」だとか色々書き込みがある
+https://forum.cursor.com/search?q=slow%20request%20order%3Alatest","1"
+"1907778976522948905","https://x.com/TweeTeaFOX223/status/1907778976522948905","2025-04-03 21:55:27","ブラウザのブックマークマネージャで「追加日と最終編集日」を見れるようにする拡張機能。色々あるが「Bookmarks Commander」が気に入った
+
+標準のブックマークマネージャには無い「ブックマークの検索結果にフォルダパスを表示＆フォルダ内での位置にジャンプ」の機能が便利
+https://github.com/brian-girko/bookmarks-commander https://x.com/TweeTea277/status/1907778976522948905/photo/1","1"
+"1907772923743711270","https://x.com/TweeTeaFOX223/status/1907772923743711270","2025-04-03 21:31:24","各主要ブラウザのブックマーク、ブックマークマネージャ上で確認できないけど、内部では「追加日と最終編集日(UNIX時間)・アイコン画像(base64)・ブックマークID」の情報を保存してるのか
+
+ブックマーク(bookmarks.html)を編集してみる
+https://oucc.org/blog/articles/2024-10-09-edit-bookmarks/","1"
+"1902557799932194977","https://x.com/TweeTeaFOX223/status/1902557799932194977","2025-03-20 12:08:21","PowershellでZIPをDLして解凍するやつを作ったら、「Invoke-WebRequest」でリダイレクト無のはずのURLにPermanent Redirectのエラー・「expand-archive」で原因不明の「中央ディレクトリの終わりレコードが～」のエラーが出た。
+
+原因特定できなかったので、Windows標準のcurlとtarに置き換えて対応","1"
+"1894279457424511228","https://x.com/TweeTeaFOX223/status/1894279457424511228","2025-02-25 15:53:11","「draw. io ＋ VSCode ＋ Live Share」のような感覚で、ObsidianのCanvasの図をリアルタイムで共同編集したい！と思って調べてみたら、良い感じのプラグインを発見 。無料プランの範囲内で十分使えそう
+
+『Obsidian Relay』
+https://forum.obsidian.md/t/relay-multiplayer-plugin-for-obsidian-collaborative-editing-and-folder-sharing/87170","1"
+"1893611966695923858","https://x.com/TweeTeaFOX223/status/1893611966695923858","2025-02-23 19:40:49","英語版Wikipediaの「コンピューティング」のテンプレート、プログラミングに関係する、ありとあらゆるカテゴリとページがまとまっていて面白い
+https://en.wikipedia.org/wiki/Category:Computing_templates","1"
+"1893608987398144237","https://x.com/TweeTeaFOX223/status/1893608987398144237","2025-02-23 19:28:58","「Wikipediaのカテゴリとナビゲーションテンプレートの一覧＆検索のページが役立つ」、「Redditのサブレは339000個以上ある」などの情報収集に使える小ネタ集的な記事を書いた
+https://note.com/tweeteafox300/n/n173e7bc1b169","1"
+"1889404514039714245","https://x.com/TweeTeaFOX223/status/1889404514039714245","2025-02-12 05:01:54","「tailwind.confのcontentに入れてるコンポーネント」で、「tailwind.confのcontentに入れてないコンポーネント」を使用してしまった場合、何故か動きはするが「入れてないコンポーネント」のTailwindのclassNameが部分的に効いたり効かなかったりする状態になるみたい。原因に気付けないと厄介な罠…","1"
+"1889400913175126154","https://x.com/TweeTeaFOX223/status/1889400913175126154","2025-02-12 04:47:35","Next.js ＋ shadcn/ui ＋「bulletproof-reactのディレクトリ構成」を試してたら、「一部コンポーネントのTailwindのflexだけが効かない」という謎現象に遭遇
+
+→tailwind.confのcontentにfeaturesのパス追加を忘れてたことが原因だった！shadcn/uiの使用にミスがあると思って調査してたが無関係だった!","1"
+"1867819516992028699","https://x.com/TweeTeaFOX223/status/1867819516992028699","2024-12-14 15:30:49","Next.js＋Clerk、Clerkのauth()関数でログイン中ユーザーの認証データ(IDやトークン)を取得するとnullになる不具合(再現性無し？)があるようだった。自分もngrokで試してたら遭遇したけど、このIssueに書いてある「クライアント側のCookie削除」で解決した。
+https://github.com/clerk/javascript/issues/1528","1"
+"1862420285280198821","https://x.com/TweeTeaFOX223/status/1862420285280198821","2024-11-29 17:56:12","PythonのfastTextのライブラリ、「公式ドキュメントに記載がなく、ソースコードにコメントで詳細説明が書いてある関数」が何個かあって少し困惑した。「ドキュメントは簡易説明、ソースコードで本説明」というタイプなのかな。
+https://github.com/facebookresearch/fastText/blob/main/python/fasttext_module/fasttext/FastText.py","1"
+"1861981502516674611","https://x.com/TweeTeaFOX223/status/1861981502516674611","2024-11-28 12:52:38","Meta(旧Facebook)が公式サイトで配布しているfastTextの学習済みモデル、日本語や韓国語のやつの辞書の単語に、UTF-8でデコードできず不具合を起こす文字列が含まれているようだった。
+https://fasttext.cc/docs/en/crawl-vectors.html","1"
+"1861979996212146559","https://x.com/TweeTeaFOX223/status/1861979996212146559","2024-11-28 12:46:39","Meta配布のfastText学習済みモデル(fasttext-157lang/cc.ja.300.bin)で、辞書の全単語取得(model.get_words)を行うと、UnicodeDecodeErrorが出る現象の回避方法と原因
+https://qiita.com/tweeteafox300/items/22b69326fe76f504aa06","1"
+"1859502234318537212","https://x.com/TweeTeaFOX223/status/1859502234318537212","2024-11-21 16:40:55","この記事で存在を知ったけど、「PowershellのOut-GridView」、大量のテキストファイルに文字列検索した結果をサクッとGUIに出力できるのが良い感じ
+
+Powershellでgrep的な操作をする ～ Select-String
+https://itexp-ssworks.com/archives/174/","1"
+"1858441142993551645","https://x.com/TweeTeaFOX223/status/1858441142993551645","2024-11-18 18:24:31","作ったものを置いてるGitHub垢です。色々あるので是非見に来てください！
+http://github.com/TweeTeaFOX223","1"
+"1852533412269273145","https://x.com/TweeTeaFOX223/status/1852533412269273145","2024-11-02 11:09:18","元動画の公開終了してるけど、相関図のグラフ描画でどんな技術使ってるのか気になってた。Cytoscape.jsっぽいとは思ったけど結局なんだったのだろう。
+
+「ウマ娘」シナリオ制作ではウマ娘の「相関図WEBアプリ」が活躍シナリオに関する講演の先行公開資料から判明
+https://game.watch.impress.co.jp/docs/news/1365284.html","1"
+"1851390739743486381","https://x.com/TweeTeaFOX223/status/1851390739743486381","2024-10-30 07:28:44","同じ所が公開してる『antvis/X6』という、ダイアグラム描画(SVGとHTML)のJavaScriptライブラリも良さそう(インタラクティブなフローチャート・ER図・クラス図等の実装サンプル有)
+https://github.com/antvis/X6/blob/master/README.en-us.md
+
+公式ドキュメントが简体中文のみ！？と思ったら、/en/に英語版あった
+https://x6.antv.antgroup.com/en/examples https://x.com/TweeTea277/status/1851390739743486381/photo/1","1"
+"1848498782012583994","https://x.com/TweeTeaFOX223/status/1848498782012583994","2024-10-22 07:57:07","『antvis/G6』というJavaScriptの凄いグラフ描画ライブラリを教えてもらった！公式の実装例サンプルが「テーマ、使用の場面例、レイアウト、グラフの挙動、アニメーション、プラグイン、アルゴリズム、要素数毎のパフォーマンス」と充実。使用開始ハードルが低そうで良い感じ
+https://g6-next.antv.antgroup.com/en/examples https://x.com/TweeTea277/status/1848498782012583994/photo/1","1"
+"1847444836867330531","https://x.com/TweeTeaFOX223/status/1847444836867330531","2024-10-19 10:09:07","flowchart-fun(テキストからフローチャート作成できるエディタ)、reactとcytoscape.jsを使用＝react-cytoscapejsを使ってるのかな？と思ったけど…
+https://github.com/tone-row/flowchart-fun
+
+Githubのソースコードを「cytoscape」で検索したら、react-cytoscapejs無しでグラフ表示実装してた!
+https://github.com/search?q=repo%3Atone-row%2Fflowchart-fun%20cytoscape&type=code","1"
+"1844493470859395353","https://x.com/TweeTeaFOX223/status/1844493470859395353","2024-10-11 06:41:27","Cytoscape.js 、拡張機能(主にネットワークグラフの操作拡張)が沢山あるのが良い感じ。しかし、複数の拡張機能を同時に適用した時の挙動や、TypeScriptやReactやNext.jsと組み合わせても使えるのか？…というのは要調査(日本語情報が少なめ)
+
+Cytoscape.js 拡張機能の一覧
+https://github.com/topics/cytoscapejs","1"
+"1844189044143734960","https://x.com/TweeTeaFOX223/status/1844189044143734960","2024-10-10 10:31:46","Redditのr/MechanicalKeyboardsを見てみたら、ホットスワップ対応メカニカルキーボードに使えるスイッチに、静音性能重視の種類が沢山あるらしく気になった。よく見かける静音赤軸(CHERRY MX)、HHKBやREALFORCEの静音モデルと比較してどうなのか気になった。
+https://www.reddit.com/r/MechanicalKeyboards/comments/1d1tje2/the_quest_for_silence_part_2_more_silent_switch/","1"
+"1844188534779019307","https://x.com/TweeTeaFOX223/status/1844188534779019307","2024-10-10 10:29:44","Zennのキーボードに関する記事を見て、勢いでREALFORCEのR3S(キー荷重30g、静音)を購入したけど凄く良かった。手持ちのノートPC内蔵キーボード(キー荷重約60～70g、ストローク約1.2mm)と比較して、別次元レベルで入力しやすい＆打鍵音が小さいので深夜帯や出先でも使えそう。
+https://zenn.dev/topics/%E3%82%AD%E3%83%BC%E3%83%9C%E3%83%BC%E3%83%89?order=daily","1"
+"1844162210752590036","https://x.com/TweeTeaFOX223/status/1844162210752590036","2024-10-10 08:45:08","この記事を読んでスタンディングデスクを導入してみたけど、長時間作業時の腰痛と臀部痛が発生しなくなって良い感じ。足が疲れた時は椅子に座って休憩する。
+
+デスクワーカーのための正しい姿勢ガイド
+https://zenn.dev/nakurei/articles/guide-to-proper-posture-for-desk-workers","1"
+"1843891801910063410","https://x.com/TweeTeaFOX223/status/1843891801910063410","2024-10-09 14:50:38","JavaScriptのネットワークグラフ描画ライブラリで、「入れ子構造の図」を描画できるやつって、Cytoscape.js 以外にもあるのかな？
+
+※Cytoscape.js は公式デモの「Compound nodes」のような感じで行ける(3重以上の構造を持つノードも作れる)。
+https://js.cytoscape.org/#demos
+https://github.com/cytoscape/cytoscape.js/tree/master/documentation/demos/compound-nodes https://x.com/TweeTea277/status/1843891801910063410/photo/1","1"
+"1841822316877271099","https://x.com/TweeTeaFOX223/status/1841822316877271099","2024-10-03 21:47:14","VSCode使い始めの頃にインストール数上位の拡張機能を詳細ノールックで適当にインストールしていたことを思い出して恐怖した。サードパーティ製の拡張機能を使う時はブラウザでもエディタでも何でも信用できるかよく見る必要がある。 https://twitter.com/madonomori/status/1841724265818947930","1"
+"1838079597340152127","https://x.com/TweeTeaFOX223/status/1838079597340152127","2024-09-23 13:55:00","ブラウザで急にネット接続関係のエラー(ChromeだとERR_CONNECTION_FAILED、FirefoxだとNS_ERROR_OUT_OF_MEMORY)が出た場合、特定のアプリのプロセスがTCPポートを枯渇させていることが原因の可能性あるので、redditの該当スレをご確認あれ…
+https://www.reddit.com/r/techsupport/comments/tzn7rk/comment/jk9u920/?rdt=37567","1"
+"1838078441813422380","https://x.com/TweeTeaFOX223/status/1838078441813422380","2024-09-23 13:50:25","「VSCodeのPython拡張機能に関連するプロセスがTCPポートを枯渇させる→ ブラウザでのネット接続が一切できなくなる」というレア現象に遭遇。解決に繋がる重要情報を書いてくれていたredditのr/techsupportの人に圧倒的感謝…
+https://zenn.dev/tweeteafox300/scraps/ca2ff235587f35","1"
+"1827400095647904110","https://x.com/TweeTeaFOX223/status/1827400095647904110","2024-08-25 02:38:28","eel、ChakraUIやRecoilを使ったReactのアプリと組み合わせても上手く動く感じのやつなのか
+
+Python＋eelでReactを使ってGUI開発(テンプレ)
+https://qiita.com/dende-h/items/19fb0d461c5dc41105ff","1"
+"1827390794757738999","https://x.com/TweeTeaFOX223/status/1827390794757738999","2024-08-25 02:01:31","VSCodeの拡張機能「vscode-python」。venvのインタプリタを選択してる状態で「Run Python File in Terminal」をやると、実行ファイルを直接叩くようなコマンドで実行される。自分はそれでactivateしなくてもvenv使えると知った。
+https://github.com/microsoft/vscode-python","1"
+"1827388983896428756","https://x.com/TweeTeaFOX223/status/1827388983896428756","2024-08-25 01:54:19","Pythonのvenvでactivateせずに実行ファイルを直接叩く方法、deactivateしなくてもOKで楽だからよく使ってる。Windowsだと「venv/Scripts/」にexeが全部ある
+https://zenn.dev/kariya_mitsuru/articles/1c119859604d48","1"
+"1826975208227664116","https://x.com/TweeTeaFOX223/status/1826975208227664116","2024-08-23 22:30:07","LGPLでの「静的リンクと動的リンク」。決定的基準が無いみたいだから判断が難しい
+
+pyinstallerで固める時に、LGPLのライブラリ/Pythonパッケージを静的リンクにする方法
+https://spoonblog.hatenablog.com/entry/2020/12/20/075838","1"
+"1826589899631591776","https://x.com/TweeTeaFOX223/status/1826589899631591776","2024-08-22 20:59:03","200万行読み込んだ時点で、ブラウザが超重くなったので、素直に「UI上でDataFrameの行数の範囲を指定、切り取ったdfをコンポーネントに渡して表示」が無難そう
+
+GradioのDataframeは仮想化してるとissueにあったので、突っ込めるDataframeのサイズに限界は無いはずではある
+https://github.com/gradio-app/gradio/issues/2209","1"
+"1826586217510830603","https://x.com/TweeTeaFOX223/status/1826586217510830603","2024-08-22 20:44:25","GradioのDataframeコンポーネントに、2000000行のPolarsのDataFrameを突っ込んで表示させたら、483660行目ぐらいで表示止まった
+
+indexで降順にすると、2000000行目から表示始まるので、Gradio内部での読み込みは成功してる？ htmlの縦スクロールバーの長さの限界に達したと予想 https://twitter.com/TweeTea277/status/1826586217510830603/photo/1","1"
+"1825865320252289233","https://x.com/TweeTeaFOX223/status/1825865320252289233","2024-08-20 20:59:49","PythonのGradioのState管理、この記事の「クラスでまとめたやつで管理する方法」が良さそう。Blocksと大量のTabでそこそこ複雑なUIにしたやつでも楽に書けた
+
+Gradioにおけるステート管理を考える
+https://blog.shikoan.com/gradio-state/","1"
+"1825824873136144838","https://x.com/TweeTeaFOX223/status/1825824873136144838","2024-08-20 18:19:06","UniDicの中身の解説記事あった。現在もメンテナンス継続中のMeCab辞書はこれだけなんだ：「UniDic 3.1.1 を使いたい」
+https://qiita.com/tetutaro/items/c3ab17b5e949648d0c4f
+
+東北大が公開してる日本語BERTのモデル。形態素解析の部分では、fugashi(Cython＋MeCab)とunidic-liteを使ってるんだ
+https://github.com/cl-tohoku/bert-japanese/tree/main/japanese_tokenizers https://twitter.com/TweeTea277/status/1825799177147933097","1"
+"1825803439861035451","https://x.com/TweeTeaFOX223/status/1825803439861035451","2024-08-20 16:53:56","mecab-python3だったら、辞書毎に列名を調べて、この記事のようにやるのがいいかな。自動で辞書から列名取ってくるのは難しい？
+
+MeCab の結果を Pandas DataFrame として得る
+https://qiita.com/hoto17296/items/97c7ec64923625addf01","1"
+"1825799177147933097","https://x.com/TweeTeaFOX223/status/1825799177147933097","2024-08-20 16:37:00","MeCabやVibratoで、文章の形態素解析の出力結果に「列名」を入れたい場合、使用辞書のドキュメントや辞書ファイル内の「dicrc」を確認して、辞書毎に別個で処理を実装する必要があるのか
+
+IPA辞書
+https://taku910.github.io/mecab/#parse
+UniDic辞書(列名入れるオプション有り)
+https://clrd.ninjal.ac.jp/unidic/faq.html#output","1"
+"1822555549638295639","https://x.com/TweeTeaFOX223/status/1822555549638295639","2024-08-11 17:47:59","GitHub垢です～ 動作可能なアプリやブログのリンク集あります～ 新参者なので質は期待しないでください…
+https://github.com/TweeTeaFOX223","1"
+"1817729600157634759","https://x.com/TweeTeaFOX223/status/1817729600157634759","2024-07-29 10:11:23","Pythonの値の上限ないの知らなかった
+https://note.nkmk.me/python-int-max-value/","1"
+"1817728836064465277","https://x.com/TweeTeaFOX223/status/1817728836064465277","2024-07-29 10:08:20","色々調べたけど、現状ではどのJavaScriptランタイムを使っても「2GBを超える文字列を、分割無しでそのままString型変数に入れる！」というのは難しいようだった
+
+他の言語調べたら、PythonだとPCの性能が許す限り実質長さ無限で、63ビット(8388607GB)が最大値だった
+https://stackoverflow.com/questions/1739913/what-is-the-max-length-of-a-python-string","1"
+"1817715558852530416","https://x.com/TweeTeaFOX223/status/1817715558852530416","2024-07-29 09:15:35","続き：「RangeError: Out of memory」のエラーだから、nodeの「node --max-old-space-size=8192」的なので、Bunのヒープメモリ容量増やせば結果変わる？と思って、doc探したけど見つけられず
+
+BunのIssueにも「メモリ使用量の制限値の変更方法がわからない」というのがあった
+https://github.com/oven-sh/bun/issues/6548","1"
+"1817711168963944875","https://x.com/TweeTeaFOX223/status/1817711168963944875","2024-07-29 08:58:08","各JavaScriptランタイムの文字列の長さの限界を調べていたら、BunのIssueに「node.jsとDeno(V8エンジン)は512MB」「Bun(JavaScriptCore)は4294MB(4GB)」と書いてあるやつがあったが…
+https://github.com/oven-sh/bun/issues/2570
+
+この記事の検証プログラムをBunで試したら、2147MB(2GB)と出た？
+https://qiita.com/mod_poppo/items/f3fcbc673526c84b9387#%E6%96%87%E5%AD%97%E5%88%97%E3%81%AE%E9%95%B7%E3%81%95 https://twitter.com/TweeTea277/status/1817711168963944875/photo/1","1"
+"1817660878046785951","https://x.com/TweeTeaFOX223/status/1817660878046785951","2024-07-29 05:38:18","MDNの「String: length」の解説ページにも文字列のサイズの限界のことが書いてあった。JavaScriptの言語仕様と各エンジンの実際の仕様が違ってるのか
+https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/String/length#%E8%A7%A3%E8%AA%AC https://twitter.com/TweeTea277/status/1817660878046785951/photo/1","1"
+"1817457894432108868","https://x.com/TweeTeaFOX223/status/1817457894432108868","2024-07-28 16:11:43","JavaScriptのエンジンにV8を使ってるやつはMAX_STRING_LENGTHで文字列のサイズの限界が確認できるのか(どれも500MBぐらい？)
+https://zenn.dev/link/comments/c2c83119ba7ea9
+
+2017年に一度1GBに変更となったけど今は500MBに戻っちゃったのか
+https://stackoverflow.com/questions/44533966/v8-node-js-increase-max-allowed-string-length","1"
+"1817455701419303113","https://x.com/TweeTeaFOX223/status/1817455701419303113","2024-07-28 16:03:00","node.jsやChromeに使われてるV8エンジン。扱える文字列(String型変数、JSやHTMLのファイル)のサイズの限界って、約500MBだったのか。1GBぐらいのCSVをクライアントサイドだけで処理するアプリを作ろうとした時に、ブラウザがフリーズして失敗してしまった理由はこれか
+https://qiita.com/mod_poppo/items/f3fcbc673526c84b9387#%E6%96%87%E5%AD%97%E5%88%97%E3%81%AE%E9%95%B7%E3%81%95","1"
+"1816299117053895067","https://x.com/TweeTeaFOX223/status/1816299117053895067","2024-07-25 11:27:09","Streamlit＋PyGWalkerで約700MBのCSVをテスト
+
+データ全体のプレビュー：全データをサクサク見れた。カラム毎のソートとフィルターも高速。
+
+グラフの生成：項目数が極端に多いグラフ構成だと「データエントリが多すぎるため、フロントエンドのレンダリングが困難」と出てタイムアウトになる時があった https://twitter.com/TweeTea277/status/1816299117053895067/photo/1","1"
+"1816298171439747464","https://x.com/TweeTeaFOX223/status/1816298171439747464","2024-07-25 11:23:23","PyGWalkerという、GradioとかStreamlitで、Tableauのようなデータ視覚化ができるライブラリ。docsに「1GB以上のCSVを処理可」という記述が
+https://docs.kanaries.net/pygwalker/api-reference/jupyter#my-pygwalker-cannot-handle-csv--1gb-what-should-i-do
+
+この記事のように約700MBのCSVで試した所、「データ全体のプレビュー」はサクサク、グラフ生成は落ちる時が
+https://zenn.dev/aidemy/articles/3aeea1470f1535","1"
+"1812237303869501907","https://x.com/TweeTeaFOX223/status/1812237303869501907","2024-07-14 06:26:57","Pythonのgradioでも、PandasのDataFrameを、http://datatables.netの表としてGUIに表示している例を見つけた！itablesに加えて、FastAPIとDuckDBも使ってるので少し難しい
+
+duckdb-fastapi-gradio
+https://huggingface.co/spaces/liquidcarbon/duckdb-fastapi-gradio/blob/main/main.py
+DuckDB SQL interface with Gradio and FastAPI
+https://github.com/gradio-app/gradio/issues/8057","1"
+"1812233722919620807","https://x.com/TweeTeaFOX223/status/1812233722919620807","2024-07-14 06:12:43","Pythonのstreamlitで、PandasやPolarsのDataFrameを、jQuery拡張のhttp://datatables.netを利用したインタラクティブな表として表示できるライブラリを見つけた！GUI上でCSVを細かく確認できるアプリを作れそう！
+
+itables
+https://mwouts.github.io/itables/streamlit.html
+streamlitでの使用デモ
+https://github.com/mwouts/demo_itables_in_streamlit https://twitter.com/TweeTea277/status/1812233722919620807/photo/1","1"
+"1798323359153074289","https://x.com/TweeTeaFOX223/status/1798323359153074289","2024-06-05 20:57:54","「danfojs」、Viteで使用すると「The package may have incorrect main/module/exports specified in its package.json.」とエラー出る問題があった。原因は判明済みでプルリクが複数出ていた。xlsx(SheetJS)関係のプルリクと同じくマージ待ちな状況。
+https://github.com/javascriptdata/danfojs/issues/594","1"
+"1797463316505514182","https://x.com/TweeTeaFOX223/status/1797463316505514182","2024-06-03 12:00:24","「vite-plugin-singlefile」の紹介記事を作ってみた。Vite標準のビルドで出力したhtmlをブラウザから直接開く＝fileプロトコルでアクセスすると、CORS関係のエラーが出る理由も書いてみた
+https://zenn.dev/tweeteafox300/articles/a39a0626afa627","1"
+"1794199302417662265","https://x.com/TweeTeaFOX223/status/1794199302417662265","2024-05-25 11:50:22","Pythonでpandasの代替としてよく出てるPolars、JavaScriptでも使えるのか
+https://qiita.com/niship2/items/fbbf8fd0a1c6771e11fe
+
+Danfo.jsのように、サーバーサイドで動く「nodejs-polars」、クライアントサイドで動く「js-polars(実験的で今後どうなるか不明)」がそれぞれあった
+https://github.com/pola-rs/nodejs-polars
+https://github.com/pola-rs/js-polars","1"
+"1794175017850401207","https://x.com/TweeTeaFOX223/status/1794175017850401207","2024-05-25 10:13:53","Vite公式にあるGitHub Pages用のymlのサンプルを、「リポジトリのサブディレクトリに配置されたプロジェクト」をデプロイするやつに書き換えた時に、「setup-node@v4」と「upload-pages-artifact@v3」で少しハマったので注意点メモ
+https://zenn.dev/tweeteafox300/scraps/2bbde4c5010c9c","1"
+"1794149014780444893","https://x.com/TweeTeaFOX223/status/1794149014780444893","2024-05-25 08:30:33","npmのDanfo.jsのクライアント側で使える「danfojs@1.1.2(最新版)」に、脆弱性のある古いverの「xlsx@0.17.2(Sheet.JS)」が使われていた。「npm audit fix --force」では解決せず、手動でpackage-lock.jsonを書き換える必要があったので対処法メモ
+https://zenn.dev/tweeteafox300/scraps/af81fd6891e4c5","1"
+"1793129384116920382","https://x.com/TweeTeaFOX223/status/1793129384116920382","2024-05-22 12:58:54","同じくViteのVanillaJSのプロジェクト、Jqueryのインポートが必要なライブラリ(コード内でjqueryを使用)に、「uncaught referenceerror $ is not defined」が出た。
+
+同じように「import $ from 'jquery'; window.$ = $;」で、windowオブジェクトに$をアサインでOKだった
+https://stackoverflow.com/questions/73010251/referenceerror-is-not-defined-jquery-import-with-vite/78065704#78065704","1"
+"1792935663865926044","https://x.com/TweeTeaFOX223/status/1792935663865926044","2024-05-22 00:09:08","ViteのVanillaJSのプロジェクト。htmlのbuttonのonclick属性で指定した関数が動かないと思ったら、モジュールのjsのスコープ生成が原因だった。「window.関数名 = 関数名」と書けばOKだった。
+
+Basic Vite Vanilla Setup
+https://stackoverflow.com/questions/67518991/basic-vite-vanilla-setup","1"
+"1792269181603508588","https://x.com/TweeTeaFOX223/status/1792269181603508588","2024-05-20 04:00:46","Webpackにも「htmlにjsをインライン化」できるプラグインあった。日本語情報無だけど「html-inline-script-webpack-plugin」が最新か
+https://qiita.com/aknm21/items/616ac96475d282d28ff2
+
+てかWebpackはデフォのビルドでES Modules使わないjs生成するから、fileプロトコルでも動くhtml簡単に作れるのか
+https://www.i-ryo.com/entry/2020/01/13/231734","1"
+"1792262436554485935","https://x.com/TweeTeaFOX223/status/1792262436554485935","2024-05-20 03:33:58","Viteのビルドで「JavaScriptとCSSを、単一のhtmlにインライン化」できるようにするプラグイン。Xで名前を検索したら使用情報ちょっぴり出てきた
+
+「vite-plugin-singlefile」
+https://www.npmjs.com/package/vite-plugin-singlefile
+「vite-plugin-make-offline」
+https://www.npmjs.com/package/vite-plugin-make-offline","1"
+"1792257485061161064","https://x.com/TweeTeaFOX223/status/1792257485061161064","2024-05-20 03:14:17","Viteのビルド。生成できるhtmlとJavaScriptが、ES Modulesを使うものなので、htmlにfileプロトコルでアクセス(ローカル環境のブラウザでhtmlを直接開いて表示)が可能なものが作れず
+https://ja.vitejs.dev/guide/troubleshooting#%E3%83%92%E3%82%99%E3%83%AB%E3%83%88%E3%82%99
+
+イシュー見たら「単一htmlを生成するプラグイン」で解決可能だった
+https://github.com/vitejs/vite/discussions/6676","1"
+"1790396601552515521","https://x.com/TweeTeaFOX223/status/1790396601552515521","2024-05-14 23:59:48","CDN(jsDelivrやunpkg)からJavaScriptのライブラリを読み込む場合、verと依存関係の管理はどうやればいいかな？
+https://zenn.dev/goldsaya/articles/0317b3c6a8723a
+
+『最初にnpm使用で作る→ 「npm list --all」でパッケージの依存関係とverを確認→それを元にCDNから読み込む版を作る』しかないかな？
+https://tech-o-proch.com/programing/node-js/617","1"
+"1789425905632231662","https://x.com/TweeTeaFOX223/status/1789425905632231662","2024-05-12 07:42:36","↑の記事にあるように、「iconv-lite」では、エンコード失敗文字は「?」にするのみな感じか
+https://www.npmjs.com/package/iconv-lite#other-notes
+
+全部入りでやや低速の「node-iconv」の方では、エンコード失敗文字があったら「エラー投げる(EILSEQ)、無視(IGNORE)、翻字(TRANSLIT)」と指定可能だった
+https://github.com/bnoordhuis/node-iconv?tab=readme-ov-file#dealing-with-untranslatable-characters","1"
+"1789422945875447876","https://x.com/TweeTeaFOX223/status/1789422945875447876","2024-05-12 07:30:50","Node.jsでの「Shift_JISのテキストファイルの読み書きのために、Shift_JIS(ファイル)⇔UTF-8(JS内部での文字)の変換を行う」という処理に関して
+
+「encoding-japanese」と「html-entities」を使えば、楽々に「Shift_JIS → UTF-8」でエンコード失敗した文字を抽出できるのか
+https://buildersbox.corp-sansan.com/entry/2022/06/30/100000","1"
+"1789356036748435624","https://x.com/TweeTeaFOX223/status/1789356036748435624","2024-05-12 03:04:58","QAにある「node-mecab-lite (ENCODINGをUTF-8指定)」と、「node-mecab (そのまま)」の場合、同じWindows環境(CMDかPS)で使っても、文字化けしなかった
+https://www.npmjs.com/package/@enjoyjs/node-mecab
+https://www.npmjs.com/package/mecab-lite
+
+MeCabの文字コード設定がUTF-8(mecab-python3で使う関係)だから、その辺が原因かな？(要検証)","1"
+"1789355884667363401","https://x.com/TweeTeaFOX223/status/1789355884667363401","2024-05-12 03:04:22","Node.js上からMeCabを使用できるパッケージで、検索で最も使用例がヒットする「mecab-async」
+
+Windows環境(CMDかPS)での使用で、何らかの条件を満たすと、文字化けが発生することがある？↓と同様に自分の環境でもなった /続
+https://teratail.com/questions/47907","1"
+"1788528745277714546","https://x.com/TweeTeaFOX223/status/1788528745277714546","2024-05-09 20:17:36","Windows10の「Node v20.13.0」で、「danfojs-node」をインストールしようとしたら、依存パッケージの「tfjs-node」のインストールでエラー出て失敗
+
+tfjs-nodeのissuesに「Node v19.9.0」なら成功するとあったので、voltaでNodeのver下げたらインストール成功
+https://github.com/tensorflow/tfjs/issues/7341#issuecomment-1860106209","1"
+"1689766340251602947","https://x.com/TweeTeaFOX223/status/1689766340251602947","2023-08-11 07:31:04","Windows環境でSourceTreeが起動後に即落ちる現象が「%Appdata%\local\Atlassian\SourceTree.exe_Url_～」の削除で直るやつ。実行する度にユーザー設定(デフォルトユーザー情報とか)が色々消えるので中々に厄介だ
+https://qiita.com/miyabi_ver39/items/9956e65749fd9675ef74
+
+SourceTreeのユーザー設定の手動削除
+https://lipoyang.hatenablog.com/entry/20180827/p1","1"
+"1686340976552591360","https://x.com/TweeTeaFOX223/status/1686340976552591360","2023-08-01 20:39:54","Windows環境で、マイクロバージョン単位でのインタプリタ切り替えをする必要がないなら「venvのみ」で十分なのか
+
+Pythonのパッケージ管理ベストプラクティス
+https://qiita.com/c60evaporator/items/b6a7394231d1e768ce64","1"
+"1661897955606142976","https://x.com/TweeTeaFOX223/status/1661897955606142976","2023-05-26 09:52:03","どの仮想環境構築法がベスト？
+
+Pythonランチャー ＋ venv
+https://www.python.jp/install/windows/venv.html
+
+Pyenv ＋venv
+https://messefor.hatenablog.com/entry/2020/08/22/181519
+
+Pyenv ＋ Poetry
+https://zenn.dev/kumamoto/articles/9f0b520020bdd0
+https://dev.classmethod.jp/articles/pyenv-and-poetry/","1"
+"1661897848051609601","https://x.com/TweeTeaFOX223/status/1661897848051609601","2023-05-26 09:51:38","Pythonの環境構築(win)、初手でよく分からずAnaconda入れた関係で、↓の記事のように「condaで任意のverのPythonの仮想環境を作る＋仮想環境内ではpipを使ってライブラリインストール」とやってるけど、今後考えると変えた方がいいかな？
+https://zenn.dev/unemployed/articles/cc111706c3167c","1"
+"1661321079338713088","https://x.com/TweeTeaFOX223/status/1661321079338713088","2023-05-24 19:39:45","メモ: Docker for Windows「docker run -v」でマウントする時、ホスト側のディレクトリを相対パスにすると失敗する！絶対パスだと成功
+https://tamosblog.wordpress.com/2019/03/11/volume_mount_by_docker_on_wsl/
+
+バッチファイル作るのに工夫必要
+https://www.kinakomotitti.net/entry/2019/07/25/133612","1"
+"1661310378012463105","https://x.com/TweeTeaFOX223/status/1661310378012463105","2023-05-24 18:57:14","Hugging Faceの合成音声系のスペースをローカルにクローンして動かそうとしてた時に遭遇した(アプリのrequirements.txtの中でpyopenjtalkだけ失敗)。これ使ってるやつ結構多いので鬼門だった。","1"
+"1661188211094216706","https://x.com/TweeTeaFOX223/status/1661188211094216706","2023-05-24 10:51:47","メモ: Python3.9(Windows10)、「pip install pyopenjtalk」したらビルドエラー出た問題
+
+make、cmake、nmake、g++のPATHを通したけど…駄目だった
+https://github.com/r9y9/pyopenjtalk/issues/30
+https://zenn.dev/tez3998/scraps/92e703a3a42189
+https://teitoku-window.hatenablog.com/entry/2021/09/17/004040
+
+prebuilt版入れたら行けた◎
+https://zenn.dev/syoyo/articles/4f6962247adfb6","1"
+"1661187034935963654","https://x.com/TweeTeaFOX223/status/1661187034935963654","2023-05-24 10:47:07","ツイートのテスト","1"

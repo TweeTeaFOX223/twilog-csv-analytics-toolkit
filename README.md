@@ -13,7 +13,10 @@ X(旧Twitter)のツイートを保存する「Twilog」から出力した自分�
 - 依存インストール: `uv sync`
 - 開発サーバ: `uv run uvicorn app.main:app --reload`
 - テスト実行: `uv run pytest -q`
-
+  
+## サンプルデータ(CSV)
+`sample_csv\TweeTeaFOX223-260301_only.csv`に私のXのポストのCSVがあります。リポスト(他の人の投稿)を除外して私のポストだけにしたやつです。これを読み込ませればすぐに試せます。  
+  
 ## プロジェクト構成と動作概要
   
 ### 技術スタック
