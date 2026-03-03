@@ -130,6 +130,17 @@ select option {
     white-space: pre-wrap;
     line-height: 1.6;
 }
+.license-text {
+    white-space: pre-wrap;
+    word-break: break-word;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 14px;
+    max-height: 70vh;
+    overflow: auto;
+    line-height: 1.45;
+}
 
 .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; }
 .stat-box { padding: 12px; border-radius: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.06); }

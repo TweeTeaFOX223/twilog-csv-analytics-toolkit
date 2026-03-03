@@ -1,0 +1,372 @@
+{
+  "packages": [
+    {
+      "name": "annotated-doc",
+      "version": "0.0.4",
+      "license": "MIT",
+      "summary": "Document parameters, class attributes, return types, and variables inline, with Annotated.",
+      "home_page": "",
+      "license_files": []
+    },
+    {
+      "name": "annotated-types",
+      "version": "0.7.0",
+      "license": "MIT License",
+      "summary": "Reusable constraint types to use with typing.Annotated",
+      "home_page": "",
+      "license_files": []
+    },
+    {
+      "name": "anyio",
+      "version": "4.12.0",
+      "license": "MIT",
+      "summary": "High-level concurrency and networking framework on top of asyncio or Trio",
+      "home_page": "",
+      "license_files": []
+    },
+    {
+      "name": "certifi",
+      "version": "2025.11.12",
+      "license": "MPL-2.0",
+      "summary": "Python package for providing Mozilla's CA Bundle.",
+      "home_page": "https://github.com/certifi/python-certifi",
+      "license_files": []
+    },
+    {
+      "name": "click",
+      "version": "8.3.1",
+      "license": "BSD-3-Clause",
+      "summary": "Composable command line interface toolkit",
+      "home_page": "",
+      "license_files": []
+    },
+    {
+      "name": "colorama",
+      "version": "0.4.6",
+      "license": "BSD License",
+      "summary": "Cross-platform colored terminal text.",
+      "home_page": "",
+      "license_files": []
+    },
+    {
+      "name": "contourpy",
+      "version": "1.3.3",
+      "license": "BSD License",
+      "summary": "Python library for calculating contours of 2D quadrilateral grids",
+      "home_page": "",
+      "license_files": []
+    },
+    {
+      "name": "cycler",
+      "version": "0.12.1",
+      "license": "BSD License",
+      "summary": "Composable style cycles",
+      "home_page": "",
+      "license_files": []
+    },
+    {
+      "name": "fastapi",
+      "version": "0.125.0",
+      "license": "MIT",
+      "summary": "FastAPI framework, high performance, easy to learn, fast to code, ready for production",
+      "home_page": "",
+      "license_files": []
+    },
+    {
+      "name": "fonttools",
+      "version": "4.61.1",
+      "license": "MIT",
+      "summary": "Tools to manipulate font files",
+      "home_page": "http://github.com/fonttools/fonttools",
+      "license_files": []
+    },
+    {
+      "name": "h11",
+      "version": "0.16.0",
+      "license": "MIT",
+      "summary": "A pure-Python, bring-your-own-I/O implementation of HTTP/1.1",
+      "home_page": "https://github.com/python-hyper/h11",
+      "license_files": []
+    },
+    {
+      "name": "httpcore",
+      "version": "1.0.9",
+      "license": "BSD-3-Clause",
+      "summary": "A minimal low-level HTTP client.",
+      "home_page": "",
+      "license_files": []
+    },
+    {
+      "name": "httptools",
+      "version": "0.7.1",
+      "license": "MIT",
+      "summary": "A collection of framework independent HTTP protocol utils.",
+      "home_page": "",
+      "license_files": []
+    },
+    {
+      "name": "idna",
+      "version": "3.11",
+      "license": "BSD-3-Clause",
+      "summary": "Internationalized Domain Names in Applications (IDNA)",
+      "home_page": "",
+      "license_files": []
+    },
+    {
+      "name": "Jinja2",
+      "version": "3.1.6",
+      "license": "BSD License",
+      "summary": "A very fast and expressive template engine.",
+      "home_page": "",
+      "license_files": []
+    },
+    {
+      "name": "kiwisolver",
+      "version": "1.4.9",
+      "license": "BSD License",
+      "summary": "A fast implementation of the Cassowary constraint solver",
+      "home_page": "",
+      "license_files": []
+    },
+    {
+      "name": "MarkupSafe",
+      "version": "3.0.3",
+      "license": "BSD-3-Clause",
+      "summary": "Safely add untrusted strings to HTML/XML markup.",
+      "home_page": "",
+      "license_files": []
+    },
+    {
+      "name": "matplotlib",
+      "version": "3.10.8",
+      "license": "Python Software Foundation License",
+      "summary": "Python plotting package",
+      "home_page": "",
+      "license_files": []
+    },
+    {
+      "name": "narwhals",
+      "version": "2.14.0",
+      "license": "MIT License",
+      "summary": "Extremely lightweight compatibility layer between dataframe libraries",
+      "home_page": "",
+      "license_files": []
+    },
+    {
+      "name": "numpy",
+      "version": "2.3.5",
+      "license": "BSD License",
+      "summary": "Fundamental package for array computing in Python",
+      "home_page": "",
+      "license_files": []
+    },
+    {
+      "name": "orjson",
+      "version": "3.11.5",
+      "license": "Apache-2.0 OR MIT",
+      "summary": "Fast, correct Python JSON library supporting dataclasses, datetimes, and numpy",
+      "home_page": "",
+      "license_files": []
+    },
+    {
+      "name": "packaging",
+      "version": "25.0",
+      "license": "BSD License",
+      "summary": "Core utilities for Python packages",
+      "home_page": "",
+      "license_files": []
+    },
+    {
+      "name": "pefile",
+      "version": "2024.8.26",
+      "license": "MIT",
+      "summary": "Python PE parsing module",
+      "home_page": "https://github.com/erocarrera/pefile",
+      "license_files": []
+    },
+    {
+      "name": "pillow",
+      "version": "12.0.0",
+      "license": "MIT-CMU",
+      "summary": "Python Imaging Library (fork)",
+      "home_page": "",
+      "license_files": []
+    },
+    {
+      "name": "plotly",
+      "version": "6.5.0",
+      "license": "MIT License",
+      "summary": "An open-source interactive data visualization library for Python",
+      "home_page": "",
+      "license_files": []
+    },
+    {
+      "name": "polars",
+      "version": "1.36.1",
+      "license": "MIT License",
+      "summary": "Blazingly fast DataFrame library",
+      "home_page": "",
+      "license_files": []
+    },
+    {
+      "name": "polars-runtime-32",
+      "version": "1.36.1",
+      "license": "MIT License",
+      "summary": "Blazingly fast DataFrame library",
+      "home_page": "",
+      "license_files": []
+    },
+    {
+      "name": "pydantic",
+      "version": "2.12.5",
+      "license": "MIT",
+      "summary": "Data validation using Python type hints",
+      "home_page": "",
+      "license_files": []
+    },
+    {
+      "name": "pydantic_core",
+      "version": "2.41.5",
+      "license": "MIT",
+      "summary": "Core functionality for Pydantic validation and serialization",
+      "home_page": "https://github.com/pydantic/pydantic-core",
+      "license_files": []
+    },
+    {
+      "name": "pyparsing",
+      "version": "3.2.5",
+      "license": "MIT",
+      "summary": "pyparsing - Classes and methods to define and execute parsing grammars",
+      "home_page": "",
+      "license_files": []
+    },
+    {
+      "name": "python-dateutil",
+      "version": "2.9.0.post0",
+      "license": "Dual License",
+      "summary": "Extensions to the standard Python datetime module",
+      "home_page": "https://github.com/dateutil/dateutil",
+      "license_files": []
+    },
+    {
+      "name": "python-dotenv",
+      "version": "1.2.1",
+      "license": "BSD-3-Clause",
+      "summary": "Read key-value pairs from a .env file and set them as environment variables",
+      "home_page": "",
+      "license_files": []
+    },
+    {
+      "name": "python-multipart",
+      "version": "0.0.21",
+      "license": "Apache-2.0",
+      "summary": "A streaming multipart parser for Python",
+      "home_page": "",
+      "license_files": []
+    },
+    {
+      "name": "pywin32-ctypes",
+      "version": "0.2.3",
+      "license": "BSD-3-Clause",
+      "summary": "A (partial) reimplementation of pywin32 using ctypes/cffi",
+      "home_page": "https://github.com/enthought/pywin32-ctypes",
+      "license_files": []
+    },
+    {
+      "name": "PyYAML",
+      "version": "6.0.3",
+      "license": "MIT",
+      "summary": "YAML parser and emitter for Python",
+      "home_page": "https://pyyaml.org/",
+      "license_files": []
+    },
+    {
+      "name": "setuptools",
+      "version": "82.0.0",
+      "license": "MIT",
+      "summary": "Easily download, build, install, upgrade, and uninstall Python packages",
+      "home_page": "",
+      "license_files": []
+    },
+    {
+      "name": "six",
+      "version": "1.17.0",
+      "license": "MIT",
+      "summary": "Python 2 and 3 compatibility utilities",
+      "home_page": "https://github.com/benjaminp/six",
+      "license_files": []
+    },
+    {
+      "name": "starlette",
+      "version": "0.50.0",
+      "license": "BSD-3-Clause",
+      "summary": "The little ASGI library that shines.",
+      "home_page": "",
+      "license_files": []
+    },
+    {
+      "name": "SudachiDict-full",
+      "version": "20251022",
+      "license": "Apache-2.0",
+      "summary": "Sudachi Dictionary for SudachiPy - Full Edition",
+      "home_page": "https://github.com/WorksApplications/SudachiDict",
+      "license_files": []
+    },
+    {
+      "name": "SudachiPy",
+      "version": "0.6.10",
+      "license": "Apache-2.0",
+      "summary": "Python version of Sudachi, the Japanese Morphological Analyzer",
+      "home_page": "https://github.com/WorksApplications/sudachi.rs/tree/develop/python",
+      "license_files": []
+    },
+    {
+      "name": "typing-inspection",
+      "version": "0.4.2",
+      "license": "MIT",
+      "summary": "Runtime typing introspection tools",
+      "home_page": "",
+      "license_files": []
+    },
+    {
+      "name": "typing_extensions",
+      "version": "4.15.0",
+      "license": "PSF-2.0",
+      "summary": "Backported and Experimental Type Hints for Python 3.9+",
+      "home_page": "",
+      "license_files": []
+    },
+    {
+      "name": "uvicorn",
+      "version": "0.38.0",
+      "license": "BSD-3-Clause",
+      "summary": "The lightning-fast ASGI server.",
+      "home_page": "",
+      "license_files": []
+    },
+    {
+      "name": "watchfiles",
+      "version": "1.1.1",
+      "license": "MIT",
+      "summary": "Simple, modern and high performance file watching and code reload in python.",
+      "home_page": "https://github.com/samuelcolvin/watchfiles",
+      "license_files": []
+    },
+    {
+      "name": "websockets",
+      "version": "15.0.1",
+      "license": "BSD-3-Clause",
+      "summary": "An implementation of the WebSocket Protocol (RFC 6455 & 7692)",
+      "home_page": "",
+      "license_files": []
+    },
+    {
+      "name": "wordcloud",
+      "version": "1.9.4",
+      "license": "MIT License",
+      "summary": "A little word cloud generator",
+      "home_page": "",
+      "license_files": []
+    }
+  ]
+}

@@ -6,6 +6,8 @@ from pathlib import Path
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 
+from app.runtime_paths import get_static_dir
+
 BASE_DIR = Path(__file__).resolve().parent
 SRC_DIR = BASE_DIR.parent / "src"
 if str(SRC_DIR) not in sys.path:
@@ -15,5 +17,5 @@ from app.routes import views
 
 app = FastAPI(title="Twilog Analytics")
 
-app.mount("/static", StaticFiles(directory=BASE_DIR / "static"), name="static")
+app.mount("/static", StaticFiles(directory=get_static_dir()), name="static")
 app.include_router(views.router)

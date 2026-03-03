@@ -1,0 +1,384 @@
+Third-Party Licenses
+====================
+
+This file lists third-party Python packages used by this application and bundled at runtime.
+
+Package: annotated-doc
+Version: 0.0.4
+License: MIT
+Summary: Document parameters, class attributes, return types, and variables inline, with Annotated.
+License Files: (not declared in package metadata)
+
+--------------------------------------------------------------------------------
+
+Package: annotated-types
+Version: 0.7.0
+License: MIT License
+Summary: Reusable constraint types to use with typing.Annotated
+License Files: (not declared in package metadata)
+
+--------------------------------------------------------------------------------
+
+Package: anyio
+Version: 4.12.0
+License: MIT
+Summary: High-level concurrency and networking framework on top of asyncio or Trio
+License Files: (not declared in package metadata)
+
+--------------------------------------------------------------------------------
+
+Package: certifi
+Version: 2025.11.12
+License: MPL-2.0
+Summary: Python package for providing Mozilla's CA Bundle.
+Home-page: https://github.com/certifi/python-certifi
+License Files: (not declared in package metadata)
+
+--------------------------------------------------------------------------------
+
+Package: click
+Version: 8.3.1
+License: BSD-3-Clause
+Summary: Composable command line interface toolkit
+License Files: (not declared in package metadata)
+
+--------------------------------------------------------------------------------
+
+Package: colorama
+Version: 0.4.6
+License: BSD License
+Summary: Cross-platform colored terminal text.
+License Files: (not declared in package metadata)
+
+--------------------------------------------------------------------------------
+
+Package: contourpy
+Version: 1.3.3
+License: BSD License
+Summary: Python library for calculating contours of 2D quadrilateral grids
+License Files: (not declared in package metadata)
+
+--------------------------------------------------------------------------------
+
+Package: cycler
+Version: 0.12.1
+License: BSD License
+Summary: Composable style cycles
+License Files: (not declared in package metadata)
+
+--------------------------------------------------------------------------------
+
+Package: fastapi
+Version: 0.125.0
+License: MIT
+Summary: FastAPI framework, high performance, easy to learn, fast to code, ready for production
+License Files: (not declared in package metadata)
+
+--------------------------------------------------------------------------------
+
+Package: fonttools
+Version: 4.61.1
+License: MIT
+Summary: Tools to manipulate font files
+Home-page: http://github.com/fonttools/fonttools
+License Files: (not declared in package metadata)
+
+--------------------------------------------------------------------------------
+
+Package: h11
+Version: 0.16.0
+License: MIT
+Summary: A pure-Python, bring-your-own-I/O implementation of HTTP/1.1
+Home-page: https://github.com/python-hyper/h11
+License Files: (not declared in package metadata)
+
+--------------------------------------------------------------------------------
+
+Package: httpcore
+Version: 1.0.9
+License: BSD-3-Clause
+Summary: A minimal low-level HTTP client.
+License Files: (not declared in package metadata)
+
+--------------------------------------------------------------------------------
+
+Package: httptools
+Version: 0.7.1
+License: MIT
+Summary: A collection of framework independent HTTP protocol utils.
+License Files: (not declared in package metadata)
+
+--------------------------------------------------------------------------------
+
+Package: idna
+Version: 3.11
+License: BSD-3-Clause
+Summary: Internationalized Domain Names in Applications (IDNA)
+License Files: (not declared in package metadata)
+
+--------------------------------------------------------------------------------
+
+Package: Jinja2
+Version: 3.1.6
+License: BSD License
+Summary: A very fast and expressive template engine.
+License Files: (not declared in package metadata)
+
+--------------------------------------------------------------------------------
+
+Package: kiwisolver
+Version: 1.4.9
+License: BSD License
+Summary: A fast implementation of the Cassowary constraint solver
+License Files: (not declared in package metadata)
+
+--------------------------------------------------------------------------------
+
+Package: MarkupSafe
+Version: 3.0.3
+License: BSD-3-Clause
+Summary: Safely add untrusted strings to HTML/XML markup.
+License Files: (not declared in package metadata)
+
+--------------------------------------------------------------------------------
+
+Package: matplotlib
+Version: 3.10.8
+License: Python Software Foundation License
+Summary: Python plotting package
+License Files: (not declared in package metadata)
+
+--------------------------------------------------------------------------------
+
+Package: narwhals
+Version: 2.14.0
+License: MIT License
+Summary: Extremely lightweight compatibility layer between dataframe libraries
+License Files: (not declared in package metadata)
+
+--------------------------------------------------------------------------------
+
+Package: numpy
+Version: 2.3.5
+License: BSD License
+Summary: Fundamental package for array computing in Python
+License Files: (not declared in package metadata)
+
+--------------------------------------------------------------------------------
+
+Package: orjson
+Version: 3.11.5
+License: Apache-2.0 OR MIT
+Summary: Fast, correct Python JSON library supporting dataclasses, datetimes, and numpy
+License Files: (not declared in package metadata)
+
+--------------------------------------------------------------------------------
+
+Package: packaging
+Version: 25.0
+License: BSD License
+Summary: Core utilities for Python packages
+License Files: (not declared in package metadata)
+
+--------------------------------------------------------------------------------
+
+Package: pefile
+Version: 2024.8.26
+License: MIT
+Summary: Python PE parsing module
+Home-page: https://github.com/erocarrera/pefile
+License Files: (not declared in package metadata)
+
+--------------------------------------------------------------------------------
+
+Package: pillow
+Version: 12.0.0
+License: MIT-CMU
+Summary: Python Imaging Library (fork)
+License Files: (not declared in package metadata)
+
+--------------------------------------------------------------------------------
+
+Package: plotly
+Version: 6.5.0
+License: MIT License
+Summary: An open-source interactive data visualization library for Python
+License Files: (not declared in package metadata)
+
+--------------------------------------------------------------------------------
+
+Package: polars
+Version: 1.36.1
+License: MIT License
+Summary: Blazingly fast DataFrame library
+License Files: (not declared in package metadata)
+
+--------------------------------------------------------------------------------
+
+Package: polars-runtime-32
+Version: 1.36.1
+License: MIT License
+Summary: Blazingly fast DataFrame library
+License Files: (not declared in package metadata)
+
+--------------------------------------------------------------------------------
+
+Package: pydantic
+Version: 2.12.5
+License: MIT
+Summary: Data validation using Python type hints
+License Files: (not declared in package metadata)
+
+--------------------------------------------------------------------------------
+
+Package: pydantic_core
+Version: 2.41.5
+License: MIT
+Summary: Core functionality for Pydantic validation and serialization
+Home-page: https://github.com/pydantic/pydantic-core
+License Files: (not declared in package metadata)
+
+--------------------------------------------------------------------------------
+
+Package: pyparsing
+Version: 3.2.5
+License: MIT
+Summary: pyparsing - Classes and methods to define and execute parsing grammars
+License Files: (not declared in package metadata)
+
+--------------------------------------------------------------------------------
+
+Package: python-dateutil
+Version: 2.9.0.post0
+License: Dual License
+Summary: Extensions to the standard Python datetime module
+Home-page: https://github.com/dateutil/dateutil
+License Files: (not declared in package metadata)
+
+--------------------------------------------------------------------------------
+
+Package: python-dotenv
+Version: 1.2.1
+License: BSD-3-Clause
+Summary: Read key-value pairs from a .env file and set them as environment variables
+License Files: (not declared in package metadata)
+
+--------------------------------------------------------------------------------
+
+Package: python-multipart
+Version: 0.0.21
+License: Apache-2.0
+Summary: A streaming multipart parser for Python
+License Files: (not declared in package metadata)
+
+--------------------------------------------------------------------------------
+
+Package: pywin32-ctypes
+Version: 0.2.3
+License: BSD-3-Clause
+Summary: A (partial) reimplementation of pywin32 using ctypes/cffi
+Home-page: https://github.com/enthought/pywin32-ctypes
+License Files: (not declared in package metadata)
+
+--------------------------------------------------------------------------------
+
+Package: PyYAML
+Version: 6.0.3
+License: MIT
+Summary: YAML parser and emitter for Python
+Home-page: https://pyyaml.org/
+License Files: (not declared in package metadata)
+
+--------------------------------------------------------------------------------
+
+Package: setuptools
+Version: 82.0.0
+License: MIT
+Summary: Easily download, build, install, upgrade, and uninstall Python packages
+License Files: (not declared in package metadata)
+
+--------------------------------------------------------------------------------
+
+Package: six
+Version: 1.17.0
+License: MIT
+Summary: Python 2 and 3 compatibility utilities
+Home-page: https://github.com/benjaminp/six
+License Files: (not declared in package metadata)
+
+--------------------------------------------------------------------------------
+
+Package: starlette
+Version: 0.50.0
+License: BSD-3-Clause
+Summary: The little ASGI library that shines.
+License Files: (not declared in package metadata)
+
+--------------------------------------------------------------------------------
+
+Package: SudachiDict-full
+Version: 20251022
+License: Apache-2.0
+Summary: Sudachi Dictionary for SudachiPy - Full Edition
+Home-page: https://github.com/WorksApplications/SudachiDict
+License Files: (not declared in package metadata)
+
+--------------------------------------------------------------------------------
+
+Package: SudachiPy
+Version: 0.6.10
+License: Apache-2.0
+Summary: Python version of Sudachi, the Japanese Morphological Analyzer
+Home-page: https://github.com/WorksApplications/sudachi.rs/tree/develop/python
+License Files: (not declared in package metadata)
+
+--------------------------------------------------------------------------------
+
+Package: typing-inspection
+Version: 0.4.2
+License: MIT
+Summary: Runtime typing introspection tools
+License Files: (not declared in package metadata)
+
+--------------------------------------------------------------------------------
+
+Package: typing_extensions
+Version: 4.15.0
+License: PSF-2.0
+Summary: Backported and Experimental Type Hints for Python 3.9+
+License Files: (not declared in package metadata)
+
+--------------------------------------------------------------------------------
+
+Package: uvicorn
+Version: 0.38.0
+License: BSD-3-Clause
+Summary: The lightning-fast ASGI server.
+License Files: (not declared in package metadata)
+
+--------------------------------------------------------------------------------
+
+Package: watchfiles
+Version: 1.1.1
+License: MIT
+Summary: Simple, modern and high performance file watching and code reload in python.
+Home-page: https://github.com/samuelcolvin/watchfiles
+License Files: (not declared in package metadata)
+
+--------------------------------------------------------------------------------
+
+Package: websockets
+Version: 15.0.1
+License: BSD-3-Clause
+Summary: An implementation of the WebSocket Protocol (RFC 6455 & 7692)
+License Files: (not declared in package metadata)
+
+--------------------------------------------------------------------------------
+
+Package: wordcloud
+Version: 1.9.4
+License: MIT License
+Summary: A little word cloud generator
+License Files: (not declared in package metadata)
+
+--------------------------------------------------------------------------------

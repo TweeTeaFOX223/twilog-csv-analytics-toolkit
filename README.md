@@ -13,6 +13,42 @@ X(旧Twitter)のツイートを保存する「Twilog」から出力した自分�
 - 依存インストール: `uv sync`
 - 開発サーバ: `uv run uvicorn app.main:app --reload`
 - テスト実行: `uv run pytest -q`
+
+## PyInstallerでexe化（Windows）
+- ビルド依存を含めて同期: `uv sync --extra dev`
+- exeビルド: `uv run pyinstaller twilog_analytics.spec --noconfirm`
+- 実行ファイル: `dist\\twilog-analytics\\twilog-analytics.exe`
+- 起動後に `http://127.0.0.1:8000` をブラウザで開く
+- ライセンス一覧はビルド時に自動生成され、exe同梱されます
+
+配布/実行形態について:
+- 現在の設定は `one-dir` ビルドです。`dist\\twilog-analytics\\` フォルダ一式が必要です。
+- `twilog-analytics.exe` 単体だけを別の場所へコピーすると動作しません（同梱DLL・データ参照のため）。
+- 配布時は `dist\\twilog-analytics\\` フォルダごと配布してください。
+- 単体exe（`one-file`）にしたい場合は `.spec` を `COLLECT` なし構成に変更する必要があります。
+
+`dist\\twilog-analytics\\` の中身:
+- `twilog-analytics.exe`: 起動用の実行ファイル本体。
+- `_internal\\`: 実行に必要な同梱ファイル群（このフォルダごと必要）。
+- `_internal\\app\\`: `templates` / `static` などアプリのHTML・CSS資産。
+- `_internal\\app\\static\\THIRD_PARTY_LICENSES.txt`: 同梱ライブラリのライセンス一覧（テキスト）。
+- `_internal\\app\\static\\THIRD_PARTY_LICENSES.json`: 同梱ライブラリのライセンス一覧（JSON）。
+- `_internal\\sudachipy`, `_internal\\sudachidict_full`: 形態素解析（SudachiPy）用の本体と辞書データ。
+- `_internal\\*.dll`, `_internal\\*.pyd`, `_internal\\python313.dll`: Pythonランタイムとネイティブ拡張（NumPy/Polars/Matplotlib等）の実行モジュール。
+- `_internal\\base_library.zip`: 標準ライブラリの同梱アーカイブ。
+
+ライセンス表示:
+- アプリ起動後にヘッダーの `ライセンス` を開くと、同梱済みライセンス一覧を表示できます。
+- 画面から `TXT` / `JSON` をそのままダウンロードできます。
+
+ライセンス一覧の手動生成（開発時）:
+- `uv run python scripts/generate_licenses.py`
+- 生成先: `app/static/THIRD_PARTY_LICENSES.txt` と `app/static/THIRD_PARTY_LICENSES.json`
+
+環境変数で待ち受け先を変更可能:
+- `TWILOG_HOST`（既定: `127.0.0.1`）
+- `TWILOG_PORT`（既定: `8000`）
+- `TWILOG_OPEN_BROWSER`（既定: `1`。`0` で自動ブラウザ起動を無効化）
   
 ## サンプルデータ(CSV)
 `sample_csv\TweeTeaFOX223-260301_only.csv`に私のXのポストのCSVがあります。リポスト(他の人の投稿)を除外して私のポストだけにしたやつです。これを読み込ませればすぐに試せます。  

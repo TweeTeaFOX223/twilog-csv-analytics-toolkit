@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block header_actions %}
+<a class="btn-secondary" href="/">CSVアップロードへ戻る</a>
+{% endblock %}
+
+{% block content %}
+<section class="card">
+    <div class="card-header-row">
+        <h1>Third-Party Licenses</h1>
+        <div class="card-actions">
+            <a class="btn-secondary" href="/static/THIRD_PARTY_LICENSES.txt" download>TXTをダウンロード</a>
+            <a class="btn-secondary" href="/static/THIRD_PARTY_LICENSES.json" download>JSONをダウンロード</a>
+        </div>
+    </div>
+    <p class="muted">
+        この一覧はビルド時に生成され、exeにも同梱されます。
+    </p>
+    <pre class="license-text">{{ licenses_text }}</pre>
+</section>
+{% endblock %}

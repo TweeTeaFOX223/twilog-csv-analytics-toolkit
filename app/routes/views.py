@@ -15,6 +15,7 @@ from fastapi import APIRouter, File, Form, HTTPException, Request, UploadFile, s
 from fastapi.responses import HTMLResponse, RedirectResponse, StreamingResponse
 from fastapi.templating import Jinja2Templates
 
+from app.runtime_paths import get_static_dir, get_templates_dir
 from twilog_analytics.data import loader, preprocessor
 from twilog_analytics.analysis import (
     statistics,
@@ -34,7 +35,7 @@ WEEKDAY_BASE = pl.DataFrame({"weekday": list(range(7))})
 
 # テンプレートやルーターを初期化（HTMX用の部分テンプレートを返却する）
 router = APIRouter()
-TEMPLATES = Jinja2Templates(directory=str(Path(__file__).resolve().parent.parent / "templates"))
+TEMPLATES = Jinja2Templates(directory=str(get_templates_dir()))
 
 
 @dataclass
@@ -49,6 +50,7 @@ class UploadSession:
 
 # メモリ上の簡易セッションストア（本番では永続化を検討）
 UPLOAD_STORE: Dict[str, UploadSession] = {}
+LICENSE_TEXT_FILE = get_static_dir() / "THIRD_PARTY_LICENSES.txt"
 
 
 def _safe_filename(original: str) -> str:
@@ -157,6 +159,23 @@ async def index(request: Request) -> HTMLResponse:
     """アップロードフォームを表示するトップページ。"""
 
     return TEMPLATES.TemplateResponse("index.html", {"request": request})
+
+
+@router.get("/licenses", response_class=HTMLResponse)
+async def licenses_page(request: Request) -> HTMLResponse:
+    """同梱済みのサードパーティライセンス一覧を表示する。"""
+
+    if LICENSE_TEXT_FILE.exists():
+        licenses_text = LICENSE_TEXT_FILE.read_text(encoding="utf-8")
+    else:
+        licenses_text = (
+            "ライセンス一覧ファイルが見つかりませんでした。\n"
+            "scripts/generate_licenses.py を実行して app/static に生成してください。"
+        )
+    return TEMPLATES.TemplateResponse(
+        "licenses.html",
+        {"request": request, "licenses_text": licenses_text},
+    )
 
 
 @router.post("/upload")
