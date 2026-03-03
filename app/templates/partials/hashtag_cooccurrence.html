@@ -17,6 +17,10 @@
         </table>
     </details>
     {% else %}
+    {% if unmet_min_count %}
+    <p>共起の表示条件（同一ペアが2回以上出現）を満たすデータがありません。</p>
+    {% else %}
     <p>データがありません。</p>
+    {% endif %}
     {% endif %}
 </div>

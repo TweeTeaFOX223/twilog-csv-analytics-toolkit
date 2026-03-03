@@ -159,7 +159,11 @@ def hashtag_ranking(frame: pl.DataFrame, top_n: int | None = 20) -> pl.DataFrame
     if exploded.is_empty():
         return pl.DataFrame()
     cleaned = exploded.with_columns(
-        pl.col("hashtag_list").cast(pl.Utf8).str.strip_chars().alias("hashtag")
+        pl.col("hashtag_list")
+        .cast(pl.Utf8)
+        .str.strip_chars()
+        .str.replace_all(r"^#+", "")
+        .alias("hashtag")
     ).filter(pl.col("hashtag") != "")
     if cleaned.is_empty():
         return pl.DataFrame()
@@ -180,10 +184,21 @@ def hashtag_cooccurrence(
     if "hashtag_list" not in frame.columns:
         return pl.DataFrame()
     pairs: Dict[Tuple[str, str], int] = {}
-    for tags in frame.select("hashtag_list").to_series():
-        if not tags:
+    tag_lists = frame.get_column("hashtag_list").to_list()
+    for tags in tag_lists:
+        if tags is None:
             continue
-        unique = sorted({str(t).strip() for t in tags if str(t).strip()})
+        if isinstance(tags, pl.Series):
+            tags = tags.to_list()
+        if not isinstance(tags, list) or len(tags) == 0:
+            continue
+        unique = sorted(
+            {
+                str(t).strip().lstrip("#")
+                for t in tags
+                if t is not None and str(t).strip().lstrip("#")
+            }
+        )
         if len(unique) < 2:
             continue
         for tag_a, tag_b in combinations(unique, 2):
@@ -213,7 +228,11 @@ def hashtag_year_trend(frame: pl.DataFrame, top_n: int = 10) -> pl.DataFrame:
     if exploded.is_empty():
         return pl.DataFrame()
     cleaned = exploded.with_columns(
-        pl.col("hashtag_list").cast(pl.Utf8).str.strip_chars().alias("hashtag")
+        pl.col("hashtag_list")
+        .cast(pl.Utf8)
+        .str.strip_chars()
+        .str.replace_all(r"^#+", "")
+        .alias("hashtag")
     ).filter(pl.col("hashtag") != "")
     if cleaned.is_empty():
         return pl.DataFrame()

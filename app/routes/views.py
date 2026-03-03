@@ -1257,6 +1257,8 @@ async def hashtag_cooccurrence_partial(request: Request, file_id: str) -> HTMLRe
 
     frame = _filtered_frame(session)
     pairs = text_analysis.hashtag_cooccurrence(frame, top_n=40, min_count=2)
+    pairs_any = text_analysis.hashtag_cooccurrence(frame, top_n=1, min_count=1)
+    unmet_min_count = pairs.is_empty() and not pairs_any.is_empty()
     pair_rows = pairs.to_dicts() if not pairs.is_empty() else []
     nodes = sorted({row["tag_a"] for row in pair_rows} | {row["tag_b"] for row in pair_rows})
     edges = [
@@ -1271,6 +1273,7 @@ async def hashtag_cooccurrence_partial(request: Request, file_id: str) -> HTMLRe
             "request": request,
             "file_id": file_id,
             "pairs": pair_rows,
+            "unmet_min_count": unmet_min_count,
             "network_plot": json.dumps(network_plot, default=str),
         },
     )
