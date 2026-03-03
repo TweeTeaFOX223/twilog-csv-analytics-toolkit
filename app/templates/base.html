@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Twilog Analytics</title>
+    <title>Twilog CSV Analytics Toolkit</title>
     <link rel="stylesheet" href="/static/styles.css">
     <script src="https://unpkg.com/htmx.org@1.9.12"></script>
     <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
@@ -12,10 +12,11 @@
 <body>
     <header class="app-header">
         <div class="header-main">
-            <div class="brand">Twilog Analytics</div>
+            <div class="brand">Twilog CSV Analytics Toolkit</div>
             <div class="subtitle">CSVをアップロードして投稿を可視化</div>
         </div>
         <div class="header-actions">
+            <a class="btn-secondary" href="https://github.com/TweeTeaFOX223/twilog-csv-analytics-toolkit" target="_blank" rel="noopener noreferrer">GitHub</a>
             <a class="btn-secondary" href="/licenses">ライセンス</a>
             {% block header_actions %}{% endblock %}
         </div>

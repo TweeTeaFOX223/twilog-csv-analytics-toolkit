@@ -10,6 +10,12 @@ def _bundle_root() -> Path:
     return Path(__file__).resolve().parent.parent
 
 
+def get_runtime_work_dir() -> Path:
+    if getattr(sys, "frozen", False):
+        return Path(sys.executable).resolve().parent
+    return Path.cwd().resolve()
+
+
 def get_templates_dir() -> Path:
     return _bundle_root() / "app" / "templates"
 

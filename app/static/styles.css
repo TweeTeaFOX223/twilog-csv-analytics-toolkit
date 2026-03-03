@@ -51,6 +51,34 @@ input[type="file"], input[type="text"], select, textarea {
     background: rgba(255,255,255,0.05);
     color: var(--text);
 }
+.file-select-row {
+    display: grid;
+    grid-template-columns: 6fr 4fr;
+    gap: 10px;
+    align-items: center;
+}
+.file-pick-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+}
+.file-select-row .btn-secondary {
+    width: 100%;
+    height: 100%;
+}
+.hidden-file-input {
+    display: none;
+}
+.file-path-display {
+    padding: 8px 10px;
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 8px;
+    background: rgba(255,255,255,0.03);
+    word-break: break-all;
+}
 select option {
     color: #000;
     background: #fff;

@@ -4,10 +4,78 @@
 <section class="card">
     <h1>CSVアップロード</h1>
     <p>Twilog形式のCSVを選択し、オプションを設定して解析を開始します。</p>
+    <p class="muted">
+        exe版を使用中は、起動元のコンソール画面を閉じないでください。閉じるとアプリのサーバーが停止します。
+    </p>
+    <p class="muted">
+        ローカル選択ボタンでは、CSV選択ダイアログの初期フォルダを
+        「通常実行: 実行中ディレクトリ」「exe実行: exeのあるディレクトリ」に合わせます。
+    </p>
+    <p>
+        サンプルCSVを使う場合は、
+        <a href="https://raw.githubusercontent.com/TweeTeaFOX223/twilog-csv-analytics-toolkit/refs/heads/main/sample_csv/TweeTeaFOX223-260301_only.csv" target="_blank" rel="noopener noreferrer">
+            こちらのサンプルファイル
+        </a>
+        を開いて「名前をつけて保存」し、この画面からアップロードしてください。
+    </p>
     <form id="upload-form" class="form" action="/upload" method="post" enctype="multipart/form-data">
         <label class="form-label">CSVファイル（必須）</label>
-        <input type="file" name="file" accept=".csv" required>
+        <div class="file-select-row">
+            <label for="file-input" class="btn-secondary file-pick-btn">通常選択</label>
+            <button id="pick-local-btn" type="button" class="btn-secondary">ローカル選択(実行ファイルのパスから開く)</button>
+        </div>
+        <input id="file-input" class="hidden-file-input" type="file" name="file" accept=".csv">
+        <input id="local-csv-path" type="hidden" name="local_csv_path" value="">
+        <div id="selected-file-path" class="muted file-path-display">選択ファイル: 未選択</div>
         <button type="submit" class="btn-primary btn-tall">解析を開始</button>
     </form>
 </section>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const pickLocalBtn = document.getElementById("pick-local-btn");
+  const fileInput = document.getElementById("file-input");
+  const localPathInput = document.getElementById("local-csv-path");
+  const selectedFilePath = document.getElementById("selected-file-path");
+
+  if (!pickLocalBtn || !fileInput || !localPathInput || !selectedFilePath) return;
+
+  const setDisplay = (text) => {
+    selectedFilePath.textContent = `選択ファイル: ${text}`;
+  };
+
+  const clearLocalSelection = () => {
+    localPathInput.value = "";
+  };
+
+  const clearFileSelection = () => {
+    fileInput.value = "";
+  };
+
+  fileInput.addEventListener("change", () => {
+    if (fileInput.files && fileInput.files.length > 0) {
+      clearLocalSelection();
+      setDisplay(fileInput.files[0].name);
+    } else {
+      setDisplay("未選択");
+    }
+  });
+
+  pickLocalBtn.addEventListener("click", async () => {
+    try {
+      const response = await fetch("/pick-local-csv", { method: "POST" });
+      const result = await response.json();
+      if (!response.ok || !result.selected) {
+        if (result && result.message) setDisplay(result.message);
+        return;
+      }
+      localPathInput.value = result.path || "";
+      setDisplay(result.path || result.name || "未選択");
+      clearFileSelection();
+    } catch (error) {
+      setDisplay("ローカル選択に失敗しました。");
+      console.error(error);
+    }
+  });
+});
+</script>
 {% endblock %}

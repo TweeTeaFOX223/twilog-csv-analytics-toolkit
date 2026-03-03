@@ -12,10 +12,10 @@ from uuid import uuid4
 
 import polars as pl
 from fastapi import APIRouter, File, Form, HTTPException, Request, UploadFile, status
-from fastapi.responses import HTMLResponse, RedirectResponse, StreamingResponse
+from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse, StreamingResponse
 from fastapi.templating import Jinja2Templates
 
-from app.runtime_paths import get_static_dir, get_templates_dir
+from app.runtime_paths import get_runtime_work_dir, get_static_dir, get_templates_dir
 from twilog_analytics.data import loader, preprocessor
 from twilog_analytics.analysis import (
     statistics,
@@ -70,6 +70,56 @@ def _render_error(request: Request, message: str, status_code: int = 400) -> HTM
         {"request": request, "message": message},
         status_code=status_code,
     )
+
+
+def _save_to_temp_csv(source: Path) -> Path:
+    """選択/アップロードされたCSVを安全な一時パスへコピーする。"""
+
+    temp_dir = Path(tempfile.mkdtemp(prefix="twilog_"))
+    dest = temp_dir / _safe_filename(source.name)
+    shutil.copy2(source, dest)
+    return dest
+
+
+def _register_session_from_csv(csv_path: Path) -> str:
+    """CSVを読み込み、解析セッションとして登録してfile_idを返す。"""
+
+    frame = loader.load_twilog_csv(csv_path)
+    frame = preprocessor.add_derived_columns(frame)
+    file_id = uuid4().hex
+    options = {
+        "years": [],
+        "years_mode": "all",
+        "sudachi_mode": "C",
+        "pos_filter": None,
+        "stopwords": None,
+        "keyword_dict": None,
+    }
+    UPLOAD_STORE[file_id] = UploadSession(file_id=file_id, path=csv_path, frame=frame, options=options)
+    return file_id
+
+
+def _pick_local_csv_path(initial_dir: Path) -> Optional[Path]:
+    """ローカル環境でCSV選択ダイアログを開き、選択パスを返す。"""
+
+    import tkinter as tk
+    from tkinter import filedialog
+
+    root = tk.Tk()
+    root.withdraw()
+    root.attributes("-topmost", True)
+    try:
+        selected = filedialog.askopenfilename(
+            title="Twilog CSV を選択",
+            initialdir=str(initial_dir),
+            filetypes=[("CSV files", "*.csv"), ("All files", "*.*")],
+        )
+    finally:
+        root.destroy()
+
+    if not selected:
+        return None
+    return Path(selected)
 
 
 def _get_session(file_id: str) -> UploadSession:
@@ -181,39 +231,64 @@ async def licenses_page(request: Request) -> HTMLResponse:
 @router.post("/upload")
 async def upload_csv(
     request: Request,
-    file: UploadFile = File(...),
+    file: Optional[UploadFile] = File(None),
+    local_csv_path: Optional[str] = Form(None),
 ):
     """CSVを安全に受け取り、一時ディレクトリに保存して前処理する。"""
 
-    if not file.filename or not file.filename.lower().endswith(".csv"):
+    dest: Optional[Path] = None
+    if file and file.filename:
+        if not file.filename.lower().endswith(".csv"):
+            return _render_error(request, "CSVファイルを選択してください。", status_code=400)
+        temp_dir = Path(tempfile.mkdtemp(prefix="twilog_"))
+        dest = temp_dir / _safe_filename(file.filename)
+        # アップロードストリームを安全なパスに書き出す
+        with dest.open("wb") as buffer:
+            shutil.copyfileobj(file.file, buffer)
+    elif local_csv_path:
+        selected = Path(local_csv_path).expanduser()
+        if not selected.exists() or not selected.is_file():
+            return _render_error(request, "選択されたCSVファイルが見つかりません。再選択してください。", 400)
+        if selected.suffix.lower() != ".csv":
+            return _render_error(request, "CSVファイルを選択してください。", 400)
+        dest = _save_to_temp_csv(selected)
+    else:
         return _render_error(request, "CSVファイルを選択してください。", status_code=400)
 
-    temp_dir = Path(tempfile.mkdtemp(prefix="twilog_"))
-    dest = temp_dir / _safe_filename(file.filename)
-
-    # アップロードストリームを安全なパスに書き出す
-    with dest.open("wb") as buffer:
-        shutil.copyfileobj(file.file, buffer)
-
     try:
-        frame = loader.load_twilog_csv(dest)
-        frame = preprocessor.add_derived_columns(frame)
+        assert dest is not None
+        file_id = _register_session_from_csv(dest)
     except Exception as exc:  # pragma: no cover - UIで表示
         return _render_error(request, f"CSVの読み込みに失敗しました: {exc}", status_code=400)
 
-    file_id = uuid4().hex
-    # 初期オプション（ダッシュボード側で設定可能）
-    options = {
-        "years": [],
-        "years_mode": "all",
-        "sudachi_mode": "C",
-        "pos_filter": None,
-        "stopwords": None,
-        "keyword_dict": None,
-    }
-    UPLOAD_STORE[file_id] = UploadSession(file_id=file_id, path=dest, frame=frame, options=options)
-
     return RedirectResponse(url=f"/dashboard?file_id={file_id}", status_code=status.HTTP_303_SEE_OTHER)
+
+
+@router.post("/pick-local-csv")
+async def pick_local_csv():
+    """ローカルのファイル選択ダイアログからCSVを選び、パス情報を返す。"""
+
+    initial_dir = get_runtime_work_dir()
+    try:
+        selected = _pick_local_csv_path(initial_dir)
+    except Exception as exc:
+        return JSONResponse(
+            {"selected": False, "message": f"ローカルファイル選択の起動に失敗しました: {exc}"},
+            status_code=500,
+        )
+
+    if selected is None:
+        return JSONResponse({"selected": False, "message": "CSV選択がキャンセルされました。"})
+    if selected.suffix.lower() != ".csv":
+        return JSONResponse({"selected": False, "message": "CSVファイルを選択してください。"}, status_code=400)
+
+    return JSONResponse(
+        {
+            "selected": True,
+            "path": str(selected),
+            "name": selected.name,
+        }
+    )
 
 
 @router.get("/dashboard", response_class=HTMLResponse)

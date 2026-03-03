@@ -1,6 +1,7 @@
 # -*- mode: python ; coding: utf-8 -*-
 import subprocess
 import sys
+import shutil
 from pathlib import Path
 
 from PyInstaller.utils.hooks import collect_data_files
@@ -63,3 +64,10 @@ coll = COLLECT(
     upx_exclude=[],
     name="twilog-analytics",
 )
+
+# Keep runtime files under _internal, but place sample CSV next to the exe for convenience.
+sample_name = "TweeTeaFOX223-260301_only.csv"
+sample_src = ROOT / "sample_csv" / sample_name
+sample_dst_dir = Path(coll.name) / "sample_csv"
+sample_dst_dir.mkdir(parents=True, exist_ok=True)
+shutil.copy2(sample_src, sample_dst_dir / sample_name)

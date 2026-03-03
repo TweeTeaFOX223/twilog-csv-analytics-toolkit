@@ -1,5 +1,5 @@
-# twilog-csv-analytics-toolkit
-![Twilog Analytics App](https://raw.githubusercontent.com/TweeTeaFOX223/twilog-csv-analytics-toolkit/refs/heads/main/docs/app1.png)
+# Twilog CSV Analytics Toolkit
+![Twilog CSV Analytics Toolkit App](https://raw.githubusercontent.com/TweeTeaFOX223/twilog-csv-analytics-toolkit/refs/heads/main/docs/app1.png)
 
   
 ## 概要
@@ -29,13 +29,13 @@ X(旧Twitter)のツイートを保存する「Twilog」から出力した自分�
 
 `dist\\twilog-analytics\\` の中身:
 - `twilog-analytics.exe`: 起動用の実行ファイル本体。
+- `sample_csv\\TweeTeaFOX223-260301_only.csv`: 同梱サンプルCSV（exeと同じディレクトリ階層内）。
 - `_internal\\`: 実行に必要な同梱ファイル群（このフォルダごと必要）。
 - `_internal\\app\\`: `templates` / `static` などアプリのHTML・CSS資産。
 - `_internal\\app\\static\\THIRD_PARTY_LICENSES.txt`: 同梱ライブラリのライセンス一覧（テキスト）。
 - `_internal\\app\\static\\THIRD_PARTY_LICENSES.json`: 同梱ライブラリのライセンス一覧（JSON）。
 - `_internal\\sudachipy`, `_internal\\sudachidict_full`: 形態素解析（SudachiPy）用の本体と辞書データ。
-- `_internal\\*.dll`, `_internal\\*.pyd`, `_internal\\python313.dll`: Pythonランタイムとネイティブ拡張（NumPy/Polars/Matplotlib等）の実行モジュール。
-- `_internal\\base_library.zip`: 標準ライブラリの同梱アーカイブ。
+- `_internal\\*.dll`, `_internal\\*.pyd`, `_internal\\python313.dll`, `_internal\\base_library.zip`: Pythonランタイムとネイティブ拡張の実行モジュール。
 
 ライセンス表示:
 - アプリ起動後にヘッダーの `ライセンス` を開くと、同梱済みライセンス一覧を表示できます。
@@ -52,6 +52,12 @@ X(旧Twitter)のツイートを保存する「Twilog」から出力した自分�
   
 ## サンプルデータ(CSV)
 `sample_csv\TweeTeaFOX223-260301_only.csv`に私のXのポストのCSVがあります。リポスト(他の人の投稿)を除外して私のポストだけにしたやつです。これを読み込ませればすぐに試せます。  
+
+## 配布exe実行時に注意すること  
+- `twilog-analytics.exe` で起動した場合は、開いたコンソール画面(黒い画面)を閉じないでください。
+- 理由: このアプリはFastAPIサーバーをコンソールプロセス上で動かしており、コンソールを閉じるとサーバーが停止し、CSVアップロード画面・解析画面のどちらにもアクセスできなくなります。
+- CSVアップロード画面の `ローカル選択でCSVを開く` ボタンでは、ファイル選択ダイアログの初期フォルダを次のように設定します。  
+  通常実行: 実行中ディレクトリ / exe実行: exeのあるディレクトリ
   
 ## プロジェクト構成と動作概要
   

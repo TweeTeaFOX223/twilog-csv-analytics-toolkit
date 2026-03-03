@@ -15,7 +15,7 @@ if str(SRC_DIR) not in sys.path:
 
 from app.routes import views
 
-app = FastAPI(title="Twilog Analytics")
+app = FastAPI(title="Twilog CSV Analytics Toolkit")
 
 app.mount("/static", StaticFiles(directory=get_static_dir()), name="static")
 app.include_router(views.router)
