@@ -24,7 +24,7 @@
     {% endif %}
 
     {% if daily %}
-    <div id="calendar-chart-{{ file_id }}" class="plot" data-plot-json='{{ calendar_plot | e }}'></div>
+    <div id="calendar-chart-{{ file_id }}" class="plot" style="height: 1600px;" data-plot-json='{{ calendar_plot | e }}'></div>
     <details>
         <summary>日別表を開く</summary>
         <table class="table">

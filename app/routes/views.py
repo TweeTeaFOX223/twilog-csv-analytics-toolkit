@@ -473,7 +473,7 @@ async def weekly_partial(request: Request, file_id: str) -> HTMLResponse:
     frame = _filtered_frame(session)
     weekly = timeseries.weekly_counts(frame)
     daily_full = timeseries.daily_counts_full(frame).with_columns(pl.col("date").cast(pl.Utf8))
-    week_labels, weekday_labels, calendar_matrix = timeseries.daily_calendar_matrix(frame)
+    weekday_labels, week_labels, calendar_matrix = timeseries.daily_calendar_matrix(frame)
 
     weekly_plot = plotly_charts.plotly_bar(
         weekly,
