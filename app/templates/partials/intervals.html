@@ -9,8 +9,8 @@
     <form
         class="form"
         hx-get="/partials/intervals"
-        hx-target="#panel-content"
-        hx-swap="innerHTML"
+        hx-target="closest .card"
+        hx-swap="outerHTML"
     >
         <input type="hidden" name="file_id" value="{{ file_id }}">
         <label class="form-label">最大分数（30〜1440）</label>

@@ -6,8 +6,8 @@
     <form
         class="form"
         hx-get="/partials/word_cooccurrence"
-        hx-target="#panel-content"
-        hx-swap="innerHTML"
+        hx-target="closest .card"
+        hx-swap="outerHTML"
     >
         <input type="hidden" name="file_id" value="{{ file_id }}">
         <label class="form-label">対象語</label>

@@ -25,6 +25,18 @@
         {% block content %}{% endblock %}
     </main>
     <script>
+    function purgePlotly(root=document) {
+      if (!window.Plotly || !root) return;
+      const targets = root.querySelectorAll('[data-plot-json]');
+      targets.forEach((el) => {
+        try {
+          Plotly.purge(el);
+        } catch (e) {
+          // ignore purge errors on non-initialized nodes
+        }
+      });
+    }
+
     function renderPlotly(root=document) {
       const targets = root.querySelectorAll('[data-plot-json]');
       targets.forEach((el) => {
@@ -32,15 +44,41 @@
         if (!specText) return;
         try {
           const spec = JSON.parse(specText);
-          Plotly.newPlot(el, spec.data || [], spec.layout || {});
+          el.innerHTML = '';
+          Plotly.newPlot(
+            el,
+            spec.data || [],
+            spec.layout || {},
+            { responsive: true, displaylogo: false }
+          ).then(() => {
+            requestAnimationFrame(() => {
+              try {
+                Plotly.Plots.resize(el);
+              } catch (_) {}
+            });
+          });
         } catch (e) {
           console.error('plot render error', e);
         }
       });
     }
     document.addEventListener('DOMContentLoaded', () => renderPlotly(document));
-    document.body.addEventListener('htmx:afterSwap', (e) => {
-      if (e.target) renderPlotly(e.target);
+    document.body.addEventListener('htmx:beforeSwap', (e) => {
+      const target = (e.detail && e.detail.target) ? e.detail.target : e.target;
+      if (target) purgePlotly(target);
+    });
+    document.body.addEventListener('htmx:afterSettle', () => {
+      // For outerHTML swaps, event target may point to the old detached node.
+      // Re-scan the current document to render newly inserted plots reliably.
+      renderPlotly(document);
+    });
+    window.addEventListener('resize', () => {
+      if (!window.Plotly) return;
+      document.querySelectorAll('[data-plot-json]').forEach((el) => {
+        try {
+          Plotly.Plots.resize(el);
+        } catch (_) {}
+      });
     });
     </script>
 </body>
