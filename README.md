@@ -5,8 +5,10 @@
 ## 概要
 X(旧Twitter)のツイートを保存する「Twilog」から出力した自分のポストデータを分析するGUIアプリ。htmx・FastAPI。自分のTwitter歴の振り返りに有用。思い付いた限りの全ての分析手法を入れた。    
   
+uv無しですぐに動かせるexe は Release ページから入手できる: https://github.com/TweeTeaFOX223/twilog-csv-analytics-toolkit/releases
+  
 [「FastAPI + htmxが最強説」- AIエンジニアがモック作るならReactは不要、Streamlitも捨てよう](https://zenn.dev/livetoon/articles/04dccf642d324c)の記事を見て、htmx・FastAPIを実際に試すために作成した。AIエージェントとしてGPT-5.3-Codexを使用している。    
-
+  
 ほぼ同じUIを持つアプリをStreamlitで作成したことがあるが、それと比べると「レンダリング順序と状態管理」が非常に簡単だった。→「[bookmark-analytics-toolkit > streamlitのUI作成(地獄)](https://github.com/TweeTeaFOX223/bookmark-analytics-toolkit?tab=readme-ov-file#streamlit%E3%81%AEui%E4%BD%9C%E6%88%90%E5%9C%B0%E7%8D%84)」を参照。  
   
 ## uvでの実行方法
@@ -26,6 +28,7 @@ X(旧Twitter)のツイートを保存する「Twilog」から出力した自分�
 - ビルド成果物は zip 化され、同名タグの GitHub Release に自動で添付・公開されます。
 - リリースには Artifact Attestation（build provenance）が付与され、「このリポジトリのワークフローで生成された成果物」であることを検証できます。
 - GitHub Releases の Immutable Release 機能を有効化しており、公開後のリリースアセットが改変されない運用にしています。
+- **exe はリポジトリの Releases からダウンロードできます**: https://github.com/TweeTeaFOX223/twilog-csv-analytics-toolkit/releases
 
 配布/実行形態について:
 - 現在の設定は `one-dir` ビルドです。`dist\\twilog-analytics\\` フォルダ一式が必要です。
