@@ -21,6 +21,12 @@ X(旧Twitter)のツイートを保存する「Twilog」から出力した自分�
 - 起動後に `http://127.0.0.1:8000` をブラウザで開く
 - ライセンス一覧はビルド時に自動生成され、exe同梱されます
 
+## タグ付きプッシュ時の自動リリース
+- Git タグを付けて push すると、GitHub Actions が自動で Windows 用 exe をビルドします。
+- ビルド成果物は zip 化され、同名タグの GitHub Release に自動で添付・公開されます。
+- リリースには Artifact Attestation（build provenance）が付与され、「このリポジトリのワークフローで生成された成果物」であることを検証できます。
+- GitHub Releases の Immutable Release 機能を有効化しており、公開後のリリースアセットが改変されない運用にしています。
+
 配布/実行形態について:
 - 現在の設定は `one-dir` ビルドです。`dist\\twilog-analytics\\` フォルダ一式が必要です。
 - `twilog-analytics.exe` 単体だけを別の場所へコピーすると動作しません（同梱DLL・データ参照のため）。

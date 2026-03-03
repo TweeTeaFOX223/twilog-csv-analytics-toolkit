@@ -1,0 +1,80 @@
+name: Release Windows EXE
+
+on:
+  push:
+    tags:
+      - "*"
+
+permissions:
+  contents: write
+  id-token: write
+  attestations: write
+
+jobs:
+  build-and-release:
+    runs-on: windows-latest
+    env:
+      PYTHONIOENCODING: utf-8
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: ".python-version"
+
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v5
+
+      - name: Install dependencies
+        run: uv sync --extra dev
+
+      - name: Build Windows exe with PyInstaller
+        run: uv run pyinstaller twilog_analytics.spec --noconfirm
+
+      - name: Package dist as zip
+        shell: pwsh
+        run: |
+          $tag = "${{ github.ref_name }}"
+          $zip = "twilog-analytics-$tag-windows-x64.zip"
+          Compress-Archive -Path "dist/twilog-analytics/*" -DestinationPath $zip -Force
+          "ZIP_PATH=$zip" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+
+      - name: Upload workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-exe-${{ github.ref_name }}
+          path: ${{ env.ZIP_PATH }}
+          if-no-files-found: error
+
+      - name: Attest build provenance
+        uses: actions/attest-build-provenance@v3
+        with:
+          subject-path: ${{ env.ZIP_PATH }}
+
+      - name: Create draft release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: pwsh
+        run: |
+          $notes = @"
+          Twilog CSV Analytics Toolkit の Windows 向けビルドです。
+
+          含まれるもの:
+          - twilog-analytics.exe
+          - 実行に必要な同梱ファイル一式
+          - sample_csv/TweeTeaFOX223-260301_only.csv
+
+          使い方:
+          1. zip を展開する
+          2. twilog-analytics.exe を起動する
+          3. ブラウザで http://127.0.0.1:8000 を開く
+          "@
+          gh release create "${{ github.ref_name }}" "${{ env.ZIP_PATH }}" --title "${{ github.ref_name }}" --notes $notes --draft
+
+      - name: Publish release (for immutable release repositories)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release edit "${{ github.ref_name }}" --draft=false
